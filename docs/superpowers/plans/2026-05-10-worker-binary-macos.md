@@ -208,7 +208,7 @@ The worker needs to remember its `worker_token` (long-lived JWT from registratio
 - Create: `worker/src/state.rs`
 - Modify: `worker/src/main.rs`
 
-- [ ] **Step 1: Create `worker/src/config.rs`**
+- [x] **Step 1: Create `worker/src/config.rs`**
 
 ```rust
 use anyhow::{Context, Result};
@@ -261,7 +261,7 @@ impl Config {
 }
 ```
 
-- [ ] **Step 2: Create `worker/src/state.rs`**
+- [x] **Step 2: Create `worker/src/state.rs`**
 
 ```rust
 use anyhow::Result;
@@ -349,7 +349,7 @@ impl State {
 }
 ```
 
-- [ ] **Step 3: Wire modules**
+- [x] **Step 3: Wire modules**
 
 In `worker/src/main.rs` add at the top:
 ```rust
@@ -357,7 +357,7 @@ mod config;
 mod state;
 ```
 
-- [ ] **Step 4: Build**
+- [x] **Step 4: Build**
 
 ```bash
 cargo build
@@ -365,7 +365,7 @@ cargo build
 
 Expected: clean compile.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add worker/
