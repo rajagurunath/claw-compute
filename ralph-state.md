@@ -3,8 +3,8 @@
 STATUS: in_progress
 
 ## Current
-plan: 6
-task: 11
+plan: 5
+task: 1
 step: 1
 
 ## Completed
@@ -13,21 +13,13 @@ step: 1
 - plan-1/followup-ws (commit 00d209b)
 - plan-4/task-12 (commit b89b1d0)
 - plan-2 (last: 577b348)
-- plan-6/task-1..7 (last: afe1823)
-- plan-6/amendment-A (commit ea98547)
-- plan-6/task-8..10 (last: c0dc8b5)
-- plan-6/amendment-B (commit 53648c1)
+- plan-6 (Tasks 1-11 + amendments A & B; last: 6b0b3cb)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 34 — Plan 6 amendment §3.B done. Frontend deployable to Vercel with OR without backend.
-  - lib/seed.ts: 6 seed offerings (varied chips/regions/tags, $0.30-$3.50/hr, stable seed-* ids).
-  - lib/safe-api.ts: safeGet<T> — falls back on network/5xx, 4xx propagates.
-  - /browse uses safeGet (filters seed list by capability when API down).
-  - /offerings/[id] falls through API → findSeedOffering(id) → notFound().
-  - /auth/login shows "public preview" Info alert + disables form when !NEXT_PUBLIC_API_URL.
-  - web/vercel.json + docs/vercel-deploy.md (project setup + smoke + flip-on flow).
-  - Verified: `NEXT_PUBLIC_API_URL='' pnpm build` succeeds; `next start` confirmed /browse and /offerings/seed-* render seed data.
-- Next: Plan 6 Task 11 (Polish — not-found + error boundary).
+- 2026-05-10 iter 35 — Plan 6 Task 11 done. not-found.tsx (gradient blob, "Lost in the cluster") + error.tsx (client component, AlertTriangle icon, digest display, Try again).
+- Plan 6 COMPLETE. 18 routes built clean; deployable to Vercel with or without backend. Marketing surface (/, /browse, /pricing, /offerings/[id]) renders with seed data when API down. Auth, dashboard (consumer + supplier), worker install wizard, offering CRUD, bookings + chat all wired against real API.
+- Per ralph-loop.md §2 ordering: only Plan 5 (sandbox + inference) remains. macOS host = Sequoia 15.6, NOT 26 — Apple `container` framework unavailable; will need Lima fallback (or skip sandbox host-bringup tasks since they need real hardware install).
+- Next: Plan 5 Task 1 (Pin frameworks + bootstrap host deps via worker/scripts/bootstrap-host-deps.sh).

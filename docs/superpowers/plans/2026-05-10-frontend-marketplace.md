@@ -1717,7 +1717,7 @@ git commit -m "feat(web): consumer bookings + chat UI (pending Task 12 backend)"
 - Create: `web/src/app/error.tsx`
 - Modify: `web/src/app/dashboard/layout.tsx` (already redirects)
 
-- [ ] **Step 1: 404**
+- [x] **Step 1: 404**
 
 `web/src/app/not-found.tsx`:
 ```tsx
@@ -1735,7 +1735,7 @@ export default function NotFound() {
 }
 ```
 
-- [ ] **Step 2: Error boundary**
+- [x] **Step 2: Error boundary**
 
 `web/src/app/error.tsx`:
 ```tsx
@@ -1761,7 +1761,7 @@ export default function Error({
 }
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add web/
