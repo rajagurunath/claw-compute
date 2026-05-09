@@ -4,11 +4,12 @@ STATUS: in_progress
 
 ## Current
 plan: 1
-task: 1
+task: 2
 step: 1
 
 ## Completed
-- bootstrap (commit pending — initial commit)
+- bootstrap (commit 1e0756b)
+- plan-1/task-1 (commit 61573c6)
 
 ## Blocked
 (none)
@@ -25,5 +26,6 @@ step: 1
   - container CLI: not installed
   - limactl: not installed
 - Sandbox runtime (Lima) will be installed later by Plan 5 Task 1 (`worker/scripts/bootstrap-host-deps.sh`). Not blocking Plans 1–4.
-- Created `.gitignore` covering Python venvs, Rust target/, Node node_modules, Vercel artifacts, the ralph-loop plugin's local state file, and `.env` files.
-- Plan 1 Task 1 begins next iteration.
+- 2026-05-10 iter 2 — Plan 1 Task 1 done. FastAPI scaffold + /v1/health endpoint, 1 test green, committed 61573c6.
+  - Skipped Step 8 (manual `uvicorn` smoke) with `~` prefix — redundant with Step 7's TestClient.
+- Next: Plan 1 Task 2 (Postgres + SQLAlchemy + Alembic).

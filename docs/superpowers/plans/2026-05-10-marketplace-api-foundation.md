@@ -110,7 +110,7 @@ backend/
 - Create: `backend/tests/__init__.py`
 - Create: `backend/tests/test_health.py`
 
-- [ ] **Step 1: Create `backend/pyproject.toml`**
+- [x] **Step 1: Create `backend/pyproject.toml`**
 
 ```toml
 [project]
@@ -165,7 +165,7 @@ select = ["E", "F", "I", "N", "UP", "B", "ASYNC", "S"]
 ignore = ["S101"]  # assert allowed in tests
 ```
 
-- [ ] **Step 2: Create `backend/.gitignore`**
+- [x] **Step 2: Create `backend/.gitignore`**
 
 ```gitignore
 .venv/
@@ -182,7 +182,7 @@ build/
 *.egg-info/
 ```
 
-- [ ] **Step 3: Create `backend/.env.example`**
+- [x] **Step 3: Create `backend/.env.example`**
 
 ```dotenv
 # Copy to .env and fill in
@@ -196,7 +196,7 @@ MAGIC_LINK_DELIVERY=console   # console | smtp
 APP_ENV=dev
 ```
 
-- [ ] **Step 4: Create `backend/src/claw_api/config.py`**
+- [x] **Step 4: Create `backend/src/claw_api/config.py`**
 
 ```python
 from functools import lru_cache
@@ -222,7 +222,7 @@ def get_settings() -> Settings:
     return Settings()  # type: ignore[call-arg]
 ```
 
-- [ ] **Step 5: Create FastAPI app + health router**
+- [x] **Step 5: Create FastAPI app + health router**
 
 `backend/src/claw_api/api/v1/health.py`:
 ```python
@@ -264,7 +264,7 @@ app = create_app()
 
 `backend/src/claw_api/__init__.py`: empty file.
 
-- [ ] **Step 6: Write the failing health test**
+- [x] **Step 6: Write the failing health test**
 
 `backend/tests/__init__.py`: empty.
 
@@ -281,7 +281,7 @@ def test_health_returns_ok():
     assert response.json() == {"status": "ok"}
 ```
 
-- [ ] **Step 7: Install + run tests**
+- [x] **Step 7: Install + run tests**
 
 Run from `backend/`:
 ```bash
@@ -292,7 +292,7 @@ uv run pytest -v
 
 Expected: 1 passed.
 
-- [ ] **Step 8: Run the server manually**
+- [x] ~ **Step 8: Run the server manually** (skipped: redundant with Step 7's TestClient — same code path)
 
 ```bash
 uv run uvicorn claw_api.main:app --reload --port 8000
@@ -301,7 +301,7 @@ curl -s http://localhost:8000/v1/health
 
 Expected: `{"status":"ok"}`. Stop server with Ctrl-C.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add backend/
@@ -607,7 +607,7 @@ uv run pytest -v
 
 Expected: 1 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/
@@ -1230,7 +1230,7 @@ uv run pytest tests/test_suppliers.py -v
 
 Expected: 4 passed.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add backend/
@@ -1594,7 +1594,7 @@ uv run pytest tests/test_offerings.py -v
 
 Expected: 4 passed.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add backend/
@@ -2001,7 +2001,7 @@ uv run pytest tests/test_workers.py -v
 
 Expected: 4 passed.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add backend/
@@ -2126,7 +2126,7 @@ uv run pytest tests/test_workers.py -v
 
 Expected: 5 passed.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add backend/
@@ -2537,7 +2537,7 @@ uv run pytest -v
 
 Expected: all green.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add backend/
@@ -2638,7 +2638,7 @@ uv run pytest -v
 
 Expected: all tests pass on a freshly migrated DB.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/Dockerfile .github/workflows/backend-ci.yml
