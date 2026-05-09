@@ -632,7 +632,7 @@ git commit -m "test: add async DB-backed test fixtures"
 - Create: `backend/tests/test_auth.py`
 - Create: Alembic revision for users + magic_links tables
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `backend/tests/test_auth.py`:
 ```python
@@ -700,7 +700,7 @@ async def test_me_returns_current_user(client, monkeypatch):
     assert response.json()["email"] == "carol@example.com"
 ```
 
-- [ ] **Step 2: Run tests, confirm they fail**
+- [x] **Step 2: Run tests, confirm they fail**
 
 ```bash
 uv run pytest tests/test_auth.py -v
@@ -708,7 +708,7 @@ uv run pytest tests/test_auth.py -v
 
 Expected: 4 errors (imports / endpoints not found).
 
-- [ ] **Step 3: Add User and MagicLinkToken models**
+- [x] **Step 3: Add User and MagicLinkToken models**
 
 `backend/src/claw_api/models/users.py`:
 ```python
@@ -754,7 +754,7 @@ Also import them in `alembic/env.py` so autogenerate sees them. Replace the `fro
 from claw_api.models import base, users, magic_links  # noqa: F401
 ```
 
-- [ ] **Step 4: Generate the migration**
+- [x] **Step 4: Generate the migration**
 
 ```bash
 uv run alembic revision --autogenerate -m "users and magic_link_tokens"
@@ -763,7 +763,7 @@ uv run alembic upgrade head
 
 Inspect the generated file in `alembic/versions/`. Confirm both tables appear with columns: `id`, `email`, `created_at`, `updated_at` for users; plus `token_hash`, `expires_at`, `used_at` for magic_link_tokens.
 
-- [ ] **Step 5: Implement password/token hashing**
+- [x] **Step 5: Implement password/token hashing**
 
 `backend/src/claw_api/auth/__init__.py`: empty.
 
@@ -786,7 +786,7 @@ def verify_token(plain: str, hashed: str) -> bool:
         return False
 ```
 
-- [ ] **Step 6: Implement JWT helpers**
+- [x] **Step 6: Implement JWT helpers**
 
 `backend/src/claw_api/auth/jwt.py`:
 ```python
@@ -814,7 +814,7 @@ def decode_token(token: str) -> dict[str, Any]:
     return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
 ```
 
-- [ ] **Step 7: Implement magic-link service**
+- [x] **Step 7: Implement magic-link service**
 
 `backend/src/claw_api/auth/magic_link.py`:
 ```python
@@ -884,7 +884,7 @@ async def consume_magic_link(db: AsyncSession, raw: str) -> User | None:
 
 Note the linear scan — argon2 hashes are non-deterministic so we can't index by hash directly. Acceptable at v1 volumes; replace with HMAC-keyed lookup if it becomes a hotspot.
 
-- [ ] **Step 8: Add Pydantic schemas**
+- [x] **Step 8: Add Pydantic schemas**
 
 `backend/src/claw_api/schemas/__init__.py`: empty.
 
@@ -913,7 +913,7 @@ class UserOut(BaseModel):
     model_config = {"from_attributes": True}
 ```
 
-- [ ] **Step 9: Add the auth router and current-user dependency**
+- [x] **Step 9: Add the auth router and current-user dependency**
 
 `backend/src/claw_api/deps.py`:
 ```python
@@ -999,7 +999,7 @@ api_v1.include_router(health.router)
 api_v1.include_router(auth.router)
 ```
 
-- [ ] **Step 10: Run tests**
+- [x] **Step 10: Run tests**
 
 ```bash
 uv run pytest tests/test_auth.py -v
@@ -1007,7 +1007,7 @@ uv run pytest tests/test_auth.py -v
 
 Expected: 4 passed.
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add backend/
