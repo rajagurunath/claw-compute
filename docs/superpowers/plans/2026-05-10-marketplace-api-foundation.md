@@ -321,7 +321,7 @@ git commit -m "feat(api): scaffold FastAPI app with health endpoint"
 - Create: `backend/alembic/env.py`
 - Create: `backend/alembic/script.py.mako`
 
-- [ ] **Step 1: Create `backend/docker-compose.yml`**
+- [x] **Step 1: Create `backend/docker-compose.yml`**
 
 ```yaml
 services:
@@ -345,7 +345,7 @@ volumes:
   claw-pg:
 ```
 
-- [ ] **Step 2: Start Postgres**
+- [x] **Step 2: Start Postgres**
 
 ```bash
 cd backend && docker compose up -d
@@ -354,7 +354,7 @@ docker compose ps
 
 Expected: `db` service `healthy`.
 
-- [ ] **Step 3: Create `backend/src/claw_api/db.py`**
+- [x] **Step 3: Create `backend/src/claw_api/db.py`**
 
 ```python
 from collections.abc import AsyncIterator
@@ -371,7 +371,7 @@ async def get_db() -> AsyncIterator[AsyncSession]:
         yield session
 ```
 
-- [ ] **Step 4: Create `backend/src/claw_api/models/base.py`**
+- [x] **Step 4: Create `backend/src/claw_api/models/base.py`**
 
 ```python
 from datetime import datetime
@@ -412,7 +412,7 @@ from claw_api.models.base import Base, IdMixin, TimestampMixin, new_id
 __all__ = ["Base", "IdMixin", "TimestampMixin", "new_id"]
 ```
 
-- [ ] **Step 5: Initialise Alembic**
+- [x] **Step 5: Initialise Alembic**
 
 ```bash
 cd backend && uv run alembic init -t async alembic
@@ -420,7 +420,7 @@ cd backend && uv run alembic init -t async alembic
 
 This creates `alembic/` with `env.py`, `script.py.mako`, `versions/`, and `alembic.ini`.
 
-- [ ] **Step 6: Edit `backend/alembic.ini`**
+- [x] **Step 6: Edit `backend/alembic.ini`**
 
 Set the `sqlalchemy.url` line to:
 ```ini
@@ -428,7 +428,7 @@ sqlalchemy.url =
 ```
 (empty — we'll set it from env in `env.py`).
 
-- [ ] **Step 7: Replace `backend/alembic/env.py`** with the content below
+- [x] **Step 7: Replace `backend/alembic/env.py`** with the content below
 
 ```python
 import asyncio
@@ -484,7 +484,7 @@ else:
     asyncio.run(run_migrations_online())
 ```
 
-- [ ] **Step 8: Generate the empty initial revision**
+- [x] **Step 8: Generate the empty initial revision**
 
 ```bash
 cd backend && uv run alembic revision -m "init"
@@ -492,7 +492,7 @@ cd backend && uv run alembic revision -m "init"
 
 This creates an empty migration in `alembic/versions/`. Confirm the file exists and has `def upgrade()` / `def downgrade()` stubs. Leave them empty for now — real schema lands in later tasks.
 
-- [ ] **Step 9: Apply migration to verify wiring**
+- [x] **Step 9: Apply migration to verify wiring**
 
 ```bash
 uv run alembic upgrade head
@@ -505,7 +505,7 @@ Verify the `alembic_version` table exists:
 docker compose exec db psql -U claw -d claw_dev -c "\dt"
 ```
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add backend/
