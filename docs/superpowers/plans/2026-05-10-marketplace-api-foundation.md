@@ -1251,7 +1251,7 @@ git commit -m "feat(suppliers): supplier registration and self-lookup"
 - Create: Alembic revision
 - Create: `backend/tests/test_offerings.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 `backend/tests/test_offerings.py`:
 ```python
@@ -1364,13 +1364,13 @@ async def test_only_owner_can_update_offering(client, monkeypatch):
     assert r.status_code == 404
 ```
 
-- [ ] **Step 2: Confirm failure**
+- [x] **Step 2: Confirm failure**
 
 ```bash
 uv run pytest tests/test_offerings.py -v
 ```
 
-- [ ] **Step 3: Add Offering model**
+- [x] **Step 3: Add Offering model**
 
 `backend/src/claw_api/models/offerings.py`:
 ```python
@@ -1406,14 +1406,14 @@ class Offering(Base, IdMixin, TimestampMixin):
 
 Update `models/__init__.py` and `alembic/env.py` imports the same way as before.
 
-- [ ] **Step 4: Generate + apply migration**
+- [x] **Step 4: Generate + apply migration**
 
 ```bash
 uv run alembic revision --autogenerate -m "offerings"
 uv run alembic upgrade head
 ```
 
-- [ ] **Step 5: Schemas**
+- [x] **Step 5: Schemas**
 
 `backend/src/claw_api/schemas/offerings.py`:
 ```python
@@ -1457,7 +1457,7 @@ class OfferingList(BaseModel):
     total: int
 ```
 
-- [ ] **Step 6: Router**
+- [x] **Step 6: Router**
 
 `backend/src/claw_api/api/v1/offerings.py`:
 ```python
@@ -1586,7 +1586,7 @@ from claw_api.api.v1 import auth, health, offerings, suppliers
 api_v1.include_router(offerings.router)
 ```
 
-- [ ] **Step 7: Run tests**
+- [x] **Step 7: Run tests**
 
 ```bash
 uv run pytest tests/test_offerings.py -v

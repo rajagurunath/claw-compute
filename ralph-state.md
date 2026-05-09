@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 1
-task: 6
+task: 7
 step: 1
 
 ## Completed
@@ -14,15 +14,17 @@ step: 1
 - plan-1/task-3 (commit ffc88e4)
 - plan-1/task-4 (commit 086017e)
 - plan-1/task-5 (commit 9bffe76)
+- plan-1/task-6 (commit 10f70d0)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 1 — Bootstrap + sanity. Lima/container deferred to Plan 5 Task 1.
-- 2026-05-10 iter 2 — Plan 1 Task 1: FastAPI scaffold, /v1/health green.
-- 2026-05-10 iter 3 — Plan 1 Task 2: Postgres (image: postgres:15 cached) + Alembic.
+- 2026-05-10 iter 1 — Bootstrap. Lima/container deferred to Plan 5 Task 1.
+- 2026-05-10 iter 2 — Plan 1 Task 1: FastAPI scaffold, /v1/health.
+- 2026-05-10 iter 3 — Plan 1 Task 2: Postgres (postgres:15 cached) + Alembic.
 - 2026-05-10 iter 4 — Plan 1 Task 3: async DB fixtures.
-- 2026-05-10 iter 5 — Plan 1 Task 4: users + magic_link_tokens, /v1/auth/{magic-link,verify}, /v1/me. Pinned pytest-asyncio loop scopes to "session".
-- 2026-05-10 iter 6 — Plan 1 Task 5: suppliers table (FK→users, unique on user_id), POST /v1/suppliers, GET /v1/suppliers/me. Migration 47d462f69dd5 applied. 9 tests green.
-- Next: Plan 1 Task 6 (Offerings — CRUD + browse with capability filter).
+- 2026-05-10 iter 5 — Plan 1 Task 4: users + magic_link_tokens, /v1/auth/{magic-link,verify}, /v1/me. Pinned pytest-asyncio loop scope to "session".
+- 2026-05-10 iter 6 — Plan 1 Task 5: suppliers, /v1/suppliers + /v1/suppliers/me.
+- 2026-05-10 iter 7 — Plan 1 Task 6: offerings (PG ARRAY for capability_tags, draft/active/archived). POST/GET/PATCH/DELETE /v1/offerings + GET /v1/offerings/{id}; browse filters by status=active and optional capability tag. Migration ff06c36b89fc applied. 13 tests green.
+- Next: Plan 1 Task 7 (Workers + Provisioning Tokens).
