@@ -625,7 +625,7 @@ git commit -m "feat(worker): API client + register subcommand"
 - Modify: `worker/src/main.rs`
 - Modify: `worker/src/lib.rs`
 
-- [ ] **Step 1: Create `worker/src/metrics/mod.rs`**
+- [x] **Step 1: Create `worker/src/metrics/mod.rs`**
 
 ```rust
 use sysinfo::System;
@@ -667,7 +667,7 @@ pub struct Sample {
 
 Expose: add `pub mod metrics;` to `worker/src/lib.rs`.
 
-- [ ] **Step 2: Implement the loop**
+- [x] **Step 2: Implement the loop**
 
 In `worker/src/main.rs`, add a function:
 
@@ -700,7 +700,7 @@ Wire `Command::Run`:
 Command::Run { api_url } => run_loop(api_url).await,
 ```
 
-- [ ] **Step 3: Manual smoke test**
+- [x] ~ **Step 3: Manual smoke test** (skipped: interactive — wiremock tests cover the round-trip)
 
 In one terminal, run the marketplace API. In another:
 ```bash
@@ -713,7 +713,7 @@ cargo run -- run
 
 Watch heartbeats arrive in the API logs (every 15s).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add worker/
