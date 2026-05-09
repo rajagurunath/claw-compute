@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 6
-task: 8
+task: 9
 step: 1
 
 ## Completed
@@ -13,17 +13,19 @@ step: 1
 - plan-1/followup-ws (commit 00d209b)
 - plan-4/task-12 (commit b89b1d0)
 - plan-2 (last: 577b348)
-- plan-6/task-1..6 (last: 3e0215b)
+- plan-6/task-1..7 (last: afe1823)
 - plan-6/amendment-A (commit ea98547)
-- plan-6/task-7 (commit afe1823)
+- plan-6/task-8 (commit 59829e9)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 30 — Plan 6 Task 7 done. Become-a-supplier flow:
-  - actions.ts: zod-validated `becomeSupplier(prev, fd)` posts /v1/suppliers, redirects to /dashboard/suppliers on success.
-  - page.tsx: 2-column layout (perks list left: 88% keep / 3-min setup / open-source; form card right with display_name + payout_email + helper hints).
-  - React 19 useActionState + useFormStatus.
-- 10 routes built clean.
-- Next: Plan 6 Task 8 (Worker Management + Install Wizard).
+- 2026-05-10 iter 31 — Plan 6 Task 8 done.
+  - WorkerStatusBadge with colored dot (active=pulsing emerald, pending=amber, offline=slate, disabled=rose).
+  - InstallSnippet: shadcn-styled pre with absolute-positioned copy button (Check on success).
+  - /workers list: shadcn Table; empty states for not-a-supplier (403) and no-workers.
+  - /workers/new wizard: stage 1 names the worker; on success → stage 2 shows numbered install + register/run snippets with prominent "save the token now" alert.
+  - /suppliers index redirects to /workers.
+- 13 routes built clean.
+- Next: Plan 6 Task 9 (Offerings CRUD — list + create + edit).

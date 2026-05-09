@@ -1051,7 +1051,7 @@ git commit -m "feat(web): become-a-supplier flow"
 - Create: `web/src/components/dashboard/WorkerStatusBadge.tsx`
 - Create: `web/src/components/dashboard/InstallSnippet.tsx`
 
-- [ ] **Step 1: Status badge**
+- [x] **Step 1: Status badge**
 
 `web/src/components/dashboard/WorkerStatusBadge.tsx`:
 ```tsx
@@ -1070,7 +1070,7 @@ export function WorkerStatusBadge({ status }: { status: WorkerStatus }) {
 }
 ```
 
-- [ ] **Step 2: Install snippet (copy-to-clipboard)**
+- [x] **Step 2: Install snippet (copy-to-clipboard)**
 
 `web/src/components/dashboard/InstallSnippet.tsx`:
 ```tsx
@@ -1103,7 +1103,7 @@ export function InstallSnippet({ snippet }: { snippet: string }) {
 }
 ```
 
-- [ ] **Step 3: Workers list**
+- [x] **Step 3: Workers list**
 
 `web/src/app/dashboard/suppliers/workers/page.tsx`:
 ```tsx
@@ -1155,7 +1155,7 @@ export default async function WorkersPage() {
 }
 ```
 
-- [ ] **Step 4: New worker server action**
+- [x] **Step 4: New worker server action**
 
 `web/src/app/dashboard/suppliers/workers/actions.ts`:
 ```typescript
@@ -1177,7 +1177,7 @@ export async function createWorker(formData: FormData) {
 }
 ```
 
-- [ ] **Step 5: Install wizard**
+- [x] **Step 5: Install wizard**
 
 `web/src/app/dashboard/suppliers/workers/new/page.tsx`:
 ```tsx
@@ -1253,7 +1253,7 @@ claw-worker run --api-url ${apiUrl}`;
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add web/
