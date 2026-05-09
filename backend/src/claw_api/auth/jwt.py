@@ -18,6 +18,18 @@ def encode_user_token(user_id: str) -> str:
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
+def encode_worker_token(worker_id: str) -> str:
+    settings = get_settings()
+    now = datetime.now(UTC)
+    payload = {
+        "sub": worker_id,
+        "kind": "worker",
+        "iat": int(now.timestamp()),
+        "exp": int((now + timedelta(days=settings.jwt_worker_ttl_days)).timestamp()),
+    }
+    return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
+
+
 def decode_token(token: str) -> dict[str, Any]:
     settings = get_settings()
     return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])

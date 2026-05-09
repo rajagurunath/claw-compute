@@ -3,6 +3,7 @@ from claw_api.models.magic_links import MagicLinkToken
 from claw_api.models.offerings import Offering, OfferingStatus
 from claw_api.models.suppliers import Supplier
 from claw_api.models.users import User
+from claw_api.models.workers import Worker, WorkerStatus
 
 __all__ = [
     "Base",
@@ -13,5 +14,7 @@ __all__ = [
     "Supplier",
     "TimestampMixin",
     "User",
+    "Worker",
+    "WorkerStatus",
     "new_id",
 ]
