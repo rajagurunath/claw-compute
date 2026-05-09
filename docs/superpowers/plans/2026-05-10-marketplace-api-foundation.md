@@ -1028,7 +1028,7 @@ git commit -m "feat(auth): magic-link issuance, verify, and JWT-protected /me"
 - Create: Alembic revision
 - Create: `backend/tests/test_suppliers.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 `backend/tests/test_suppliers.py`:
 ```python
@@ -1092,7 +1092,7 @@ async def test_cannot_double_register_supplier(client, monkeypatch):
     assert r2.status_code == 409
 ```
 
-- [ ] **Step 2: Confirm failure**
+- [x] **Step 2: Confirm failure**
 
 ```bash
 uv run pytest tests/test_suppliers.py -v
@@ -1100,7 +1100,7 @@ uv run pytest tests/test_suppliers.py -v
 
 Expected: 4 errors.
 
-- [ ] **Step 3: Add Supplier model**
+- [x] **Step 3: Add Supplier model**
 
 `backend/src/claw_api/models/suppliers.py`:
 ```python
@@ -1134,7 +1134,7 @@ Update `alembic/env.py` import line:
 from claw_api.models import base, users, magic_links, suppliers  # noqa: F401
 ```
 
-- [ ] **Step 4: Generate + apply migration**
+- [x] **Step 4: Generate + apply migration**
 
 ```bash
 uv run alembic revision --autogenerate -m "suppliers"
@@ -1143,7 +1143,7 @@ uv run alembic upgrade head
 
 Inspect the generated revision; confirm `suppliers` table with `user_id` FK and unique constraint.
 
-- [ ] **Step 5: Schemas**
+- [x] **Step 5: Schemas**
 
 `backend/src/claw_api/schemas/suppliers.py`:
 ```python
@@ -1163,7 +1163,7 @@ class SupplierOut(BaseModel):
     model_config = {"from_attributes": True}
 ```
 
-- [ ] **Step 6: Router**
+- [x] **Step 6: Router**
 
 `backend/src/claw_api/api/v1/suppliers.py`:
 ```python
@@ -1222,7 +1222,7 @@ from claw_api.api.v1 import auth, health, suppliers
 api_v1.include_router(suppliers.router)
 ```
 
-- [ ] **Step 7: Run tests**
+- [x] **Step 7: Run tests**
 
 ```bash
 uv run pytest tests/test_suppliers.py -v

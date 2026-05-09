@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 1
-task: 5
+task: 6
 step: 1
 
 ## Completed
@@ -13,6 +13,7 @@ step: 1
 - plan-1/task-2 (commit 22796e1)
 - plan-1/task-3 (commit ffc88e4)
 - plan-1/task-4 (commit 086017e)
+- plan-1/task-5 (commit 9bffe76)
 
 ## Blocked
 (none)
@@ -21,8 +22,7 @@ step: 1
 - 2026-05-10 iter 1 — Bootstrap + sanity. Lima/container deferred to Plan 5 Task 1.
 - 2026-05-10 iter 2 — Plan 1 Task 1: FastAPI scaffold, /v1/health green.
 - 2026-05-10 iter 3 — Plan 1 Task 2: Postgres (image: postgres:15 cached) + Alembic.
-- 2026-05-10 iter 4 — Plan 1 Task 3: async DB fixtures (conftest), test_health migrated to async.
-- 2026-05-10 iter 5 — Plan 1 Task 4: users + magic_link_tokens models, argon2 hashing, JWT (HS256), magic-link service, deps.current_user, /v1/auth/{magic-link,verify}, /v1/me. Migration 047af4ab3cfa applied. 5 tests green.
-  - Fix during this task: added `asyncio_default_fixture_loop_scope = "session"` and `asyncio_default_test_loop_scope = "session"` to pyproject.toml — pytest-asyncio v1.x defaults caused asyncpg "Future attached to a different loop" errors with session-scoped engine.
-  - Cosmetic: JWT_SECRET placeholder is 31 bytes; logs InsecureKeyLengthWarning. Production sets a longer secret.
-- Next: Plan 1 Task 5 (Suppliers — supplier registration + /v1/suppliers/me).
+- 2026-05-10 iter 4 — Plan 1 Task 3: async DB fixtures.
+- 2026-05-10 iter 5 — Plan 1 Task 4: users + magic_link_tokens, /v1/auth/{magic-link,verify}, /v1/me. Pinned pytest-asyncio loop scopes to "session".
+- 2026-05-10 iter 6 — Plan 1 Task 5: suppliers table (FK→users, unique on user_id), POST /v1/suppliers, GET /v1/suppliers/me. Migration 47d462f69dd5 applied. 9 tests green.
+- Next: Plan 1 Task 6 (Offerings — CRUD + browse with capability filter).
