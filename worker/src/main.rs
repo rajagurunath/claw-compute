@@ -1,7 +1,6 @@
-mod config;
-mod state;
-
 use clap::{Parser, Subcommand};
+use claw_worker::api::client::ApiClient;
+use claw_worker::config::Config;
 
 #[derive(Parser)]
 #[command(name = "claw-worker", version, about = "Claw marketplace worker agent")]
@@ -28,6 +27,18 @@ enum Command {
     Info,
 }
 
+fn collect_machine_info() -> anyhow::Result<serde_json::Value> {
+    use sysinfo::System;
+    let mut sys = System::new_all();
+    sys.refresh_all();
+    Ok(serde_json::json!({
+        "os": std::env::consts::OS,
+        "arch": std::env::consts::ARCH,
+        "cpu_count": sys.cpus().len(),
+        "total_ram_gb": (sys.total_memory() as f64) / 1024.0 / 1024.0 / 1024.0,
+    }))
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
@@ -37,13 +48,22 @@ async fn main() -> anyhow::Result<()> {
     match cli.command {
         Command::Info => {
             println!("claw-worker {}", env!("CARGO_PKG_VERSION"));
+            let info = collect_machine_info()?;
+            println!("{}", serde_json::to_string_pretty(&info)?);
             Ok(())
         }
-        Command::Register { .. } => {
-            anyhow::bail!("register: not implemented (Task 3)")
+        Command::Register {
+            api_url,
+            provisioning_token,
+        } => {
+            let machine_info = collect_machine_info()?;
+            let client = ApiClient::new(api_url)?;
+            let resp = client.register(&provisioning_token, machine_info).await?;
+            Config::store_worker_token(&resp.worker_token)?;
+            tracing::info!(worker_id = %resp.worker.id, "registered");
+            println!("✔ Registered worker {}", resp.worker.id);
+            Ok(())
         }
-        Command::Run { .. } => {
-            anyhow::bail!("run: not implemented (Task 4)")
-        }
+        Command::Run { .. } => anyhow::bail!("run: not implemented (Task 4)"),
     }
 }

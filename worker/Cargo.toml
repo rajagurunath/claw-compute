@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 description = "Claw marketplace worker agent (macOS / Apple Silicon)"
 
+[lib]
+name = "claw_worker"
+path = "src/lib.rs"
+
 [[bin]]
 name = "claw-worker"
 path = "src/main.rs"
