@@ -1329,7 +1329,7 @@ Capture every human-required step that v1 skips, so post-beta production hardeni
 **Files:**
 - Create: `docs/worker-prerequisites.md`
 
-- [ ] **Step 1: Write the prerequisites doc**
+- [x] **Step 1: Write the prerequisites doc**
 
 `docs/worker-prerequisites.md`:
 ```markdown
@@ -1407,7 +1407,7 @@ When all of the above are in place, three code changes:
 | Pick Apple Developer ID over enterprise distribution | future | Enterprise dist requires per-customer MDM enrollment; we want public-internet supplier signup |
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add docs/worker-prerequisites.md
