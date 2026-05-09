@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 2
-task: 7
+task: 8
 step: 1
 
 ## Completed
@@ -12,12 +12,12 @@ step: 1
 - plan-1/task-1..10 (last: 2747674)
 - plan-1/followup-ws (commit 00d209b)
 - plan-4/task-12 (commit b89b1d0)
-- plan-2/task-1..5 (last: ea542f0)
-- plan-2/task-6 (commit a6c6b0a)
+- plan-2/task-1..6 (last: a6c6b0a)
+- plan-2/task-7 (commit 8f3096c)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 19 — Plan 2 Task 6 done. api/ws.rs (WorkerEvent enum: Ping, BookingActivated, BookingCancelled, MessageUser; run_ws with reconnect 1s..60s exponential backoff), booking/mod.rs (BookingHandler maps events to SandboxBackend + persists to SQLite), main.rs run_loop spawns heartbeat task + WS handler. cargo build clean, 4 tests still green.
-- Next: Plan 2 Task 7 (Booking lifecycle integration test).
+- 2026-05-10 iter 20 — Plan 2 Task 7 done. tests/booking_lifecycle.rs with RecordingBackend stub (records start/stop calls). 3 cases: activated_then_cancelled, cancel_unknown_booking_is_noop, ping_event_is_a_noop. All pass. Total worker tests = 7 (2 lib + 2 register_flow + 3 booking_lifecycle).
+- Next: Plan 2 Task 8 (install.sh + ad-hoc signing scripts).

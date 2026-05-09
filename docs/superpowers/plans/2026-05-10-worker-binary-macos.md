@@ -1134,7 +1134,7 @@ git commit -m "feat(worker): outbound WebSocket + booking event handler"
 **Files:**
 - Create: `worker/tests/booking_lifecycle.rs`
 
-- [ ] **Step 1: Test the full booking flow with mocks**
+- [x] **Step 1: Test the full booking flow with mocks**
 
 ```rust
 use claw_worker::api::ws::WorkerEvent;
@@ -1193,7 +1193,7 @@ async fn activated_then_cancelled() {
 
 Need to make `RecordingBackend` types accessible — they are crate-local in the test, so this works.
 
-- [ ] **Step 2: Run**
+- [x] **Step 2: Run**
 
 ```bash
 cargo test --test booking_lifecycle
@@ -1201,7 +1201,7 @@ cargo test --test booking_lifecycle
 
 Expected: 1 passed.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add worker/
