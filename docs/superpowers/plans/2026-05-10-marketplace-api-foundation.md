@@ -1619,7 +1619,7 @@ git commit -m "feat(offerings): CRUD + public browse with capability filter"
 - Create: Alembic revision
 - Create: `backend/tests/test_workers.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 `backend/tests/test_workers.py`:
 ```python
@@ -1719,13 +1719,13 @@ async def test_supplier_lists_workers(client, monkeypatch):
     assert len(r.json()["items"]) == 2
 ```
 
-- [ ] **Step 2: Confirm failure**
+- [x] **Step 2: Confirm failure**
 
 ```bash
 uv run pytest tests/test_workers.py -v
 ```
 
-- [ ] **Step 3: Add Worker model**
+- [x] **Step 3: Add Worker model**
 
 `backend/src/claw_api/models/workers.py`:
 ```python
@@ -1764,14 +1764,14 @@ class Worker(Base, IdMixin, TimestampMixin):
 
 Update `models/__init__.py` and `alembic/env.py` imports.
 
-- [ ] **Step 4: Migration**
+- [x] **Step 4: Migration**
 
 ```bash
 uv run alembic revision --autogenerate -m "workers"
 uv run alembic upgrade head
 ```
 
-- [ ] **Step 5: Add `encode_worker_token` and `current_worker`**
+- [x] **Step 5: Add `encode_worker_token` and `current_worker`**
 
 Append to `backend/src/claw_api/auth/jwt.py`:
 ```python
@@ -1812,7 +1812,7 @@ async def current_worker(
     return worker
 ```
 
-- [ ] **Step 6: Schemas**
+- [x] **Step 6: Schemas**
 
 `backend/src/claw_api/schemas/workers.py`:
 ```python
@@ -1861,7 +1861,7 @@ class WorkerList(BaseModel):
     items: list[WorkerOut]
 ```
 
-- [ ] **Step 7: Router**
+- [x] **Step 7: Router**
 
 `backend/src/claw_api/api/v1/workers.py`:
 ```python
@@ -1993,7 +1993,7 @@ from claw_api.api.v1 import auth, health, offerings, suppliers, workers
 api_v1.include_router(workers.router)
 ```
 
-- [ ] **Step 8: Run tests**
+- [x] **Step 8: Run tests**
 
 ```bash
 uv run pytest tests/test_workers.py -v

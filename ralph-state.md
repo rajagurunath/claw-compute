@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 1
-task: 7
+task: 8
 step: 1
 
 ## Completed
@@ -15,16 +15,12 @@ step: 1
 - plan-1/task-4 (commit 086017e)
 - plan-1/task-5 (commit 9bffe76)
 - plan-1/task-6 (commit 10f70d0)
+- plan-1/task-7 (commit 947ef62)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 1 — Bootstrap. Lima/container deferred to Plan 5 Task 1.
-- 2026-05-10 iter 2 — Plan 1 Task 1: FastAPI scaffold, /v1/health.
-- 2026-05-10 iter 3 — Plan 1 Task 2: Postgres (postgres:15 cached) + Alembic.
-- 2026-05-10 iter 4 — Plan 1 Task 3: async DB fixtures.
-- 2026-05-10 iter 5 — Plan 1 Task 4: users + magic_link_tokens, /v1/auth/{magic-link,verify}, /v1/me. Pinned pytest-asyncio loop scope to "session".
-- 2026-05-10 iter 6 — Plan 1 Task 5: suppliers, /v1/suppliers + /v1/suppliers/me.
-- 2026-05-10 iter 7 — Plan 1 Task 6: offerings (PG ARRAY for capability_tags, draft/active/archived). POST/GET/PATCH/DELETE /v1/offerings + GET /v1/offerings/{id}; browse filters by status=active and optional capability tag. Migration ff06c36b89fc applied. 13 tests green.
-- Next: Plan 1 Task 7 (Workers + Provisioning Tokens).
+- Plan 1 Tasks 1-7 done. Backend now has auth, suppliers, offerings (CRUD + browse), workers (provisioning-token → worker-JWT, heartbeat). 17 tests green.
+- 2026-05-10 iter 8 — Plan 1 Task 7: workers table (FK→suppliers, JSON machine_info, status enum), encode_worker_token + current_worker dep, POST /v1/workers/provisioning-tokens, POST /v1/workers/register (one-time use, hash wiped on success), POST /v1/workers/heartbeat (worker JWT auth), GET /v1/suppliers/me/workers. Migration b7784fb3025e applied.
+- Next: Plan 1 Task 8 (Heartbeat history — append heartbeat rows for time-series scoring later).
