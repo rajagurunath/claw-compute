@@ -512,7 +512,7 @@ git commit -m "feat(web): magic-link auth with httpOnly cookie session"
 - Create: `web/src/components/marketing/SupplierCTA.tsx`
 - Modify: `web/src/styles/globals.css`
 
-- [ ] **Step 1: Root layout with brand**
+- [x] **Step 1: Root layout with brand**
 
 `web/src/app/layout.tsx`:
 ```tsx
@@ -534,7 +534,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-- [ ] **Step 2: Hero**
+- [x] **Step 2: Hero**
 
 `web/src/components/marketing/Hero.tsx`:
 ```tsx
@@ -568,7 +568,7 @@ export function Hero() {
 }
 ```
 
-- [ ] **Step 3: Features grid**
+- [x] **Step 3: Features grid**
 
 `web/src/components/marketing/Features.tsx`:
 ```tsx
@@ -609,7 +609,7 @@ export function Features() {
 }
 ```
 
-- [ ] **Step 4: Supplier CTA**
+- [x] **Step 4: Supplier CTA**
 
 `web/src/components/marketing/SupplierCTA.tsx`:
 ```tsx
@@ -636,7 +636,7 @@ export function SupplierCTA() {
 }
 ```
 
-- [ ] **Step 5: Compose the landing**
+- [x] **Step 5: Compose the landing**
 
 `web/src/app/page.tsx`:
 ```tsx
@@ -655,7 +655,7 @@ export default function HomePage() {
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add web/
