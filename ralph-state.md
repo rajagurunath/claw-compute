@@ -15,18 +15,19 @@ step: 1
 - plan-2 (last: 577b348)
 - plan-6/task-1..7 (last: afe1823)
 - plan-6/amendment-A (commit ea98547)
-- plan-6/task-8..9 (last: 1485161)
-- plan-6/task-10 (commit c0dc8b5)
+- plan-6/task-8..10 (last: c0dc8b5)
+- plan-6/amendment-B (commit 53648c1)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 33 — Plan 6 Task 10 done.
-  - /dashboard/bookings: shadcn Table, colored status badges, empty state.
-  - /dashboard/bookings/[id]: status header + Back link + Chat (if active) or "not active yet" explainer.
-  - ChatThread (client): Bot/User bubbles, optimistic message insert with replace-or-rollback semantics, useTransition for non-blocking submit, ⌘/Ctrl+Enter to send, auto-scroll. Posts to /v1/bookings/{id}/messages (Plan 4 Task 12).
-  - actions.ts/sendMessage with structured ok/error result.
-- 18 routes built clean.
-- Per ralph-loop.md §3.B (insert before Plan 6 Task 11): seed-data fallback + safeGet + Vercel deployability come next, before the Polish task.
-- Next: Plan 6 amendment §3.B (Vercel + seed-data fallback).
+- 2026-05-10 iter 34 — Plan 6 amendment §3.B done. Frontend deployable to Vercel with OR without backend.
+  - lib/seed.ts: 6 seed offerings (varied chips/regions/tags, $0.30-$3.50/hr, stable seed-* ids).
+  - lib/safe-api.ts: safeGet<T> — falls back on network/5xx, 4xx propagates.
+  - /browse uses safeGet (filters seed list by capability when API down).
+  - /offerings/[id] falls through API → findSeedOffering(id) → notFound().
+  - /auth/login shows "public preview" Info alert + disables form when !NEXT_PUBLIC_API_URL.
+  - web/vercel.json + docs/vercel-deploy.md (project setup + smoke + flip-on flow).
+  - Verified: `NEXT_PUBLIC_API_URL='' pnpm build` succeeds; `next start` confirmed /browse and /offerings/seed-* render seed data.
+- Next: Plan 6 Task 11 (Polish — not-found + error boundary).
