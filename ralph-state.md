@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 1
-task: 9
+task: 10
 step: 1
 
 ## Completed
@@ -17,11 +17,12 @@ step: 1
 - plan-1/task-6 (commit 10f70d0)
 - plan-1/task-7 (commit 947ef62)
 - plan-1/task-8 (commit 42a1635)
+- plan-1/task-9 (commit 89b537b)
 
 ## Blocked
 (none)
 
 ## Notes
-- Plan 1 Tasks 1-8 done. Backend now has auth, suppliers, offerings (CRUD + browse), workers (provisioning-token → JWT, heartbeat with persisted time-series rows). 18 tests green.
-- 2026-05-10 iter 9 — Plan 1 Task 8: heartbeats table (FK→workers, cpu/mem/gpu pct, free_ram_gb, model_loaded_id), migration d440f2c727f6, heartbeat endpoint inserts a row each call.
-- Next: Plan 1 Task 9 (Bookings — full state machine + create/list/transition).
+- Plan 1 Tasks 1-9 done. All domain endpoints in: auth, suppliers, offerings, workers, bookings. State machine enforced. 22 tests green.
+- 2026-05-10 iter 10 — Plan 1 Task 9: bookings table (FK→users/offerings/workers, 4-state machine), POST /v1/bookings (consumer creates pending), GET /v1/bookings/me, GET /v1/bookings/{id}, POST /v1/bookings/{id}/transition (allowed: pending→active|cancelled, active→completed|cancelled). _load_party allows both consumer and owning supplier. Migration 94b5562083f7.
+- Next: Plan 1 Task 10 (CI workflow + Dockerfile).

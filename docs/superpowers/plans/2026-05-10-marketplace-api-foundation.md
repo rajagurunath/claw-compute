@@ -2156,7 +2156,7 @@ pending → active → completed
 - Create: Alembic revision
 - Create: `backend/tests/test_bookings.py`
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 `backend/tests/test_bookings.py`:
 ```python
@@ -2298,13 +2298,13 @@ async def test_invalid_transition_rejected(client, monkeypatch):
     assert r.status_code == 400
 ```
 
-- [ ] **Step 2: Confirm failure**
+- [x] **Step 2: Confirm failure**
 
 ```bash
 uv run pytest tests/test_bookings.py -v
 ```
 
-- [ ] **Step 3: Add Booking model**
+- [x] **Step 3: Add Booking model**
 
 `backend/src/claw_api/models/bookings.py`:
 ```python
@@ -2351,14 +2351,14 @@ class Booking(Base, IdMixin, TimestampMixin):
 
 Update `models/__init__.py` and `alembic/env.py`.
 
-- [ ] **Step 4: Migration**
+- [x] **Step 4: Migration**
 
 ```bash
 uv run alembic revision --autogenerate -m "bookings"
 uv run alembic upgrade head
 ```
 
-- [ ] **Step 5: Schemas**
+- [x] **Step 5: Schemas**
 
 `backend/src/claw_api/schemas/bookings.py`:
 ```python
@@ -2395,7 +2395,7 @@ class BookingList(BaseModel):
     items: list[BookingOut]
 ```
 
-- [ ] **Step 6: Router**
+- [x] **Step 6: Router**
 
 `backend/src/claw_api/api/v1/bookings.py`:
 ```python
@@ -2521,7 +2521,7 @@ from claw_api.api.v1 import auth, bookings, health, offerings, suppliers, worker
 api_v1.include_router(bookings.router)
 ```
 
-- [ ] **Step 7: Run tests**
+- [x] **Step 7: Run tests**
 
 ```bash
 uv run pytest tests/test_bookings.py -v
@@ -2529,7 +2529,7 @@ uv run pytest tests/test_bookings.py -v
 
 Expected: 4 passed.
 
-- [ ] **Step 8: Run the full suite**
+- [x] **Step 8: Run the full suite**
 
 ```bash
 uv run pytest -v
