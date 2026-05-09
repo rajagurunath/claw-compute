@@ -1219,7 +1219,7 @@ The supplier-facing install path: a single `curl -fsSL https://api.claw.dev/inst
 - Create: `worker/scripts/sign-adhoc.sh`
 - Create: `worker/scripts/package-tarball.sh`
 
-- [ ] **Step 1: Create `worker/install.sh`**
+- [x] **Step 1: Create `worker/install.sh`**
 
 ```bash
 #!/usr/bin/env bash
@@ -1270,7 +1270,7 @@ echo
 echo "Add $BIN_DIR to your PATH if you want to call it without the full path."
 ```
 
-- [ ] **Step 2: Create `worker/scripts/sign-adhoc.sh`**
+- [x] **Step 2: Create `worker/scripts/sign-adhoc.sh`**
 
 ```bash
 #!/usr/bin/env bash
@@ -1283,7 +1283,7 @@ echo "NOTE: ad-hoc signing works only on the local machine. For distribution,"
 echo "      see docs/worker-prerequisites.md for Developer ID + notarization."
 ```
 
-- [ ] **Step 3: Create `worker/scripts/package-tarball.sh`**
+- [x] **Step 3: Create `worker/scripts/package-tarball.sh`**
 
 ```bash
 #!/usr/bin/env bash
@@ -1303,7 +1303,7 @@ tar -czf "$TARBALL" -C "target/$TARGET/release" claw-worker
 echo "✔ wrote $TARBALL"
 ```
 
-- [ ] **Step 4: chmod + smoke test**
+- [x] **Step 4: chmod + smoke test**
 
 ```bash
 chmod +x worker/install.sh worker/scripts/*.sh
@@ -1313,7 +1313,7 @@ ls -la ../dist
 
 Expected: tarball produced.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add worker/install.sh worker/scripts/
