@@ -1515,7 +1515,7 @@ git commit -m "feat(web): supplier offering CRUD"
 - Create: `web/src/app/dashboard/bookings/[id]/actions.ts`
 - Create: `web/src/components/dashboard/ChatThread.tsx`
 
-- [ ] **Step 1: Bookings list**
+- [x] **Step 1: Bookings list**
 
 `web/src/app/dashboard/bookings/page.tsx`:
 ```tsx
@@ -1567,7 +1567,7 @@ export default async function Page() {
 }
 ```
 
-- [ ] **Step 2: Chat actions**
+- [x] **Step 2: Chat actions**
 
 `web/src/app/dashboard/bookings/[id]/actions.ts`:
 ```typescript
@@ -1595,7 +1595,7 @@ export async function sendMessage(
 }
 ```
 
-- [ ] **Step 3: Chat thread component**
+- [x] **Step 3: Chat thread component**
 
 `web/src/components/dashboard/ChatThread.tsx`:
 ```tsx
@@ -1662,7 +1662,7 @@ export function ChatThread({
 }
 ```
 
-- [ ] **Step 4: Booking detail page**
+- [x] **Step 4: Booking detail page**
 
 `web/src/app/dashboard/bookings/[id]/page.tsx`:
 ```tsx
@@ -1701,7 +1701,7 @@ export default async function Page({
 }
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add web/

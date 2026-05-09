@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 6
-task: 10
+task: 11
 step: 1
 
 ## Completed
@@ -15,17 +15,18 @@ step: 1
 - plan-2 (last: 577b348)
 - plan-6/task-1..7 (last: afe1823)
 - plan-6/amendment-A (commit ea98547)
-- plan-6/task-8 (commit 59829e9)
-- plan-6/task-9 (commit 1485161)
+- plan-6/task-8..9 (last: 1485161)
+- plan-6/task-10 (commit c0dc8b5)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 32 — Plan 6 Task 9 done.
-  - actions.ts: zod-validated createOffering / updateOffering (both with useActionState-compatible (prev, fd) signature) + archiveOffering. revalidatePath + redirect on success.
-  - /offerings list: shadcn Table with colored status badges (draft amber / active emerald / archived slate), tag chips, empty state.
-  - OfferingForm: shared between create + edit (title/description/price+status grid/tags input + helper hints).
-  - /offerings/[id]/edit: shows the form pre-filled + Danger zone with Archive button.
-- 16 routes built clean.
-- Next: Plan 6 Task 10 (Consumer bookings + chat UI).
+- 2026-05-10 iter 33 — Plan 6 Task 10 done.
+  - /dashboard/bookings: shadcn Table, colored status badges, empty state.
+  - /dashboard/bookings/[id]: status header + Back link + Chat (if active) or "not active yet" explainer.
+  - ChatThread (client): Bot/User bubbles, optimistic message insert with replace-or-rollback semantics, useTransition for non-blocking submit, ⌘/Ctrl+Enter to send, auto-scroll. Posts to /v1/bookings/{id}/messages (Plan 4 Task 12).
+  - actions.ts/sendMessage with structured ok/error result.
+- 18 routes built clean.
+- Per ralph-loop.md §3.B (insert before Plan 6 Task 11): seed-data fallback + safeGet + Vercel deployability come next, before the Polish task.
+- Next: Plan 6 amendment §3.B (Vercel + seed-data fallback).
