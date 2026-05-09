@@ -2,8 +2,9 @@ import { OfferingCard } from "@/components/browse/OfferingCard";
 import { OfferingFilters } from "@/components/browse/OfferingFilters";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { api } from "@/lib/api";
 import type { OfferingList } from "@/lib/api-types";
+import { safeGet } from "@/lib/safe-api";
+import { SEED_OFFERING_LIST, SEED_OFFERINGS } from "@/lib/seed";
 
 export const dynamic = "force-dynamic";
 
@@ -15,17 +16,19 @@ export default async function BrowsePage({
   const { capability } = await searchParams;
   const qs = new URLSearchParams();
   if (capability) qs.set("capability", capability);
-  let data: OfferingList = { items: [], total: 0 };
-  try {
-    data = await api.get<OfferingList>(
-      `/v1/offerings?${qs.toString()}`,
-      { auth: false },
-    );
-  } catch {
-    // Marketplace API unreachable. Task 11 will replace this with a
-    // shared safeGet() helper that falls back to seed data; for now,
-    // an empty list still renders a coherent page.
-  }
+  // Filter the seed list by capability when API is unreachable so the demo
+  // still feels like a real filter.
+  const seedFiltered = capability
+    ? {
+        items: SEED_OFFERINGS.filter((o) => o.capability_tags.includes(capability)),
+        total: SEED_OFFERINGS.filter((o) => o.capability_tags.includes(capability)).length,
+      }
+    : SEED_OFFERING_LIST;
+  const data = await safeGet<OfferingList>(
+    `/v1/offerings?${qs.toString()}`,
+    seedFiltered,
+    { label: "browse" },
+  );
   return (
     <>
       <SiteHeader />

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import { Info } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -11,11 +12,17 @@ import { Label } from "@/components/ui/label";
 
 import { type AuthState, requestMagicLink } from "../actions";
 
+const PUBLIC_PREVIEW = !process.env.NEXT_PUBLIC_API_URL;
+
 function Submit() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full">
-      {pending ? "Sending…" : "Email me a magic link"}
+    <Button type="submit" disabled={pending || PUBLIC_PREVIEW} className="w-full">
+      {PUBLIC_PREVIEW
+        ? "Sign-in coming soon"
+        : pending
+          ? "Sending…"
+          : "Email me a magic link"}
     </Button>
   );
 }
@@ -32,6 +39,18 @@ export default function LoginPage() {
           <CardTitle>Sign in</CardTitle>
         </CardHeader>
         <CardContent>
+          {PUBLIC_PREVIEW && (
+            <Alert className="mb-4">
+              <AlertDescription className="flex items-start gap-2 text-sm">
+                <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                <span>
+                  This is a public preview — the marketplace API isn&apos;t live
+                  yet. Browse + pricing work; sign-in will go live as soon as
+                  the backend is deployed.
+                </span>
+              </AlertDescription>
+            </Alert>
+          )}
           <form action={action} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -41,6 +60,7 @@ export default function LoginPage() {
                 type="email"
                 required
                 autoComplete="email"
+                disabled={PUBLIC_PREVIEW}
               />
             </div>
             <Submit />

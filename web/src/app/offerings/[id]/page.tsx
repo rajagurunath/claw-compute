@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ApiError, api } from "@/lib/api";
 import type { OfferingOut } from "@/lib/api-types";
+import { findSeedOffering } from "@/lib/seed";
 
 export const dynamic = "force-dynamic";
 
@@ -17,12 +18,22 @@ export default async function OfferingDetail({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  let offering: OfferingOut;
+  let offering: OfferingOut | undefined;
   try {
     offering = await api.get<OfferingOut>(`/v1/offerings/${id}`, { auth: false });
   } catch (e) {
-    if (e instanceof ApiError && e.status === 404) notFound();
-    throw e;
+    if (e instanceof ApiError && e.status === 404) {
+      // Real API said no — try seed data (in case this is a seed deep-link).
+      offering = findSeedOffering(id);
+      if (!offering) notFound();
+    } else if (e instanceof ApiError) {
+      throw e;
+    } else {
+      // Network error / no API configured: fall back to seed data only.
+      console.warn(`[offerings/${id}] API unreachable — using seed fallback`);
+      offering = findSeedOffering(id);
+      if (!offering) notFound();
+    }
   }
   const usdHr = (offering.price_per_hour_cents / 100).toFixed(2);
   return (
