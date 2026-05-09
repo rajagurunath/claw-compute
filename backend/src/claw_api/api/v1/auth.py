@@ -1,14 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from claw_api.auth import magic_link as ml
 from claw_api.auth.jwt import encode_user_token
 from claw_api.db import get_db
 from claw_api.deps import current_user
+from claw_api.models.suppliers import Supplier
 from claw_api.models.users import User
 from claw_api.schemas.auth import MagicLinkRequest, MagicLinkVerify, TokenResponse, UserOut
 
 router = APIRouter(tags=["auth"])
+
+
+class RoleOut(BaseModel):
+    is_supplier: bool
+    is_consumer: bool
 
 
 @router.post("/auth/magic-link", status_code=202)
@@ -33,3 +41,14 @@ async def verify_magic_link(
 @router.get("/me", response_model=UserOut)
 async def me(user: User = Depends(current_user)) -> User:
     return user
+
+
+@router.get("/me/role", response_model=RoleOut)
+async def my_role(
+    user: User = Depends(current_user),
+    db: AsyncSession = Depends(get_db),
+) -> RoleOut:
+    supplier = (
+        await db.execute(select(Supplier).where(Supplier.user_id == user.id))
+    ).scalar_one_or_none()
+    return RoleOut(is_supplier=supplier is not None, is_consumer=True)

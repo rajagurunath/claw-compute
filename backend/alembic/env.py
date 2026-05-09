@@ -14,6 +14,7 @@ from claw_api.models import (  # noqa: F401
     bookings,
     heartbeats,
     magic_links,
+    messages,
     offerings,
     suppliers,
     users,
