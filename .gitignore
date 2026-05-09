@@ -1,0 +1,46 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Ralph loop runtime state (plugin-managed)
+.claude/ralph-loop.local.md
+.claude/.ralph-loop.local.md
+
+# Backend (Python)
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/dist/
+backend/build/
+backend/*.egg-info/
+backend/.coverage
+
+# Worker (Rust)
+worker/target/
+worker/Cargo.lock.bak
+
+# Frontend (Node)
+web/node_modules/
+web/.next/
+web/out/
+web/.turbo/
+web/.vercel/
+
+# Agent image build artifacts
+agent-image/dist/
+agent-image/.venv/
+agent-image/__pycache__/
+agent-image/**/__pycache__/
+
+# Distribution tarballs
+dist/
