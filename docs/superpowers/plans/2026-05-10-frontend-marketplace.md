@@ -832,7 +832,7 @@ git commit -m "feat(web): browse + offering detail pages"
 - Create: `web/src/app/dashboard/page.tsx`
 - Create: `web/src/components/dashboard/Sidebar.tsx`
 
-- [ ] **Step 1: Layout enforces auth**
+- [x] **Step 1: Layout enforces auth**
 
 `web/src/app/dashboard/layout.tsx`:
 ```tsx
@@ -855,7 +855,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 }
 ```
 
-- [ ] **Step 2: Sidebar**
+- [x] **Step 2: Sidebar**
 
 `web/src/components/dashboard/Sidebar.tsx`:
 ```tsx
@@ -918,7 +918,7 @@ function Item({
 }
 ```
 
-- [ ] **Step 3: Dashboard home**
+- [x] **Step 3: Dashboard home**
 
 `web/src/app/dashboard/page.tsx`:
 ```tsx
@@ -948,7 +948,7 @@ export default async function DashboardHome() {
 }
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add web/
