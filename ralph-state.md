@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 6
-task: 5
+task: 5.5-pricing
 step: 1
 
 ## Completed
@@ -13,21 +13,16 @@ step: 1
 - plan-1/followup-ws (commit 00d209b)
 - plan-4/task-12 (commit b89b1d0)
 - plan-2 (last: 577b348)
-- plan-6/task-1..3 (last: e9b9c31)
-- plan-6/task-4 (commit b223e34)
+- plan-6/task-1..4 (last: b223e34)
+- plan-6/task-5 (commit 34504d6)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 26 — Plan 6 Task 4 done. Marketing landing built with elevated quality bar.
-  - SiteHeader (sticky translucent + custom Claw gradient SVG + Browse/Pricing/Sign in/Start earning).
-  - Hero (animated gradient mesh, gradient-clipped headline, 4-stat strip).
-  - Features (6 cards, per-card colored icon bg gradients, hover lift).
-  - SupplierCTA (copy-on-click install snippet with check animation).
-  - SiteFooter.
-  - Layout metadata: title/description/OpenGraph.
-  - lucide-react@1.14 doesn't export Github/GitBranch — switched to Code2.
-  - hero-pulse @keyframes added to globals.css.
-- pnpm build green; 5 routes registered.
-- Next: Plan 6 Task 5 (Browse + Offering Detail).
+- 2026-05-10 iter 27 — Plan 6 Task 5 done. Browse + Offering Detail.
+  - OfferingCard: rounded-2xl, hover lift, Apple Silicon chip, ArrowUpRight motion, price row.
+  - OfferingFilters: client, Search icon prefix, URL-driven.
+  - /browse and /offerings/[id] use force-dynamic + SiteHeader/Footer shell. Empty state when API down (full safeGet wrapping comes in Task 11).
+- Per ralph-loop.md §3.A: Pricing page insertion comes "after Plan 6 Task 5 Browse + Offering Detail" — so it's the next thing to do.
+- Next: Plan 6 amendment §3.A — Pricing page (web/src/app/pricing/page.tsx + lib/pricing.ts).

@@ -672,7 +672,7 @@ git commit -m "feat(web): marketing landing — hero, features, supplier CTA"
 - Create: `web/src/components/browse/OfferingCard.tsx`
 - Create: `web/src/components/browse/OfferingFilters.tsx`
 
-- [ ] **Step 1: Card**
+- [x] **Step 1: Card**
 
 `web/src/components/browse/OfferingCard.tsx`:
 ```tsx
@@ -706,7 +706,7 @@ export function OfferingCard({ offering }: { offering: OfferingOut }) {
 }
 ```
 
-- [ ] **Step 2: Filters (client component)**
+- [x] **Step 2: Filters (client component)**
 
 `web/src/components/browse/OfferingFilters.tsx`:
 ```tsx
@@ -734,7 +734,7 @@ export function OfferingFilters() {
 }
 ```
 
-- [ ] **Step 3: Browse page (RSC)**
+- [x] **Step 3: Browse page (RSC)**
 
 `web/src/app/browse/page.tsx`:
 ```tsx
@@ -770,7 +770,7 @@ export default async function BrowsePage({
 }
 ```
 
-- [ ] **Step 4: Offering detail**
+- [x] **Step 4: Offering detail**
 
 `web/src/app/offerings/[id]/page.tsx`:
 ```tsx
@@ -816,7 +816,7 @@ export default async function OfferingDetail({
 
 (The actual booking action is wired in Task 9.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add web/
