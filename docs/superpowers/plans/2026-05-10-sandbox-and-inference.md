@@ -85,7 +85,7 @@ docs/
 - Create: `worker/scripts/bootstrap-host-deps.sh`
 - Create: `docs/inference-runbook.md`
 
-- [ ] **Step 1: Bootstrap script for the supplier host**
+- [x] **Step 1: Bootstrap script for the supplier host**
 
 `worker/scripts/bootstrap-host-deps.sh`:
 ```bash
@@ -144,7 +144,7 @@ echo "  Sandbox runtime: $([ $USE_APPLE_CONTAINER -eq 1 ] && echo 'Apple contain
 echo "  Inference: mlx-lm via uvx"
 ```
 
-- [ ] **Step 2: Create the inference runbook**
+- [x] **Step 2: Create the inference runbook**
 
 `docs/inference-runbook.md`:
 ```markdown
@@ -187,7 +187,7 @@ curl http://127.0.0.1:9000/v1/chat/completions \
 - **Wrong outputs:** check chat template; mlx-lm uses HF's tokenizer chat template by default.
 ```
 
-- [ ] **Step 3: Test bootstrap script**
+- [x] **Step 3: Test bootstrap script**
 
 ```bash
 chmod +x worker/scripts/bootstrap-host-deps.sh
@@ -196,7 +196,7 @@ chmod +x worker/scripts/bootstrap-host-deps.sh
 
 Expected: completes without error.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add worker/scripts/bootstrap-host-deps.sh docs/inference-runbook.md
