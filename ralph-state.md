@@ -3,7 +3,7 @@
 STATUS: in_progress
 
 ## Current
-plan: 2-followup-ws
+plan: 4-task-12
 task: 1
 step: 1
 
@@ -19,11 +19,13 @@ step: 1
 - plan-1/task-8 (commit 42a1635)
 - plan-1/task-9 (commit 89b537b)
 - plan-1/task-10 (commit 2747674)
+- plan-1/followup-ws (commit 00d209b)
 
 ## Blocked
 (none)
 
 ## Notes
-- Plan 1 COMPLETE. Backend has full marketplace API: auth (magic-link + JWT), suppliers, offerings (CRUD + browse), workers (provisioning-token + heartbeat with persistence), bookings (state-machine). 22 tests green, ruff clean, CI workflow defined, Dockerfile written.
-- 2026-05-10 iter 11 — Plan 1 Task 10: CI workflow (.github/workflows/backend-ci.yml using astral-sh/setup-uv, postgres:16-alpine service), backend/Dockerfile (multi-stage with uv), ruff config tuned to ignore FastAPI/SQLAlchemy idiomatic lints (B008, S105, N806).
-- Next: ralph-loop.md §3.C — Plan 1 follow-up: add /v1/ws/worker endpoint + claw_api/realtime.py pub/sub stub. Snippet is in Plan 2 Task 6 inside docs/superpowers/plans/2026-05-10-worker-binary-macos.md. After this, Plan 4 Task 12 (frontend backend deltas: /v1/me/role + messages).
+- Plan 1 + WS follow-up done. Backend now has full marketplace API + outbound worker WS. 29 tests green, ruff clean.
+- 2026-05-10 iter 12 — Plan 1 follow-up: claw_api/realtime.py (in-memory pub/sub, channel_for_worker, register/unregister/publish), /v1/ws/worker endpoint (Bearer or ?token=, 20s keepalive ping), booking transitions publish booking_activated / booking_cancelled events to worker channel.
+- Per ralph-loop.md §2 ordering: next is **Plan 4 Task 12** (frontend backend deltas: GET /v1/me/role, messages table + endpoints) BEFORE Plan 2 (worker binary), Plan 3 (sandbox), or Plan 4 frontend tasks 1-11. Frontend depends on these endpoints.
+- Next: Plan 4 Task 12 (backend deltas).
