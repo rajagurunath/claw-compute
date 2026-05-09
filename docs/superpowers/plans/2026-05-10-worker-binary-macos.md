@@ -70,7 +70,7 @@ docs/
 - Create: `worker/src/main.rs`
 - Create: `worker/.gitignore`
 
-- [ ] **Step 1: Create `worker/Cargo.toml`**
+- [x] **Step 1: Create `worker/Cargo.toml`**
 
 ```toml
 [package]
@@ -111,7 +111,7 @@ wiremock = "0.6"
 tempfile = "3"
 ```
 
-- [ ] **Step 2: Create `worker/rust-toolchain.toml`**
+- [x] **Step 2: Create `worker/rust-toolchain.toml`**
 
 ```toml
 [toolchain]
@@ -120,7 +120,7 @@ components = ["rustfmt", "clippy"]
 targets = ["aarch64-apple-darwin"]
 ```
 
-- [ ] **Step 3: Create `worker/.gitignore`**
+- [x] **Step 3: Create `worker/.gitignore`**
 
 ```gitignore
 target/
@@ -128,7 +128,7 @@ target/
 .env
 ```
 
-- [ ] **Step 4: Create the CLI entry**
+- [x] **Step 4: Create the CLI entry**
 
 `worker/src/main.rs`:
 ```rust
@@ -180,7 +180,7 @@ async fn main() -> anyhow::Result<()> {
 }
 ```
 
-- [ ] **Step 5: Build + smoke test**
+- [x] **Step 5: Build + smoke test**
 
 ```bash
 cd worker
@@ -190,7 +190,7 @@ cargo build
 
 Expected: prints `claw-worker 0.1.0`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add worker/

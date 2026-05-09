@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 2
-task: 1
+task: 2
 step: 1
 
 ## Completed
@@ -21,11 +21,11 @@ step: 1
 - plan-1/task-10 (commit 2747674)
 - plan-1/followup-ws (commit 00d209b)
 - plan-4/task-12 (commit b89b1d0)
+- plan-2/task-1 (commit f9c7273)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 13 — Plan 4 Task 12 done. /v1/me/role, /v1/bookings/{id}/messages POST + GET (consumer), /v1/bookings/{id}/messages/internal (worker-auth assistant relay). Messages table + migration e96f1b1c3597. 36 tests green, ruff clean.
-- All backend prerequisites for the frontend are now in place. Next per ralph-loop.md §2: **Plan 2 Task 1** (worker binary scaffold) — Plans 2, 4 (frontend), 3 (sandbox) are now independent and can run in any order.
-- Next: Plan 2 Task 1 (Rust worker scaffold + CLI skeleton).
+- 2026-05-10 iter 14 — Plan 2 Task 1 done. Cargo workspace + CLI skeleton (clap subcommands: register, run, info). Rust toolchain bumped 1.84 → 1.85 because edition 2024 requires Cargo 1.85+. `claw-worker info` prints `claw-worker 0.1.0`.
+- Next: Plan 2 Task 2 (Persistent Config + State — Keychain + SQLite).
