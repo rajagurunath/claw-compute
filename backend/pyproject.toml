@@ -49,4 +49,8 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "B", "ASYNC", "S"]
-ignore = ["S101"]
+# B008: FastAPI Depends() in defaults is idiomatic, not a bug.
+# S105: "bearer" literal in TokenResponse is the OAuth2 token_type, not a password.
+# S101: assert is allowed in tests.
+# N806: SQLAlchemy fixture naming (Session = sessionmaker) is conventional.
+ignore = ["B008", "S105", "S101", "N806"]
