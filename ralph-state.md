@@ -3,8 +3,8 @@
 STATUS: in_progress
 
 ## Current
-plan: 1
-task: 10
+plan: 2-followup-ws
+task: 1
 step: 1
 
 ## Completed
@@ -18,11 +18,12 @@ step: 1
 - plan-1/task-7 (commit 947ef62)
 - plan-1/task-8 (commit 42a1635)
 - plan-1/task-9 (commit 89b537b)
+- plan-1/task-10 (commit 2747674)
 
 ## Blocked
 (none)
 
 ## Notes
-- Plan 1 Tasks 1-9 done. All domain endpoints in: auth, suppliers, offerings, workers, bookings. State machine enforced. 22 tests green.
-- 2026-05-10 iter 10 — Plan 1 Task 9: bookings table (FK→users/offerings/workers, 4-state machine), POST /v1/bookings (consumer creates pending), GET /v1/bookings/me, GET /v1/bookings/{id}, POST /v1/bookings/{id}/transition (allowed: pending→active|cancelled, active→completed|cancelled). _load_party allows both consumer and owning supplier. Migration 94b5562083f7.
-- Next: Plan 1 Task 10 (CI workflow + Dockerfile).
+- Plan 1 COMPLETE. Backend has full marketplace API: auth (magic-link + JWT), suppliers, offerings (CRUD + browse), workers (provisioning-token + heartbeat with persistence), bookings (state-machine). 22 tests green, ruff clean, CI workflow defined, Dockerfile written.
+- 2026-05-10 iter 11 — Plan 1 Task 10: CI workflow (.github/workflows/backend-ci.yml using astral-sh/setup-uv, postgres:16-alpine service), backend/Dockerfile (multi-stage with uv), ruff config tuned to ignore FastAPI/SQLAlchemy idiomatic lints (B008, S105, N806).
+- Next: ralph-loop.md §3.C — Plan 1 follow-up: add /v1/ws/worker endpoint + claw_api/realtime.py pub/sub stub. Snippet is in Plan 2 Task 6 inside docs/superpowers/plans/2026-05-10-worker-binary-macos.md. After this, Plan 4 Task 12 (frontend backend deltas: /v1/me/role + messages).

@@ -2553,7 +2553,7 @@ git commit -m "feat(bookings): create, list, transition with state machine"
 - Create: `backend/Dockerfile` (for downstream use; not exercised by CI yet)
 - Modify: `backend/pyproject.toml` (add a `lint` script entry if helpful — optional)
 
-- [ ] **Step 1: Create the workflow**
+- [x] **Step 1: Create the workflow**
 
 `.github/workflows/backend-ci.yml`:
 ```yaml
@@ -2600,7 +2600,7 @@ jobs:
       - run: uv run pytest -v
 ```
 
-- [ ] **Step 2: Create the Dockerfile (for downstream deploy)**
+- [x] **Step 2: Create the Dockerfile (for downstream deploy)**
 
 `backend/Dockerfile`:
 ```dockerfile
@@ -2620,7 +2620,7 @@ EXPOSE 8000
 CMD ["uvicorn", "claw_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-- [ ] **Step 3: Run lint locally**
+- [x] **Step 3: Run lint locally**
 
 ```bash
 cd backend && uv run ruff check src tests
@@ -2628,7 +2628,7 @@ cd backend && uv run ruff check src tests
 
 Fix anything it flags.
 
-- [ ] **Step 4: Verify a clean test run from a fresh DB**
+- [x] **Step 4: Verify a clean test run from a fresh DB**
 
 ```bash
 docker compose exec db psql -U claw -d postgres -c "DROP DATABASE IF EXISTS claw_test; CREATE DATABASE claw_test;"
