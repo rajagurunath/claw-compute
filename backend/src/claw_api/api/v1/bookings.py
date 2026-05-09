@@ -11,6 +11,7 @@ from claw_api.models.offerings import Offering
 from claw_api.models.suppliers import Supplier
 from claw_api.models.users import User
 from claw_api.models.workers import Worker
+from claw_api.realtime import channel_for_worker, publish
 from claw_api.schemas.bookings import (
     BookingCreate,
     BookingList,
@@ -82,6 +83,7 @@ async def transition_booking(
     db: AsyncSession = Depends(get_db),
 ) -> Booking:
     booking = await _load_party(db, booking_id, user)
+    prev_status = booking.status
     if payload.to not in VALID_TRANSITIONS.get(booking.status, set()):
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST,
@@ -95,6 +97,27 @@ async def transition_booking(
         booking.ended_at = now
     await db.commit()
     await db.refresh(booking)
+    # Push to the worker's outbound WebSocket. Fire-and-forget: a missing
+    # subscriber just drops the message, the worker reconciles on reconnect.
+    channel = channel_for_worker(booking.worker_id)
+    if payload.to == BookingStatus.ACTIVE.value:
+        await publish(
+            channel,
+            {
+                "type": "booking_activated",
+                "booking_id": booking.id,
+                "offering_id": booking.offering_id,
+                "agent_config": {},
+            },
+        )
+    elif prev_status == BookingStatus.ACTIVE.value and payload.to in (
+        BookingStatus.COMPLETED.value,
+        BookingStatus.CANCELLED.value,
+    ):
+        await publish(
+            channel,
+            {"type": "booking_cancelled", "booking_id": booking.id},
+        )
     return booking
 
 
