@@ -1270,7 +1270,7 @@ git commit -m "feat(web): worker list + install wizard with provisioning-token s
 - Create: `web/src/app/dashboard/suppliers/offerings/[id]/edit/page.tsx`
 - Create: `web/src/app/dashboard/suppliers/offerings/actions.ts`
 
-- [ ] **Step 1: Server actions**
+- [x] **Step 1: Server actions**
 
 `web/src/app/dashboard/suppliers/offerings/actions.ts`:
 ```typescript
@@ -1313,7 +1313,7 @@ export async function archiveOffering(id: string) {
 }
 ```
 
-- [ ] **Step 2: List**
+- [x] **Step 2: List**
 
 `web/src/app/dashboard/suppliers/offerings/page.tsx`:
 ```tsx
@@ -1367,7 +1367,7 @@ export default async function Page() {
 }
 ```
 
-- [ ] **Step 3: Create form**
+- [x] **Step 3: Create form**
 
 `web/src/app/dashboard/suppliers/offerings/new/page.tsx`:
 ```tsx
@@ -1424,7 +1424,7 @@ function Field(props: React.InputHTMLAttributes<HTMLInputElement> & { label: str
 }
 ```
 
-- [ ] **Step 4: Edit page**
+- [x] **Step 4: Edit page**
 
 `web/src/app/dashboard/suppliers/offerings/[id]/edit/page.tsx`:
 ```tsx
@@ -1498,7 +1498,7 @@ export default async function EditPage({
 }
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add web/
