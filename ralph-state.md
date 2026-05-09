@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 1
-task: 8
+task: 9
 step: 1
 
 ## Completed
@@ -16,11 +16,12 @@ step: 1
 - plan-1/task-5 (commit 9bffe76)
 - plan-1/task-6 (commit 10f70d0)
 - plan-1/task-7 (commit 947ef62)
+- plan-1/task-8 (commit 42a1635)
 
 ## Blocked
 (none)
 
 ## Notes
-- Plan 1 Tasks 1-7 done. Backend now has auth, suppliers, offerings (CRUD + browse), workers (provisioning-token → worker-JWT, heartbeat). 17 tests green.
-- 2026-05-10 iter 8 — Plan 1 Task 7: workers table (FK→suppliers, JSON machine_info, status enum), encode_worker_token + current_worker dep, POST /v1/workers/provisioning-tokens, POST /v1/workers/register (one-time use, hash wiped on success), POST /v1/workers/heartbeat (worker JWT auth), GET /v1/suppliers/me/workers. Migration b7784fb3025e applied.
-- Next: Plan 1 Task 8 (Heartbeat history — append heartbeat rows for time-series scoring later).
+- Plan 1 Tasks 1-8 done. Backend now has auth, suppliers, offerings (CRUD + browse), workers (provisioning-token → JWT, heartbeat with persisted time-series rows). 18 tests green.
+- 2026-05-10 iter 9 — Plan 1 Task 8: heartbeats table (FK→workers, cpu/mem/gpu pct, free_ram_gb, model_loaded_id), migration d440f2c727f6, heartbeat endpoint inserts a row each call.
+- Next: Plan 1 Task 9 (Bookings — full state machine + create/list/transition).

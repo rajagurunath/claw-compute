@@ -2022,7 +2022,7 @@ git commit -m "feat(workers): provisioning-token issuance, register, heartbeat"
 - Create: Alembic revision
 - Modify: `backend/tests/test_workers.py` (assert row inserted)
 
-- [ ] **Step 1: Write failing test addition**
+- [x] **Step 1: Write failing test addition**
 
 Append to `backend/tests/test_workers.py`:
 ```python
@@ -2052,13 +2052,13 @@ async def test_heartbeat_persists_row(client, monkeypatch, db_session):
     assert rows[0].cpu_pct == 1.0
 ```
 
-- [ ] **Step 2: Confirm failure**
+- [x] **Step 2: Confirm failure**
 
 ```bash
 uv run pytest tests/test_workers.py::test_heartbeat_persists_row -v
 ```
 
-- [ ] **Step 3: Add Heartbeat model**
+- [x] **Step 3: Add Heartbeat model**
 
 `backend/src/claw_api/models/heartbeats.py`:
 ```python
@@ -2082,14 +2082,14 @@ class Heartbeat(Base, IdMixin, TimestampMixin):
 
 Update `models/__init__.py` and `alembic/env.py`.
 
-- [ ] **Step 4: Migration**
+- [x] **Step 4: Migration**
 
 ```bash
 uv run alembic revision --autogenerate -m "heartbeats"
 uv run alembic upgrade head
 ```
 
-- [ ] **Step 5: Insert heartbeat row in router**
+- [x] **Step 5: Insert heartbeat row in router**
 
 In `backend/src/claw_api/api/v1/workers.py`, replace the body of the `heartbeat` endpoint with:
 
@@ -2118,7 +2118,7 @@ async def heartbeat(
     return Response(status_code=204)
 ```
 
-- [ ] **Step 6: Run tests**
+- [x] **Step 6: Run tests**
 
 ```bash
 uv run pytest tests/test_workers.py -v
