@@ -1,6 +1,8 @@
 use clap::{Parser, Subcommand};
 use claw_worker::api::client::ApiClient;
+use claw_worker::api::types::HeartbeatRequest;
 use claw_worker::config::Config;
+use claw_worker::metrics::Sampler;
 
 #[derive(Parser)]
 #[command(name = "claw-worker", version, about = "Claw marketplace worker agent")]
@@ -39,10 +41,37 @@ fn collect_machine_info() -> anyhow::Result<serde_json::Value> {
     }))
 }
 
+async fn run_loop(api_url: String) -> anyhow::Result<()> {
+    let token = Config::load_worker_token()?
+        .ok_or_else(|| anyhow::anyhow!("not registered — run `claw-worker register` first"))?;
+    let client = ApiClient::new(api_url)?;
+    let mut sampler = Sampler::new();
+    let mut ticker = tokio::time::interval(std::time::Duration::from_secs(15));
+    tracing::info!("worker run loop started; heartbeating every 15s");
+    loop {
+        ticker.tick().await;
+        let s = sampler.sample();
+        let hb = HeartbeatRequest {
+            cpu_pct: s.cpu_pct,
+            mem_pct: s.mem_pct,
+            gpu_pct: None,
+            free_ram_gb: Some(s.free_ram_gb),
+            model_loaded_id: None,
+        };
+        match client.heartbeat(&token, &hb).await {
+            Ok(_) => tracing::debug!(?hb, "heartbeat ok"),
+            Err(e) => tracing::warn!(error = ?e, "heartbeat failed; will retry"),
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
-        .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+        )
         .init();
     let cli = Cli::parse();
     match cli.command {
@@ -64,6 +93,6 @@ async fn main() -> anyhow::Result<()> {
             println!("✔ Registered worker {}", resp.worker.id);
             Ok(())
         }
-        Command::Run { .. } => anyhow::bail!("run: not implemented (Task 4)"),
+        Command::Run { api_url } => run_loop(api_url).await,
     }
 }
