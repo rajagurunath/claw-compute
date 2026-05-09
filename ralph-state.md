@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 2
-task: 5
+task: 6
 step: 1
 
 ## Completed
@@ -16,11 +16,11 @@ step: 1
 - plan-2/task-2 (commit 4298b27)
 - plan-2/task-3 (commit ba12fb9)
 - plan-2/task-4 (commit 34bf828)
+- plan-2/task-5 (commit ea542f0)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 17 — Plan 2 Task 4 done. metrics::Sampler (cpu/mem/free_ram via sysinfo), run_loop (15s interval, loads worker_token from Keychain, errors are warned not fatal). cargo build clean, register_flow tests still 2/2 passing.
-  - Step 3 (manual smoke against running API) flagged `~` skipped — interactive, needs human-extracted magic-link token. wiremock tests already prove the round-trip.
-- Next: Plan 2 Task 5 (Sandbox backend trait + NoopBackend).
+- 2026-05-10 iter 18 — Plan 2 Task 5 done. SandboxBackend trait (start/stop/is_running, name), SandboxSpec/SandboxHandle types, NoopBackend (atomic counter for unique ids, logs but no-ops), registry::pick_backend (matches "noop", warns + falls back to noop on unknown). 2 lib unit tests + 2 integration tests = 4 green.
+- Next: Plan 2 Task 6 (WebSocket booking channel + handler).

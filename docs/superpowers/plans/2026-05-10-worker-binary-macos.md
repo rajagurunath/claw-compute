@@ -732,7 +732,7 @@ This task **defines the contract** that Plan 3 will implement. v1 ships a `NoopB
 - Create: `worker/src/sandbox/registry.rs`
 - Modify: `worker/src/lib.rs`
 
-- [ ] **Step 1: Create the trait**
+- [x] **Step 1: Create the trait**
 
 `worker/src/sandbox/mod.rs`:
 ```rust
@@ -772,7 +772,7 @@ pub trait SandboxBackend: Send + Sync {
 }
 ```
 
-- [ ] **Step 2: Create the noop backend**
+- [x] **Step 2: Create the noop backend**
 
 `worker/src/sandbox/noop.rs`:
 ```rust
@@ -811,7 +811,7 @@ impl SandboxBackend for NoopBackend {
 }
 ```
 
-- [ ] **Step 3: Backend registry**
+- [x] **Step 3: Backend registry**
 
 `worker/src/sandbox/registry.rs`:
 ```rust
@@ -832,7 +832,7 @@ pub fn pick_backend(name: &str) -> Arc<dyn SandboxBackend> {
 
 Add `pub mod sandbox;` to `worker/src/lib.rs`.
 
-- [ ] **Step 4: Write a unit test**
+- [x] **Step 4: Write a unit test**
 
 Append to `worker/src/sandbox/noop.rs`:
 ```rust
@@ -858,7 +858,7 @@ mod tests {
 }
 ```
 
-- [ ] **Step 5: Run all tests**
+- [x] **Step 5: Run all tests**
 
 ```bash
 cargo test
@@ -866,7 +866,7 @@ cargo test
 
 Expected: green.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add worker/
