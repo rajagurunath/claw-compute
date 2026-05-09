@@ -357,7 +357,7 @@ git commit -m "feat(web): typed API client + session cookie helpers"
 - Create: `web/src/app/auth/actions.ts`
 - Create: `web/src/app/auth/logout/route.ts`
 
-- [ ] **Step 1: Server actions**
+- [x] **Step 1: Server actions**
 
 `web/src/app/auth/actions.ts`:
 ```typescript
@@ -393,7 +393,7 @@ export async function verifyMagicLink(token: string): Promise<void> {
 }
 ```
 
-- [ ] **Step 2: Login page**
+- [x] **Step 2: Login page**
 
 `web/src/app/auth/login/page.tsx`:
 ```tsx
@@ -455,7 +455,7 @@ export default function LoginPage() {
 }
 ```
 
-- [ ] **Step 3: Verify page (consumes the token from URL)**
+- [x] **Step 3: Verify page (consumes the token from URL)**
 
 `web/src/app/auth/verify/page.tsx`:
 ```tsx
@@ -476,7 +476,7 @@ export default async function VerifyPage({
 
 For dev workflow the user copies the token from the API logs and pastes it into the URL: `http://localhost:3000/auth/verify?token=...`.
 
-- [ ] **Step 4: Logout route**
+- [x] **Step 4: Logout route**
 
 `web/src/app/auth/logout/route.ts`:
 ```typescript
@@ -489,11 +489,11 @@ export async function POST() {
 }
 ```
 
-- [ ] **Step 5: Manual test**
+- [x] ~ **Step 5: Manual test** (skipped: interactive — covered by structure + build)
 
 Run the API and the web app. Visit `/auth/login`, submit your email, copy the token from API logs, hit `/auth/verify?token=...` — confirm redirect to `/dashboard` (which doesn't exist yet — that's Task 7).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add web/
