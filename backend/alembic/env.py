@@ -11,6 +11,7 @@ from claw_api.models import Base
 # import all model modules so their tables register on Base.metadata
 from claw_api.models import (  # noqa: F401
     base,
+    bookings,
     heartbeats,
     magic_links,
     offerings,
