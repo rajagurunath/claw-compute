@@ -520,7 +520,7 @@ git commit -m "feat(db): add SQLAlchemy + Alembic with empty initial revision"
 - Create: `backend/tests/conftest.py`
 - Modify: `backend/tests/test_health.py` (use new client fixture)
 
-- [ ] **Step 1: Create `backend/tests/conftest.py`**
+- [x] **Step 1: Create `backend/tests/conftest.py`**
 
 ```python
 import asyncio
@@ -578,7 +578,7 @@ async def client(db_session) -> AsyncIterator[AsyncClient]:
         yield ac
 ```
 
-- [ ] **Step 2: Update `backend/tests/test_health.py`** to use the async client
+- [x] **Step 2: Update `backend/tests/test_health.py`** to use the async client
 
 ```python
 import pytest
@@ -591,7 +591,7 @@ async def test_health_returns_ok(client):
     assert response.json() == {"status": "ok"}
 ```
 
-- [ ] **Step 3: Create the test database**
+- [x] **Step 3: Create the test database**
 
 ```bash
 cd backend && docker compose exec db psql -U claw -d postgres -c "CREATE DATABASE claw_test;"
@@ -599,7 +599,7 @@ cd backend && docker compose exec db psql -U claw -d postgres -c "CREATE DATABAS
 
 (Idempotent — if it exists, the error is harmless. Or guard with `\gexec`.)
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 ```bash
 uv run pytest -v
