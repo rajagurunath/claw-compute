@@ -3,7 +3,7 @@
 STATUS: in_progress
 
 ## Current
-plan: 4-task-12
+plan: 2
 task: 1
 step: 1
 
@@ -20,12 +20,12 @@ step: 1
 - plan-1/task-9 (commit 89b537b)
 - plan-1/task-10 (commit 2747674)
 - plan-1/followup-ws (commit 00d209b)
+- plan-4/task-12 (commit b89b1d0)
 
 ## Blocked
 (none)
 
 ## Notes
-- Plan 1 + WS follow-up done. Backend now has full marketplace API + outbound worker WS. 29 tests green, ruff clean.
-- 2026-05-10 iter 12 — Plan 1 follow-up: claw_api/realtime.py (in-memory pub/sub, channel_for_worker, register/unregister/publish), /v1/ws/worker endpoint (Bearer or ?token=, 20s keepalive ping), booking transitions publish booking_activated / booking_cancelled events to worker channel.
-- Per ralph-loop.md §2 ordering: next is **Plan 4 Task 12** (frontend backend deltas: GET /v1/me/role, messages table + endpoints) BEFORE Plan 2 (worker binary), Plan 3 (sandbox), or Plan 4 frontend tasks 1-11. Frontend depends on these endpoints.
-- Next: Plan 4 Task 12 (backend deltas).
+- 2026-05-10 iter 13 — Plan 4 Task 12 done. /v1/me/role, /v1/bookings/{id}/messages POST + GET (consumer), /v1/bookings/{id}/messages/internal (worker-auth assistant relay). Messages table + migration e96f1b1c3597. 36 tests green, ruff clean.
+- All backend prerequisites for the frontend are now in place. Next per ralph-loop.md §2: **Plan 2 Task 1** (worker binary scaffold) — Plans 2, 4 (frontend), 3 (sandbox) are now independent and can run in any order.
+- Next: Plan 2 Task 1 (Rust worker scaffold + CLI skeleton).

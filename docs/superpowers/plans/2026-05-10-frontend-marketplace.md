@@ -1787,7 +1787,7 @@ This task lands the new endpoints the frontend needs. Each follows the patterns 
 - Create: `backend/tests/test_role.py`
 - Create: `backend/tests/test_messages.py`
 
-- [ ] **Step 1: `/v1/me/role`**
+- [x] **Step 1: `/v1/me/role`**
 
 In `backend/src/claw_api/api/v1/auth.py` add:
 ```python
@@ -1810,7 +1810,7 @@ async def my_role(
     return RoleOut(is_supplier=sup is not None, is_consumer=True)
 ```
 
-- [ ] **Step 2: Test**
+- [x] **Step 2: Test**
 
 `backend/tests/test_role.py`:
 ```python
@@ -1833,7 +1833,7 @@ async def test_role_consumer_only(client, monkeypatch):
     assert r.json() == {"is_supplier": False, "is_consumer": True}
 ```
 
-- [ ] **Step 3: Message model**
+- [x] **Step 3: Message model**
 
 `backend/src/claw_api/models/messages.py`:
 ```python
@@ -1854,7 +1854,7 @@ class Message(Base, IdMixin, TimestampMixin):
 
 Add to `models/__init__.py` + `alembic/env.py` imports. Generate migration.
 
-- [ ] **Step 4: Schemas**
+- [x] **Step 4: Schemas**
 
 `backend/src/claw_api/schemas/messages.py`:
 ```python
@@ -1880,7 +1880,7 @@ class MessageList(BaseModel):
     items: list[MessageOut]
 ```
 
-- [ ] **Step 5: Router**
+- [x] **Step 5: Router**
 
 `backend/src/claw_api/api/v1/messages.py`:
 ```python
@@ -1987,7 +1987,7 @@ async def publish(channel: str, message: dict) -> None:
             pass
 ```
 
-- [ ] **Step 6: Test**
+- [x] **Step 6: Test**
 
 `backend/tests/test_messages.py`:
 ```python
@@ -2002,7 +2002,7 @@ async def _book_and_activate(client, monkeypatch):
 
 (The fixture refactor is intentionally folded in here — copy the helpers into `tests/factories.py` and have all booking-related tests import from there.)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add backend/ web/
