@@ -963,7 +963,7 @@ git commit -m "feat(web): authed dashboard shell with role-aware nav"
 - Create: `web/src/app/dashboard/become-supplier/page.tsx`
 - Create: `web/src/app/dashboard/become-supplier/actions.ts`
 
-- [ ] **Step 1: Server action**
+- [x] **Step 1: Server action**
 
 `web/src/app/dashboard/become-supplier/actions.ts`:
 ```typescript
@@ -992,7 +992,7 @@ export async function becomeSupplier(formData: FormData) {
 }
 ```
 
-- [ ] **Step 2: Form**
+- [x] **Step 2: Form**
 
 `web/src/app/dashboard/become-supplier/page.tsx`:
 ```tsx
@@ -1033,7 +1033,7 @@ export default function Page() {
 }
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add web/
