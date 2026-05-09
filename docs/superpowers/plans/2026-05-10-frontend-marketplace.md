@@ -175,7 +175,7 @@ git commit -m "feat(web): scaffold Next.js 16 + Tailwind + shadcn/ui"
 - Create: `web/src/lib/api.ts`
 - Create: `web/src/lib/session.ts`
 
-- [ ] **Step 1: Mirror Plan 1's response schemas**
+- [x] **Step 1: Mirror Plan 1's response schemas**
 
 `web/src/lib/api-types.ts`:
 ```typescript
@@ -241,7 +241,7 @@ export type MessageOut = {
 };
 ```
 
-- [ ] **Step 2: Session helpers**
+- [x] **Step 2: Session helpers**
 
 `web/src/lib/session.ts`:
 ```typescript
@@ -273,7 +273,7 @@ export async function clearToken(): Promise<void> {
 }
 ```
 
-- [ ] **Step 3: API wrapper**
+- [x] **Step 3: API wrapper**
 
 `web/src/lib/api.ts`:
 ```typescript
@@ -326,7 +326,7 @@ export const api = {
 };
 ```
 
-- [ ] **Step 4: Class merger helper**
+- [x] ~ **Step 4: Class merger helper** (skipped: shadcn already wrote identical cn() to lib/utils.ts)
 
 `web/src/lib/cn.ts`:
 ```typescript
@@ -340,7 +340,7 @@ export function cn(...inputs: ClassValue[]): string {
 
 (`clsx` and `tailwind-merge` come with shadcn init.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add web/
