@@ -923,7 +923,7 @@ async def worker_ws(ws: WebSocket) -> None:
 - Modify: `worker/src/lib.rs`
 - Modify: `worker/src/main.rs`
 
-- [ ] **Step 1: Create the WS client**
+- [x] **Step 1: Create the WS client**
 
 `worker/src/api/ws.rs`:
 ```rust
@@ -994,7 +994,7 @@ where
 }
 ```
 
-- [ ] **Step 2: Booking handler**
+- [x] **Step 2: Booking handler**
 
 `worker/src/booking/mod.rs`:
 ```rust
@@ -1062,7 +1062,7 @@ impl BookingHandler {
 
 Add `pub mod booking;` to `worker/src/lib.rs`.
 
-- [ ] **Step 3: Wire into `Command::Run`**
+- [x] **Step 3: Wire into `Command::Run`**
 
 Replace `run_loop` in `worker/src/main.rs`:
 
@@ -1114,13 +1114,13 @@ async fn run_loop(api_url: String) -> anyhow::Result<()> {
 
 Add `pub mod ws;` to `worker/src/api/mod.rs`.
 
-- [ ] **Step 4: Build**
+- [x] **Step 4: Build**
 
 ```bash
 cargo build
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add worker/

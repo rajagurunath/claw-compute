@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 2
-task: 6
+task: 7
 step: 1
 
 ## Completed
@@ -12,15 +12,12 @@ step: 1
 - plan-1/task-1..10 (last: 2747674)
 - plan-1/followup-ws (commit 00d209b)
 - plan-4/task-12 (commit b89b1d0)
-- plan-2/task-1 (commit f9c7273)
-- plan-2/task-2 (commit 4298b27)
-- plan-2/task-3 (commit ba12fb9)
-- plan-2/task-4 (commit 34bf828)
-- plan-2/task-5 (commit ea542f0)
+- plan-2/task-1..5 (last: ea542f0)
+- plan-2/task-6 (commit a6c6b0a)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 18 — Plan 2 Task 5 done. SandboxBackend trait (start/stop/is_running, name), SandboxSpec/SandboxHandle types, NoopBackend (atomic counter for unique ids, logs but no-ops), registry::pick_backend (matches "noop", warns + falls back to noop on unknown). 2 lib unit tests + 2 integration tests = 4 green.
-- Next: Plan 2 Task 6 (WebSocket booking channel + handler).
+- 2026-05-10 iter 19 — Plan 2 Task 6 done. api/ws.rs (WorkerEvent enum: Ping, BookingActivated, BookingCancelled, MessageUser; run_ws with reconnect 1s..60s exponential backoff), booking/mod.rs (BookingHandler maps events to SandboxBackend + persists to SQLite), main.rs run_loop spawns heartbeat task + WS handler. cargo build clean, 4 tests still green.
+- Next: Plan 2 Task 7 (Booking lifecycle integration test).
