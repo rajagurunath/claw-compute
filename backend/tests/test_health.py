@@ -1,10 +1,8 @@
-from fastapi.testclient import TestClient
-
-from claw_api.main import app
+import pytest
 
 
-def test_health_returns_ok():
-    client = TestClient(app)
-    response = client.get("/v1/health")
+@pytest.mark.asyncio
+async def test_health_returns_ok(client):
+    response = await client.get("/v1/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
