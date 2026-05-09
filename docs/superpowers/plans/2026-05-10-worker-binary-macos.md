@@ -383,7 +383,7 @@ git commit -m "feat(worker): config + SQLite state with keychain-backed token st
 - Create: `worker/tests/register_flow.rs`
 - Modify: `worker/src/main.rs`
 
-- [ ] **Step 1: Write the failing integration test**
+- [x] **Step 1: Write the failing integration test**
 
 `worker/tests/register_flow.rs`:
 ```rust
@@ -449,7 +449,7 @@ pub mod config;
 pub mod state;
 ```
 
-- [ ] **Step 2: Run tests, confirm fail**
+- [x] **Step 2: Run tests, confirm fail**
 
 ```bash
 cargo test --test register_flow
@@ -457,14 +457,14 @@ cargo test --test register_flow
 
 Expected: compile errors (no `api` module yet).
 
-- [ ] **Step 3: Create `worker/src/api/mod.rs`**
+- [x] **Step 3: Create `worker/src/api/mod.rs`**
 
 ```rust
 pub mod client;
 pub mod types;
 ```
 
-- [ ] **Step 4: Create `worker/src/api/types.rs`**
+- [x] **Step 4: Create `worker/src/api/types.rs`**
 
 ```rust
 use chrono::{DateTime, Utc};
@@ -501,7 +501,7 @@ pub struct HeartbeatRequest {
 }
 ```
 
-- [ ] **Step 5: Create `worker/src/api/client.rs`**
+- [x] **Step 5: Create `worker/src/api/client.rs`**
 
 ```rust
 use anyhow::{anyhow, Context, Result};
@@ -567,7 +567,7 @@ impl ApiClient {
 }
 ```
 
-- [ ] **Step 6: Run tests**
+- [x] **Step 6: Run tests**
 
 ```bash
 cargo test --test register_flow
@@ -575,7 +575,7 @@ cargo test --test register_flow
 
 Expected: 2 passed.
 
-- [ ] **Step 7: Wire `register` subcommand**
+- [x] **Step 7: Wire `register` subcommand**
 
 Update `worker/src/main.rs`:
 ```rust
@@ -609,7 +609,7 @@ fn collect_machine_info() -> anyhow::Result<serde_json::Value> {
 }
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add worker/
