@@ -9,6 +9,7 @@ from claw_api.auth.hashing import hash_token, verify_token
 from claw_api.auth.jwt import encode_worker_token
 from claw_api.db import get_db
 from claw_api.deps import current_user, current_worker
+from claw_api.models.heartbeats import Heartbeat
 from claw_api.models.suppliers import Supplier
 from claw_api.models.users import User
 from claw_api.models.workers import Worker, WorkerStatus
@@ -103,6 +104,16 @@ async def heartbeat(
     worker.last_seen_at = datetime.now(UTC)
     if worker.status == WorkerStatus.OFFLINE.value:
         worker.status = WorkerStatus.ACTIVE.value
+    db.add(
+        Heartbeat(
+            worker_id=worker.id,
+            cpu_pct=payload.cpu_pct,
+            mem_pct=payload.mem_pct,
+            gpu_pct=payload.gpu_pct,
+            free_ram_gb=payload.free_ram_gb,
+            model_loaded_id=payload.model_loaded_id,
+        )
+    )
     await db.commit()
     return Response(status_code=204)
 

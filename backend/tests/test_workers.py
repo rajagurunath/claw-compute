@@ -92,3 +92,30 @@ async def test_supplier_lists_workers(client, monkeypatch):
     r = await client.get("/v1/suppliers/me/workers", headers=auth)
     assert r.status_code == 200
     assert len(r.json()["items"]) == 2
+
+
+@pytest.mark.asyncio
+async def test_heartbeat_persists_row(client, monkeypatch, db_session):
+    user_token = await _make_supplier(client, monkeypatch, "w5@example.com")
+    issued = await client.post(
+        "/v1/workers/provisioning-tokens",
+        json={"name": "n"},
+        headers={"Authorization": f"Bearer {user_token}"},
+    )
+    prov = issued.json()["provisioning_token"]
+    reg = await client.post(
+        "/v1/workers/register",
+        json={"provisioning_token": prov, "machine_info": {}},
+    )
+    worker_token = reg.json()["worker_token"]
+    await client.post(
+        "/v1/workers/heartbeat",
+        json={"cpu_pct": 1.0, "mem_pct": 2.0},
+        headers={"Authorization": f"Bearer {worker_token}"},
+    )
+    from sqlalchemy import select
+
+    from claw_api.models.heartbeats import Heartbeat
+    rows = (await db_session.execute(select(Heartbeat))).scalars().all()
+    assert len(rows) == 1
+    assert rows[0].cpu_pct == 1.0
