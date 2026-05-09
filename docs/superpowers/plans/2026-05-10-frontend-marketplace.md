@@ -103,7 +103,7 @@ web/
 - Create: `web/` directory tree (the scaffold creates most of it)
 - Modify: a few config files post-scaffold
 
-- [ ] **Step 1: Scaffold**
+- [x] **Step 1: Scaffold**
 
 ```bash
 cd /Users/gurunathlunkupalivenugopal/ionet/claw-marketplace
@@ -120,7 +120,7 @@ pnpm dev
 
 Open `http://localhost:3000`, confirm the default page. Stop with Ctrl-C.
 
-- [ ] **Step 2: Install shadcn/ui**
+- [x] **Step 2: Install shadcn/ui**
 
 ```bash
 cd web
@@ -136,14 +136,14 @@ pnpm dlx shadcn@latest add button card input label badge dialog sheet \
     tabs alert tooltip
 ```
 
-- [ ] **Step 3: Install runtime deps**
+- [x] **Step 3: Install runtime deps**
 
 ```bash
 pnpm add zod @tanstack/react-query lucide-react
 pnpm add -D @types/node
 ```
 
-- [ ] **Step 4: Add the API base URL**
+- [x] **Step 4: Add the API base URL**
 
 `web/.env.local`:
 ```dotenv
@@ -151,7 +151,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 SESSION_COOKIE_NAME=claw_session
 ```
 
-- [ ] **Step 5: Smoke test build**
+- [x] **Step 5: Smoke test build**
 
 ```bash
 pnpm build
@@ -159,7 +159,7 @@ pnpm build
 
 Expected: builds clean.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add web/
