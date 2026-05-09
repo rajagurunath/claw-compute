@@ -9,7 +9,7 @@ from claw_api.config import get_settings
 from claw_api.models import Base
 
 # import all model modules so their tables register on Base.metadata
-from claw_api.models import base, magic_links, users  # noqa: F401
+from claw_api.models import base, magic_links, suppliers, users  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", get_settings().database_url)
