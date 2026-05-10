@@ -3,8 +3,9 @@ use std::sync::Arc;
 use clap::{Parser, Subcommand};
 use claw_worker::api::client::ApiClient;
 use claw_worker::api::types::HeartbeatRequest;
-use claw_worker::booking::BookingHandler;
+use claw_worker::booking::{BookingHandler, MODEL_HOST_PORT};
 use claw_worker::config::Config;
+use claw_worker::inference::ModelHost;
 use claw_worker::metrics::Sampler;
 use claw_worker::sandbox::registry::pick_backend;
 use claw_worker::state::State;
@@ -56,7 +57,21 @@ async fn run_loop(api_url: String) -> anyhow::Result<()> {
     tracing::info!(backend = backend.name(), "sandbox backend selected");
 
     let state = Arc::new(tokio::sync::Mutex::new(State::open(&Config::db_path()?)?));
-    let handler = Arc::new(BookingHandler::new(backend.clone(), state.clone()));
+
+    let model_host = Arc::new(ModelHost::new());
+    // Pre-warm default model in the background so the first booking doesn't
+    // wait for the cold-start. Ignore errors — subsequent ensure_loaded calls
+    // will surface them.
+    let mh_warm = model_host.clone();
+    tokio::spawn(async move {
+        if let Err(e) = mh_warm.ensure_loaded("qwen", MODEL_HOST_PORT).await {
+            tracing::warn!(error = ?e, "failed to pre-warm default model");
+        }
+    });
+
+    let handler = Arc::new(
+        BookingHandler::new(backend.clone(), state.clone()).with_model_host(model_host.clone()),
+    );
 
     // Heartbeat loop in a separate task.
     let token_for_hb = token.clone();
