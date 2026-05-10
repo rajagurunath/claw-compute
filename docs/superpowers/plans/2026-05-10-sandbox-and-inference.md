@@ -1140,7 +1140,7 @@ git commit -m "feat(worker): Lima fallback backend for macOS 14/15 hosts"
 
 A focused integration test that exercises Plan 2's WS handler with the real `ContainerBackend` (or a fake equivalent). Already covered by `worker/tests/booking_lifecycle.rs` (Plan 2 Task 7) at the trait level. This task adds an explicit doctest that documents the happy path.
 
-- [ ] **Step 1: Add a doc-comment example**
+- [x] **Step 1: Add a doc-comment example**
 
 In `worker/src/booking/mod.rs`, above the `BookingHandler` struct, add:
 
@@ -1160,7 +1160,7 @@ In `worker/src/booking/mod.rs`, above the `BookingHandler` struct, add:
 /// row marked cancelled. ModelHost is left running (next booking may need it).
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add worker/
