@@ -836,7 +836,7 @@ A manual integration script the supplier runs once after install to confirm ever
 - Create: `worker/scripts/smoke-e2e.sh`
 - Create: `docs/sandbox-runbook.md`
 
-- [ ] **Step 1: Smoke script**
+- [x] **Step 1: Smoke script**
 
 `worker/scripts/smoke-e2e.sh`:
 ```bash
@@ -889,7 +889,7 @@ container stop claw-smoke && container rm claw-smoke
 echo "✔ E2E smoke complete"
 ```
 
-- [ ] **Step 2: Sandbox runbook**
+- [x] **Step 2: Sandbox runbook**
 
 `docs/sandbox-runbook.md`:
 ```markdown
@@ -919,7 +919,7 @@ Run `container system prune` to clean.
 - Manually run `container run claw/agent-base:latest` to isolate the failure.
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add worker/scripts/smoke-e2e.sh docs/sandbox-runbook.md
