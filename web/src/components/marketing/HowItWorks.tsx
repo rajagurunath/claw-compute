@@ -1,69 +1,71 @@
+import Image from "next/image";
 import { ArrowDown, MessageSquare, Server, Zap } from "lucide-react";
-
-import { ClawIcon } from "@/components/claw/ClawIcon";
 
 const steps = [
   {
     n: "01",
-    accent: "cyan" as const,
     icon: <Server className="h-5 w-5" />,
     title: "A Mac plugs in",
     body: "Supplier runs one curl. The worker binary fingerprints the chip, registers with the marketplace, and starts heartbeating every 30s.",
   },
   {
     n: "02",
-    accent: "magenta" as const,
     icon: <ArrowDown className="h-5 w-5" />,
-    title: "Consumer drops a coin",
-    body: "Pick an offering on /browse, set duration, hit Insert Coin. The marketplace activates a booking and notifies the worker over an outbound WebSocket.",
+    title: "A consumer hires it",
+    body: "Pick an offering on /browse, set duration, confirm. The marketplace activates a booking and notifies the worker over an outbound WebSocket.",
   },
   {
     n: "03",
-    accent: "amber" as const,
     icon: <Zap className="h-5 w-5" />,
-    title: "The claw fires the sandbox",
-    body: "Worker spins up a fresh microVM (or Lima fallback on macOS 14/15). MLX preloads the model. Latency from booking → ready ≈ 0.8s.",
+    title: "The sandbox spins up",
+    body: "Worker spins up a fresh microVM (or Lima fallback on macOS 14/15). MLX preloads the model. Latency from booking to ready ≈ 0.8s.",
   },
   {
     n: "04",
-    accent: "cyan" as const,
     icon: <MessageSquare className="h-5 w-5" />,
-    title: "Chat or hit the API",
+    title: "Chat or call the API",
     body: "Stream tokens through the relay or POST to /v1/chat/completions. When you cancel, the sandbox tears down and the next renter gets a clean machine.",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how" className="relative mx-auto max-w-6xl px-6 py-24">
-      <div className="mb-14 max-w-2xl">
-        <p className="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-[rgb(var(--claw-magenta-rgb))]">
-          /// how.it.works
+    <section id="how" className="relative mx-auto max-w-6xl px-6 py-28">
+      <header className="mb-14 max-w-2xl">
+        <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-accent-crimson">
+          How it works
         </p>
         <h2 className="text-balance font-heading text-4xl tracking-tight md:text-6xl">
-          From <span className="text-neon-cyan">curl</span> to{" "}
-          <span className="text-neon-magenta">prompt</span> in four moves.
+          <span className="headline-gradient">From <em className="not-italic font-normal">curl</em> to prompt in four moves.</span>
         </h2>
-      </div>
+      </header>
 
       <ol className="relative grid gap-5 md:grid-cols-4">
-        {/* connecting cable */}
+        {/* connecting hairline */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-6 top-12 hidden h-px bg-gradient-to-r from-[rgb(var(--claw-cyan-rgb)/0)] via-[rgb(var(--claw-cyan-rgb)/0.5)] to-[rgb(var(--claw-cyan-rgb)/0)] md:block"
+          className="pointer-events-none absolute inset-x-6 top-12 hidden h-px bg-gradient-to-r from-transparent via-[rgb(var(--crimson))]/40 to-transparent md:block"
         />
         {steps.map((s) => (
           <Step key={s.n} {...s} />
         ))}
       </ol>
 
-      {/* trust strip */}
-      <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 rounded-2xl border border-white/5 bg-background/30 p-5 font-mono text-[11px] text-muted-foreground">
-        <Trust label="hardened-runtime signed" />
-        <Trust label="0 inbound ports" />
-        <Trust label="open-source worker" />
-        <Trust label="threat model documented" />
-        <Trust label="weekly stripe payouts" />
+      <div className="divider-dot mt-16" />
+
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 font-mono text-[11px] text-muted-foreground">
+        {[
+          "hardened-runtime signed",
+          "0 inbound ports",
+          "open-source worker",
+          "documented threat model",
+          "weekly Stripe payouts",
+        ].map((t) => (
+          <span key={t} className="inline-flex items-center gap-2">
+            <span className="h-1 w-1 rotate-45 bg-[rgb(var(--gold))]" />
+            {t}
+          </span>
+        ))}
       </div>
     </section>
   );
@@ -71,47 +73,35 @@ export function HowItWorks() {
 
 function Step({
   n,
-  accent,
   icon,
   title,
   body,
 }: {
   n: string;
-  accent: "cyan" | "magenta" | "amber";
   icon: React.ReactNode;
   title: string;
   body: string;
 }) {
-  const colorVar = `rgb(var(--claw-${accent}-rgb))`;
   return (
-    <li className="relative flex flex-col rounded-2xl border border-white/10 bg-card/40 p-5 backdrop-blur-sm">
+    <li className="surface-card relative flex flex-col rounded-xl border border-white/8 p-5">
       <div className="flex items-center gap-3">
-        <span
-          className="grid h-9 w-9 place-items-center rounded-lg border bg-background/60"
-          style={{ borderColor: `${colorVar}55`, color: colorVar }}
-        >
+        <span className="grid h-9 w-9 place-items-center rounded-md border border-white/10 bg-background/60 text-foreground">
           {icon}
         </span>
-        <span className="font-mono text-xs uppercase tracking-[0.2em]" style={{ color: colorVar }}>
+        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent-crimson">
           step {n}
         </span>
       </div>
       <h3 className="mt-3 font-heading text-xl tracking-tight">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
-      {/* tiny mascot peek */}
-      <ClawIcon
-        variant={accent}
-        className="absolute -right-2 -top-3 h-8 w-8 motion-safe:animate-claw-bob"
+      <Image
+        src="/openclaw.svg"
+        alt=""
+        aria-hidden
+        width={32}
+        height={32}
+        className="absolute -right-2 -top-3 h-8 w-8 opacity-50 motion-safe:animate-claw-bob"
       />
     </li>
-  );
-}
-
-function Trust({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center gap-2">
-      <span className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--claw-cyan-rgb))]" />
-      {label}
-    </span>
   );
 }

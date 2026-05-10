@@ -1,68 +1,51 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Cpu, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Cpu, Shield, Zap } from "lucide-react";
 
-import { ClawIcon } from "@/components/claw/ClawIcon";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
     <section className="relative isolate overflow-hidden">
-      {/* mesh gradient blob */}
+      {/* single warm vignette behind the hero — no rainbow blobs */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-24 -z-10 transform-gpu blur-3xl"
+        className="pointer-events-none absolute inset-x-0 -top-40 -z-10"
       >
-        <div
-          className="relative left-1/2 aspect-[1155/678] w-[80rem] -translate-x-1/2 rotate-[30deg] bg-[conic-gradient(at_50%_50%,rgb(var(--claw-cyan-rgb)/0.55),rgb(var(--claw-magenta-rgb)/0.45),rgb(var(--claw-amber-rgb)/0.35),rgb(var(--claw-cyan-rgb)/0.55))] opacity-40 motion-safe:animate-hero-pulse"
-          style={{
-            clipPath:
-              "polygon(74% 44%, 100% 61%, 97% 26%, 85% 0%, 80% 2%, 72% 32%, 60% 62%, 52% 68%, 47% 58%, 45% 34%, 27% 76%, 0% 64%, 17% 100%, 27% 76%, 76% 97%, 74% 44%)",
-          }}
-        />
+        <div className="mx-auto h-[40rem] w-[80rem] max-w-full rounded-full bg-[radial-gradient(closest-side,rgb(var(--crimson)/0.16),transparent)]" />
       </div>
 
-      {/* CRT corner brackets */}
-      <Bracket className="left-4 top-4 rotate-0" />
-      <Bracket className="right-4 top-4 rotate-90" />
-      <Bracket className="left-4 bottom-4 -rotate-90" />
-      <Bracket className="right-4 bottom-4 rotate-180" />
-
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 pt-20 pb-24 md:grid-cols-[1.2fr_1fr] md:gap-14 md:pt-28 md:pb-32">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 pt-20 pb-24 md:grid-cols-[1.15fr_1fr] md:pt-28 md:pb-32">
         {/* LEFT — copy */}
         <div className="relative z-10 flex flex-col">
-          <div className="mb-5 flex items-center gap-2 self-start rounded-full border border-[rgb(var(--claw-cyan-rgb)/0.4)] bg-[rgb(var(--claw-cyan-rgb)/0.08)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--claw-cyan-rgb))]">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[rgb(var(--claw-cyan-rgb))] shadow-[0_0_10px_rgb(var(--claw-cyan-rgb))]" />
-            INSERT_COIN · MARKETPLACE.LIVE
+          <div className="mb-6 flex items-center gap-2 self-start rounded-full border border-[rgb(var(--crimson))/0.3] bg-[rgb(var(--crimson))/0.08] px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-accent-crimson">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[rgb(var(--crimson))] opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[rgb(var(--crimson))]" />
+            </span>
+            Now in private beta · v0.1
           </div>
 
-          <h1 className="text-balance font-heading text-6xl leading-[0.95] tracking-tight md:text-8xl">
-            Hire the
+          <h1 className="text-balance font-heading text-5xl leading-[1.02] tracking-tight md:text-7xl">
+            <span className="headline-gradient">A peer-to-peer arcade for</span>
             <br />
-            <span className="relative inline-block">
-              <span className="text-neon-cyan motion-safe:animate-flicker">claw</span>
-              <Underline />
-            </span>
-            .
-            <br />
-            <span className="text-foreground/70">Pay by the</span>
-            <br />
-            <span className="text-neon-magenta">hour.</span>
+            <span className="accent-underline text-[rgb(var(--ivory))]">idle Apple Silicon</span>.
           </h1>
 
           <p className="mt-7 max-w-xl text-balance text-lg leading-relaxed text-muted-foreground md:text-xl">
-            A peer-to-peer arcade for idle Apple Silicon. One curl turns your
-            Mac into a sandboxed AI agent host. Consumers grab a machine, drop
-            in a prompt, and the claw runs the job — locally, privately, fast.
+            Hire sandboxed AI agents on a real Mac, by the hour. Owners run
+            one binary and start earning from compute that would otherwise sit
+            idle. Open core. MLX-native. Outbound only.
           </p>
 
           <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row">
             <Button
               asChild
               size="lg"
-              className="group min-w-48 bg-[rgb(var(--claw-cyan-rgb))] text-background shadow-[0_0_30px_rgb(var(--claw-cyan-rgb)/0.5)] hover:bg-[rgb(var(--claw-cyan-rgb))] hover:brightness-110"
+              className="group min-w-48 bg-[rgb(var(--crimson))] text-[rgb(var(--ivory))] shadow-[0_8px_24px_-8px_rgb(var(--crimson-glow)/0.6)] hover:bg-[rgb(var(--crimson))] hover:brightness-110"
             >
               <Link href="/browse">
-                Insert coin
+                Browse machines
                 <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -70,134 +53,127 @@ export function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="min-w-48 border-[rgb(var(--claw-magenta-rgb)/0.5)] text-[rgb(var(--claw-magenta-rgb))] hover:bg-[rgb(var(--claw-magenta-rgb)/0.1)] hover:text-[rgb(var(--claw-magenta-rgb))]"
+              className="min-w-48 border-white/15 hover:border-[rgb(var(--gold))]/60 hover:bg-white/5"
             >
               <Link href="/auth/login?next=/dashboard/become-supplier">
-                Plug in your Mac
+                List your Mac
               </Link>
             </Button>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Sparkles className="h-3 w-3 text-[rgb(var(--claw-amber-rgb))]" /> open-source worker</span>
-            <span className="inline-flex items-center gap-1.5"><Cpu className="h-3 w-3 text-[rgb(var(--claw-cyan-rgb))]" /> MLX-native</span>
-            <span className="inline-flex items-center gap-1.5"><Zap className="h-3 w-3 text-[rgb(var(--claw-magenta-rgb))]" /> sub-second sandbox</span>
+          <div className="mt-10 grid max-w-md grid-cols-3 gap-x-6 border-t border-white/5 pt-6 font-mono text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Cpu className="h-3 w-3 text-[rgb(var(--gold))]" /> MLX-native</span>
+            <span className="inline-flex items-center gap-1.5"><Zap className="h-3 w-3 text-[rgb(var(--gold))]" /> 0.8s sandbox</span>
+            <span className="inline-flex items-center gap-1.5"><Shield className="h-3 w-3 text-[rgb(var(--gold))]" /> 0 inbound</span>
           </div>
         </div>
 
-        {/* RIGHT — arcade cabinet with the claw */}
-        <ArcadeCabinet />
+        {/* RIGHT — refined "console" with the openclaw centerpiece */}
+        <Console />
       </div>
 
-      {/* Live stats — marquee strip */}
-      <StatsMarquee />
+      <StatsStrip />
     </section>
   );
 }
 
-function Bracket({ className }: { className?: string }) {
+function Console() {
   return (
-    <div
-      aria-hidden
-      className={`pointer-events-none absolute z-10 h-6 w-6 border-l-2 border-t-2 border-[rgb(var(--claw-cyan-rgb)/0.7)] ${className ?? ""}`}
-    />
-  );
-}
-
-function Underline() {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 200 12"
-      className="absolute -bottom-1 left-0 w-full motion-safe:animate-pulse"
-      preserveAspectRatio="none"
-    >
-      <path
-        d="M2 8 Q 50 -2 100 6 T 198 4"
-        stroke="rgb(var(--claw-cyan-rgb))"
-        strokeWidth="3"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.85"
+    <div className="relative mx-auto aspect-square w-full max-w-md">
+      {/* outer halo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(closest-side,rgb(var(--crimson)/0.18),transparent)] blur-2xl"
       />
-    </svg>
-  );
-}
+      {/* console frame */}
+      <div className="surface-card absolute inset-0 rounded-[24px] border border-white/8 p-5">
+        {/* status bar */}
+        <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          <span>claw // console</span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgb(74_222_128/0.7)]" />
+            healthy
+          </span>
+        </div>
 
-function ArcadeCabinet() {
-  return (
-    <div className="relative mx-auto aspect-[3/4] w-full max-w-sm">
-      {/* cabinet body */}
-      <div className="absolute inset-0 rounded-[28px] border border-white/10 bg-gradient-to-b from-[rgb(var(--claw-cyan-rgb)/0.10)] to-[rgb(var(--claw-magenta-rgb)/0.10)] bevel">
-        {/* screen */}
-        <div className="absolute inset-x-5 top-5 h-2/3 overflow-hidden rounded-2xl border border-[rgb(var(--claw-cyan-rgb)/0.35)] bg-background shadow-[inset_0_0_60px_rgb(var(--claw-cyan-rgb)/0.25)]">
-          <div className="absolute inset-0 bg-grid-lines opacity-50" />
-          <div className="absolute inset-0 bg-scanlines opacity-30" />
-          {/* prize pile silhouette */}
-          <div className="absolute inset-x-6 bottom-2 h-10 rounded-b-xl bg-gradient-to-t from-[rgb(var(--claw-amber-rgb)/0.35)] to-transparent blur-md" />
-          {/* claw — anchored top, animated */}
-          <div className="absolute left-1/2 top-2 -translate-x-1/2 motion-safe:animate-claw-bob">
-            <ClawIcon className="h-32 w-32 motion-safe:animate-glow" gripping />
+        {/* claw stage */}
+        <div className="relative mt-4 grid h-[68%] place-items-center overflow-hidden rounded-2xl border border-white/5 bg-[radial-gradient(ellipse_at_top,rgb(var(--crimson)/0.08),transparent_60%)]">
+          <div className="absolute inset-0 bg-grid-fine opacity-60" />
+          {/* spotlight */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(var(--gold)/0.30),transparent)] blur-xl"
+          />
+          {/* the claw */}
+          <div className="relative z-10 motion-safe:animate-claw-bob">
+            <Image
+              src="/openclaw.svg"
+              alt=""
+              aria-hidden
+              width={220}
+              height={220}
+              priority
+              className="h-44 w-44 drop-shadow-[0_8px_30px_rgb(var(--crimson-glow)/0.45)] motion-safe:animate-glow-soft"
+            />
           </div>
-          {/* prize: a tiny Mac */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-md border border-white/30 bg-foreground/80 px-3 py-1 font-mono text-[8px] uppercase tracking-widest text-background">
-            M3 · 64GB
-          </div>
-          {/* score */}
-          <div className="absolute left-3 top-2 font-mono text-[9px] text-[rgb(var(--claw-amber-rgb))]">
-            HI 88¢/hr
-          </div>
-          <div className="absolute right-3 top-2 font-mono text-[9px] text-[rgb(var(--claw-magenta-rgb))]">
-            P1 ▮▮▮
+          {/* "prize" beneath */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-md border border-white/15 bg-[rgb(var(--ivory)/0.06)] px-3 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-foreground/80 backdrop-blur">
+            M3 Max · 64 GB · 130 tok/s
           </div>
         </div>
-        {/* control panel */}
-        <div className="absolute inset-x-5 bottom-5 top-[calc(2/3*100%+24px)] rounded-2xl border border-white/10 bg-background/40 p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1.5">
-              {(["bg-[rgb(var(--claw-magenta-rgb))]", "bg-[rgb(var(--claw-cyan-rgb))]", "bg-[rgb(var(--claw-amber-rgb))]"] as const).map((c, i) => (
-                <span key={i} className={`h-3 w-3 rounded-full ${c} shadow-[0_0_8px_currentColor]`} />
-              ))}
-            </div>
-            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              cab.001
-            </div>
-          </div>
-          <div className="mt-3 grid grid-cols-3 gap-1.5">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <span
-                key={i}
-                className="h-2 rounded-sm bg-foreground/10"
-                style={{ opacity: 0.3 + (i % 3) * 0.2 }}
-              />
-            ))}
-          </div>
+
+        {/* metrics row */}
+        <div className="mt-4 grid grid-cols-3 gap-2 font-mono text-[10px]">
+          <Metric label="bookings 24h" value="1,248" />
+          <Metric label="util" value="72%" tone="gold" />
+          <Metric label="payout / mo" value="$430" tone="crimson" />
         </div>
       </div>
     </div>
   );
 }
 
-function StatsMarquee() {
+function Metric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: "gold" | "crimson";
+}) {
+  const color =
+    tone === "gold" ? "text-[rgb(var(--gold))]" :
+    tone === "crimson" ? "text-accent-crimson" :
+    "text-foreground";
+  return (
+    <div className="rounded-lg border border-white/8 bg-background/50 px-3 py-2">
+      <div className={`font-heading text-base ${color}`} style={{ letterSpacing: "-0.02em" }}>{value}</div>
+      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function StatsStrip() {
   const stats = [
-    { v: "130", l: "median tok/s" },
-    { v: "0.8s", l: "sandbox boot" },
-    { v: "$1.80", l: "avg / hour" },
+    { v: "130", l: "median tok/s · M3 Max" },
+    { v: "0.8s", l: "sandbox cold-start" },
+    { v: "$1.80", l: "average per hour" },
     { v: "88%", l: "to suppliers" },
-    { v: "20-40%", l: "MLX over llama.cpp" },
-    { v: "0", l: "inbound ports" },
+    { v: "20–40%", l: "MLX vs llama.cpp" },
+    { v: "0", l: "inbound ports needed" },
   ];
   return (
-    <div className="border-y border-border/40 bg-background/40 py-5">
+    <div className="border-y border-white/5 bg-background/40 py-6">
       <div className="flex overflow-hidden">
-        <div className="flex shrink-0 items-center gap-12 pr-12 motion-safe:animate-marquee">
+        <div className="flex shrink-0 items-center gap-14 pr-14 motion-safe:animate-marquee">
           {[...stats, ...stats].map((s, i) => (
             <div key={i} className="flex items-baseline gap-3 whitespace-nowrap">
               <span className="font-heading text-2xl text-foreground">{s.v}</span>
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 {s.l}
               </span>
-              <span className="ml-6 h-1 w-1 rounded-full bg-[rgb(var(--claw-cyan-rgb))]" />
+              <span className="ml-8 inline-block h-1 w-1 rotate-45 bg-[rgb(var(--crimson))]" />
             </div>
           ))}
         </div>

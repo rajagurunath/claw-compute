@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Check, Copy, Coins, Power, Terminal, TrendingUp } from "lucide-react";
+import { Check, Coins, Copy, Power, Terminal, TrendingUp } from "lucide-react";
 
-import { ClawIcon } from "@/components/claw/ClawIcon";
 import { Button } from "@/components/ui/button";
 
 const INSTALL = "curl -fsSL https://api.claw.dev/install.sh | bash";
@@ -12,32 +12,38 @@ const INSTALL = "curl -fsSL https://api.claw.dev/install.sh | bash";
 export function SupplierCTA() {
   const [copied, setCopied] = useState(false);
   return (
-    <section className="relative isolate overflow-hidden border-y border-border/40 bg-card/30">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid-lines opacity-30" />
+    <section className="relative isolate overflow-hidden border-y border-white/5 bg-card/30">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(closest-side,white,transparent)]"
+        className="pointer-events-none absolute inset-0 -z-10"
       >
-        <div className="absolute left-1/2 top-1/2 h-72 w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--claw-amber-rgb)/0.25)] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-72 w-[40rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--crimson))/0.18] blur-3xl" />
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 py-24 text-center">
-        <div className="mx-auto mb-5 flex w-fit items-center gap-2 rounded-full border border-[rgb(var(--claw-amber-rgb)/0.4)] bg-[rgb(var(--claw-amber-rgb)/0.08)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--claw-amber-rgb))]">
-          <Terminal className="h-3 w-3" /> one.command
+      <div className="mx-auto max-w-5xl px-6 py-28 text-center">
+        <div className="mx-auto mb-5 flex w-fit items-center gap-2 rounded-full border border-white/10 bg-background/60 px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+          <Terminal className="h-3 w-3 text-accent-crimson" /> One command
         </div>
-        <h2 className="mb-4 text-balance font-heading text-4xl tracking-tight md:text-6xl">
-          Got an idle Mac? <br className="md:hidden" /> <span className="text-neon-amber">Get the claw to work.</span>
+
+        <h2 className="text-balance font-heading text-4xl tracking-tight md:text-6xl">
+          <span className="headline-gradient">Got an idle Mac?</span>
+          <br />
+          Put the <span className="accent-underline text-[rgb(var(--ivory))]">claw to work</span>.
         </h2>
-        <p className="mx-auto mb-10 max-w-xl text-balance text-muted-foreground md:text-lg">
-          Run one curl, set your hourly rate, get paid when consumers grab the
-          arm. Pause any time. Earnings settle weekly.
+
+        <p className="mx-auto mt-5 max-w-xl text-balance text-muted-foreground md:text-lg">
+          Run one curl, set your hourly rate, get paid when consumers hire your
+          machine. Pause any time. Earnings settle weekly through Stripe.
         </p>
 
         {/* command box */}
-        <div className="group relative mx-auto max-w-2xl">
-          <div aria-hidden className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[rgb(var(--claw-cyan-rgb)/0.4)] via-[rgb(var(--claw-magenta-rgb)/0.4)] to-[rgb(var(--claw-amber-rgb)/0.4)] opacity-50 blur-md transition group-hover:opacity-80" />
-          <pre className="relative overflow-x-auto rounded-2xl border border-white/10 bg-background/95 p-5 pr-16 text-left font-mono text-sm shadow-xl bevel">
-            <span className="mr-2 select-none text-[rgb(var(--claw-cyan-rgb))]">$</span>
+        <div className="group relative mx-auto mt-10 max-w-2xl">
+          <div
+            aria-hidden
+            className="absolute -inset-px rounded-xl bg-gradient-to-r from-[rgb(var(--crimson))]/0 via-[rgb(var(--crimson))]/35 to-[rgb(var(--crimson))]/0 opacity-70 blur"
+          />
+          <pre className="relative overflow-x-auto rounded-xl border border-white/10 bg-background/95 p-5 pr-16 text-left font-mono text-sm shadow-2xl">
+            <span className="mr-2 select-none text-accent-crimson">$</span>
             <code>{INSTALL}</code>
           </pre>
           <button
@@ -48,24 +54,23 @@ export function SupplierCTA() {
               setCopied(true);
               setTimeout(() => setCopied(false), 1500);
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md border border-white/10 bg-background p-2 text-muted-foreground transition hover:border-[rgb(var(--claw-cyan-rgb)/0.6)] hover:text-foreground"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md border border-white/10 bg-background p-2 text-muted-foreground transition hover:border-[rgb(var(--crimson))]/60 hover:text-foreground"
           >
-            {copied ? <Check className="h-4 w-4 text-[rgb(var(--claw-cyan-rgb))]" /> : <Copy className="h-4 w-4" />}
+            {copied ? <Check className="h-4 w-4 text-accent-crimson" /> : <Copy className="h-4 w-4" />}
           </button>
         </div>
 
-        {/* tiny earnings calc */}
         <div className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-3 text-left md:grid-cols-3">
-          <SupplierStat icon={<Coins className="h-4 w-4" />} title="$1.80 / hr" sub="avg M3 Max billing" />
-          <SupplierStat icon={<TrendingUp className="h-4 w-4" />} title="$430 / mo" sub="@ 60% utilization" />
-          <SupplierStat icon={<Power className="h-4 w-4" />} title="88% kept" sub="flat 12% to platform" />
+          <Stat icon={<Coins className="h-4 w-4" />} title="$1.80 / hr" sub="avg M3 Max billing" />
+          <Stat icon={<TrendingUp className="h-4 w-4" />} title="$430 / mo" sub="@ 60% utilization" />
+          <Stat icon={<Power className="h-4 w-4" />} title="88% kept" sub="flat 12% to platform" />
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button
             asChild
             size="lg"
-            className="min-w-44 bg-[rgb(var(--claw-amber-rgb))] text-background shadow-[0_0_30px_rgb(var(--claw-amber-rgb)/0.5)] hover:brightness-110"
+            className="min-w-44 bg-[rgb(var(--crimson))] text-[rgb(var(--ivory))] shadow-[0_8px_24px_-8px_rgb(var(--crimson-glow)/0.6)] hover:brightness-110"
           >
             <Link href="/auth/login?next=/dashboard/become-supplier">Get started</Link>
           </Button>
@@ -74,12 +79,19 @@ export function SupplierCTA() {
           </Button>
         </div>
 
-        {/* mascot peeking */}
+        {/* mascot — claw at the bottom */}
         <div className="mx-auto mt-12 flex w-fit items-center gap-3 rounded-full border border-white/10 bg-background/40 py-2 pl-2 pr-4 backdrop-blur">
-          <ClawIcon variant="amber" className="h-8 w-8 motion-safe:animate-claw-bob" gripping />
+          <Image
+            src="/openclaw.svg"
+            alt=""
+            aria-hidden
+            width={32}
+            height={32}
+            className="h-8 w-8 motion-safe:animate-claw-bob"
+          />
           <span className="font-mono text-xs text-muted-foreground">
-            <span className="text-[rgb(var(--claw-amber-rgb))]">claw://</span>
-            ready_when_you_are
+            <span className="text-accent-crimson">claw // </span>
+            ready when you are
           </span>
         </div>
       </div>
@@ -87,7 +99,7 @@ export function SupplierCTA() {
   );
 }
 
-function SupplierStat({
+function Stat({
   icon,
   title,
   sub,
@@ -98,7 +110,7 @@ function SupplierStat({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-background/40 p-4">
-      <div className="grid h-9 w-9 place-items-center rounded-lg border border-[rgb(var(--claw-amber-rgb)/0.4)] bg-[rgb(var(--claw-amber-rgb)/0.1)] text-[rgb(var(--claw-amber-rgb))]">
+      <div className="grid h-9 w-9 place-items-center rounded-md border border-[rgb(var(--gold))]/30 bg-[rgb(var(--gold))]/10 text-[rgb(var(--gold))]">
         {icon}
       </div>
       <div>

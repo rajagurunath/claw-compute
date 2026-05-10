@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Inter } from "next/font/google";
 
+import { AmbientClaws } from "@/components/claw/AmbientClaws";
 import { ClawMascot } from "@/components/claw/ClawMascot";
 
 import "./globals.css";
@@ -45,9 +46,10 @@ export default function RootLayout({
       className={`${bodySans.variable} ${bricolage.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
     >
       <body className="bg-background text-foreground min-h-svh flex flex-col relative overflow-x-hidden">
-        {/* atmospheric layers — fixed so they cover the viewport */}
-        <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 bg-grid-dots opacity-40" />
-        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-scanlines opacity-30" />
+        {/* Single restrained texture layer — fine grid masked to the edges */}
+        <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 bg-grid-fine opacity-100" />
+        {/* Ambient claw army strolling through the page margins */}
+        <AmbientClaws count={9} />
         {children}
         <ClawMascot />
       </body>

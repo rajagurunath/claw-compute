@@ -1,23 +1,21 @@
+import Image from "next/image";
 import Link from "next/link";
-
-import { ClawIcon } from "@/components/claw/ClawIcon";
 
 export function SiteFooter() {
   return (
     <footer className="relative mt-auto border-t border-white/5 bg-card/30">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid-lines opacity-20" />
       <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Link href="/" className="flex items-center gap-2.5 font-heading text-lg">
-            <ClawIcon className="h-7 w-7" gripping />
-            claw
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--claw-cyan-rgb))]">
-              ::marketplace
+            <Image src="/openclaw.svg" alt="" aria-hidden width={28} height={28} className="h-7 w-7" />
+            Claw
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              · marketplace
             </span>
           </Link>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-            A peer-to-peer arcade for idle Apple Silicon. Suppliers earn from
-            compute that would otherwise sit idle.
+            A peer-to-peer marketplace for idle Apple Silicon. Suppliers earn
+            from compute that would otherwise sit idle.
           </p>
           <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
             © {new Date().getFullYear()} · v0.1 · open core
@@ -47,7 +45,7 @@ export function SiteFooter() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--claw-cyan-rgb))]">
+      <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.25em] text-accent-crimson">
         {title}
       </p>
       <ul className="space-y-2 text-sm text-muted-foreground">{children}</ul>
