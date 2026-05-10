@@ -82,7 +82,9 @@ async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Re
     });
 
     let handler = Arc::new(
-        BookingHandler::new(backend.clone(), state.clone()).with_model_host(model_host.clone()),
+        BookingHandler::new(backend.clone(), state.clone())
+            .with_model_host(model_host.clone())
+            .with_api_client(Arc::new(client.clone()), token.clone()),
     );
 
     // Heartbeat loop in a separate task.
