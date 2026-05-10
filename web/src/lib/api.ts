@@ -24,6 +24,13 @@ async function request<T>(
     const token = await getToken();
     if (token) headers.set("Authorization", `Bearer ${token}`);
   }
+  // ngrok-free returns an HTML interstitial for browser-like User-Agents.
+  // Vercel's server-side fetch sometimes uses such a UA, which breaks
+  // downstream res.json(). This header is the documented ngrok bypass.
+  headers.set("ngrok-skip-browser-warning", "1");
+  if (!headers.has("User-Agent")) {
+    headers.set("User-Agent", "claw-marketplace-frontend/0.1");
+  }
   const res = await fetch(`${BASE}${path}`, { ...init, headers, cache: "no-store" });
   if (!res.ok) {
     let detail = res.statusText;

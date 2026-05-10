@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, JetBrains_Mono, Inter } from "next/font/google";
+
+import { ClawMascot } from "@/components/claw/ClawMascot";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bodySans = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -33,10 +42,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bodySans.variable} ${bricolage.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
     >
-      <body className="bg-background text-foreground min-h-svh flex flex-col">
+      <body className="bg-background text-foreground min-h-svh flex flex-col relative overflow-x-hidden">
+        {/* atmospheric layers — fixed so they cover the viewport */}
+        <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 bg-grid-dots opacity-40" />
+        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-scanlines opacity-30" />
         {children}
+        <ClawMascot />
       </body>
     </html>
   );

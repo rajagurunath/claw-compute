@@ -9,6 +9,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
+import { ClawIcon } from "@/components/claw/ClawIcon";
 import type { RoleResponse } from "@/lib/api-types";
 
 export function Sidebar({
@@ -19,15 +20,19 @@ export function Sidebar({
   email?: string;
 }) {
   return (
-    <aside className="border-r border-border/40 bg-muted/20 px-4 py-6 md:sticky md:top-0 md:h-svh">
+    <aside className="relative flex flex-col border-r border-white/5 bg-card/40 px-4 py-6 backdrop-blur-md md:sticky md:top-0 md:h-svh">
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid-lines opacity-20" />
       <Link
         href="/"
-        className="mb-6 flex items-center gap-2 px-2 text-lg font-semibold tracking-tight"
+        className="relative mb-1 flex items-center gap-2.5 px-2 font-heading text-lg tracking-tight"
       >
-        <ClawMark className="h-5 w-5" />
-        Claw
+        <ClawIcon className="h-7 w-7" gripping />
+        claw
       </Link>
-      <nav className="space-y-0.5 text-sm">
+      <p className="mb-5 px-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--claw-cyan-rgb))]">
+        ::operator
+      </p>
+      <nav className="relative space-y-0.5 text-sm">
         <Item href="/dashboard" icon={Home} label="Home" />
         {role.is_consumer && (
           <Item href="/dashboard/bookings" icon={Calendar} label="My bookings" />
@@ -58,16 +63,29 @@ export function Sidebar({
           </>
         )}
       </nav>
-      <div className="mt-auto pt-8">
+
+      {/* mascot status panel */}
+      <div className="relative mt-6 rounded-xl border border-white/5 bg-background/60 p-3">
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[rgb(var(--claw-cyan-rgb))]">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[rgb(var(--claw-cyan-rgb))] shadow-[0_0_8px_rgb(var(--claw-cyan-rgb))]" />
+          status: online
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          The claw is on duty. Heartbeats green, queues warm.
+        </p>
+      </div>
+
+      <div className="relative mt-auto pt-6">
         {email && (
-          <p className="mb-2 px-2 text-xs text-muted-foreground" title={email}>
-            Signed in as <span className="font-medium text-foreground">{email}</span>
+          <p className="mb-2 truncate px-2 font-mono text-[10px] text-muted-foreground" title={email}>
+            <span className="text-[rgb(var(--claw-cyan-rgb))]">@</span>
+            {email}
           </p>
         )}
         <form action="/auth/logout" method="post">
           <button
             type="submit"
-            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-white/5 hover:text-foreground"
           >
             <LogOut className="h-4 w-4" />
             Sign out
@@ -80,7 +98,7 @@ export function Sidebar({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-4 mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+    <p className="mt-5 mb-1 px-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[rgb(var(--claw-magenta-rgb))]">
       {children}
     </p>
   );
@@ -98,34 +116,10 @@ function Item({
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-foreground/80 transition hover:bg-muted hover:text-foreground"
+      className="group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-foreground/80 transition hover:bg-white/5 hover:text-foreground"
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="h-4 w-4 text-muted-foreground transition group-hover:text-[rgb(var(--claw-cyan-rgb))]" />
       {label}
     </Link>
-  );
-}
-
-function ClawMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden>
-      <defs>
-        <linearGradient
-          id="dash-claw-grad"
-          x1="0"
-          y1="0"
-          x2="32"
-          y2="32"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0" stopColor="#7c5cff" />
-          <stop offset="1" stopColor="#22d3ee" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M6 22c4-8 12-12 20-12-2 6-6 10-12 12 6-2 10 0 12 4-8 0-16-2-20-4z"
-        fill="url(#dash-claw-grad)"
-      />
-    </svg>
   );
 }
