@@ -4,7 +4,7 @@ STATUS: in_progress
 
 ## Current
 plan: 5
-task: 3
+task: 4
 step: 1
 
 ## Completed
@@ -14,15 +14,14 @@ step: 1
 - plan-4/task-12 (commit b89b1d0)
 - plan-2 (last: 577b348)
 - plan-6 (last: 6b0b3cb)
-- plan-5/task-1 (commit 919bcc4)
-- plan-5/task-2 (commit 670ab90)
+- plan-5/task-1..2 (last: 670ab90)
+- plan-5/task-3 (commit f39ac18)
 
 ## Blocked
 (none)
 
 ## Notes
-- 2026-05-10 iter 37 — Plan 5 Task 2 done (with caveat).
-  - agent-image/: pyproject.toml + 5 Python modules (init, config, inference, health, main) + Dockerfile (2-stage uv wheel build) + idempotent build.sh.
-  - Python sources parse cleanly via ast.parse.
-  - Step 5 (docker build + curl smoke) flagged ~ skipped: docker pulls in this harness silently buffer output. Build infrastructure is correct; user must `docker pull python:3.12-slim` once and run `./agent-image/build.sh` interactively to produce the OCI image. Plan 5 Task 5 (e2e smoke) and Plan 5 Task 3's gated test depend on this image existing locally.
-- Next: Plan 5 Task 3 (Worker — ContainerBackend, TDD with arg-construction unit tests).
+- 2026-05-10 iter 38 — Plan 5 Task 3 done. ContainerBackend shells out to Apple `container` CLI; detect/start/stop/is_running implemented. 3 arg-construction unit tests + 2 noop tests = 5 lib tests green. Gated smoke (worker/tests/container_smoke.rs) confirmed skip path works without RUN_CONTAINER_SMOKE=1.
+  - Moved `tempfile` + `which` from [dev-dependencies] to [dependencies] for runtime use.
+- Note: ContainerBackend itself only works on macOS 26+ (detect() returns Err otherwise → registry falls back to NoopBackend automatically). On this host (15.6) the binding code paths are linted/typechecked but won't be exercised at runtime.
+- Next: Plan 5 Task 4 (Worker ModelHost — supervises mlx-lm process on the host).

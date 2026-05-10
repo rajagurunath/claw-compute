@@ -415,7 +415,7 @@ git commit -m "feat(agent-image): minimal FastAPI runtime with OpenAI-compatible
 - Modify: `worker/src/sandbox/registry.rs`
 - Create: `worker/tests/container_smoke.rs` (gated)
 
-- [ ] **Step 1: Add Cargo deps**
+- [x] **Step 1: Add Cargo deps**
 
 In `worker/Cargo.toml`:
 ```toml
@@ -425,7 +425,7 @@ tempfile = "3"
 
 (`tokio` already has `process` via `full`.)
 
-- [ ] **Step 2: Write a unit test for argument construction**
+- [x] **Step 2: Write a unit test for argument construction**
 
 `worker/src/sandbox/container.rs` (initial):
 ```rust
@@ -554,7 +554,7 @@ mod tests {
 }
 ```
 
-- [ ] **Step 3: Register the backend**
+- [x] **Step 3: Register the backend**
 
 Update `worker/src/sandbox/registry.rs`:
 ```rust
@@ -581,7 +581,7 @@ pub fn pick_backend(name: &str) -> Arc<dyn SandboxBackend> {
 
 Add `pub mod container;` to `worker/src/sandbox/mod.rs`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 ```bash
 cargo test --lib sandbox
@@ -589,7 +589,7 @@ cargo test --lib sandbox
 
 Expected: all green. (Smoke tests against a real `container` daemon are gated behind a feature flag in Step 5.)
 
-- [ ] **Step 5: Optional integration test (gated)**
+- [x] **Step 5: Optional integration test (gated)**
 
 `worker/tests/container_smoke.rs`:
 ```rust
@@ -630,7 +630,7 @@ To run when desired:
 RUN_CONTAINER_SMOKE=1 cargo test --test container_smoke -- --nocapture
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add worker/
