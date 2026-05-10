@@ -44,3 +44,7 @@ agent-image/**/__pycache__/
 
 # Distribution tarballs
 dist/
+
+# Makefile runtime
+.pids/
+.logs/
