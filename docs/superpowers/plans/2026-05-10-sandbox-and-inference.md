@@ -937,7 +937,7 @@ For hosts where `container` isn't available. Same `SandboxBackend` trait; under 
 - Modify: `worker/src/sandbox/mod.rs`
 - Modify: `worker/src/sandbox/registry.rs`
 
-- [ ] **Step 1: Implement the Lima driver**
+- [x] **Step 1: Implement the Lima driver**
 
 `worker/src/sandbox/lima.rs`:
 ```rust
@@ -1078,7 +1078,7 @@ fn shell_escape(s: &str) -> String {
 }
 ```
 
-- [ ] **Step 2: Register the backend**
+- [x] **Step 2: Register the backend**
 
 In `worker/src/sandbox/mod.rs` add `pub mod lima;`.
 
@@ -1095,7 +1095,7 @@ In `worker/src/sandbox/registry.rs`:
 
 Add `use super::lima::LimaBackend;` near the top.
 
-- [ ] **Step 3: Auto-detect**
+- [x] **Step 3: Auto-detect**
 
 Add a helper in `worker/src/sandbox/registry.rs`:
 ```rust
@@ -1119,7 +1119,7 @@ let backend = match std::env::var("CLAW_SANDBOX_BACKEND") {
 tracing::info!(backend = backend.name(), "sandbox backend selected");
 ```
 
-- [ ] **Step 4: Build + test**
+- [x] **Step 4: Build + test**
 
 ```bash
 cargo test --lib sandbox
@@ -1127,7 +1127,7 @@ cargo test --lib sandbox
 
 Expected: green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add worker/
