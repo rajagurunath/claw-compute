@@ -649,7 +649,7 @@ The worker host runs a single mlx-lm server (per-supplier). Sandboxes share it v
 - Modify: `worker/src/lib.rs`
 - Modify: `worker/src/main.rs`
 
-- [ ] **Step 1: Catalog**
+- [x] **Step 1: Catalog**
 
 `worker/src/inference/models.rs`:
 ```rust
@@ -689,7 +689,7 @@ pub fn lookup(id: &str) -> Option<&'static ModelEntry> {
 }
 ```
 
-- [ ] **Step 2: Process supervisor**
+- [x] **Step 2: Process supervisor**
 
 `worker/src/inference/mod.rs`:
 ```rust
@@ -779,7 +779,7 @@ impl Default for ModelHost {
 
 Add `pub mod inference;` to `worker/src/lib.rs`.
 
-- [ ] **Step 3: Wire into Run command**
+- [x] **Step 3: Wire into Run command**
 
 In `worker/src/main.rs`, in `run_loop` add (after backend pick, before WS):
 
@@ -813,13 +813,13 @@ let model_id = agent_config.get("model_id").and_then(|v| v.as_str()).unwrap_or("
 self.model_host.ensure_loaded(model_id, 9000).await?;
 ```
 
-- [ ] **Step 4: Build**
+- [x] **Step 4: Build**
 
 ```bash
 cargo build
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add worker/
