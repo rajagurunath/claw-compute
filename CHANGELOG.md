@@ -117,6 +117,6 @@ step.
 - Agent state migration to S3 — deferred to v2.
 - Hardened Runtime + Secure Enclave attestation — deferred to v2 (see
   `docs/worker-prerequisites.md`).
-- Real consumer→sandbox chat round-trip — the worker logs `MessageUser`
-  events; forwarding to the sandbox + posting assistant replies via the
-  internal endpoint is wired but not yet exercised end-to-end.
+- Live deployments — code is build/test/lint green but nothing is on a
+  public URL yet. Frontend not on Vercel; backend not hosted; no
+  supplier has installed and registered the worker tarball publicly.
