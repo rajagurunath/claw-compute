@@ -25,12 +25,40 @@ if ! curl -fsS "$API/v1/health" >/dev/null 2>&1; then
     echo "ERROR: API not reachable at $API. Run 'make api' or 'make up' first."
     exit 1
 fi
-[ -f "$LOG" ] || { echo "ERROR: $LOG missing — start the API in background mode (make up)."; exit 1; }
+
+mkdir -p "$(dirname "$LOG")"
+touch "$LOG"
 
 curl -fsS -X POST "$API/v1/auth/magic-link" -H 'Content-Type: application/json' \
      -d "{\"email\":\"$EMAIL\"}" >/dev/null
-sleep 0.3
+sleep 0.6
 TOK=$(grep -E "MAGIC LINK for $EMAIL" "$LOG" | tail -1 | sed 's/.*token=//')
+
+if [ -z "$TOK" ] && [ -n "${CLAW_DEV_BYPASS_TOKEN:-}" ]; then
+    TOK="$CLAW_DEV_BYPASS_TOKEN"
+    echo "→ using CLAW_DEV_BYPASS_TOKEN from env" >&2
+fi
+
+if [ -z "$TOK" ]; then
+    cat <<MSG >&2
+ERROR: didn't find a magic-link token in $LOG.
+
+This usually means 'make api' was started BEFORE the Makefile was updated
+to tee its output to $LOG. Two ways forward:
+
+  1. Restart the API so it tees:
+       Ctrl-C 'make api' in Terminal 1, then run 'make api' again.
+       Then re-run 'make dev-bypass'.
+
+  2. Or paste a magic-link token manually:
+       In Terminal 1 you'll see lines like
+         MAGIC LINK for $EMAIL: token=<value>
+       Then run:
+         CLAW_DEV_BYPASS_TOKEN=<value> make dev-bypass
+
+MSG
+    exit 1
+fi
 JWT=$(curl -fsS -X POST "$API/v1/auth/verify" -H 'Content-Type: application/json' \
      -d "{\"token\":\"$TOK\"}" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
 

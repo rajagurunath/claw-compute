@@ -64,6 +64,13 @@ help:
 	@echo "                        (no-login mode for browsing all pages)"
 	@echo "    make dev-bypass-off Remove the bypass flags"
 	@echo ""
+	@echo "  Drive the worker (requires 'make up' so api.log exists):"
+	@echo "    make demo-start  EMAIL=you@example.com [MSG=\"hi\"]"
+	@echo "                        Hire offering, transition to active, send chat"
+	@echo "    make demo-chat   EMAIL=... BID=... MSG=\"...\""
+	@echo "    make demo-cancel EMAIL=... BID=..."
+	@echo "    make demo-show   EMAIL=... BID=..."
+	@echo ""
 	@echo "  Cleanup:"
 	@echo "    make clean          Stop everything, drop DB volume, remove .pids/.logs"
 	@echo ""
@@ -105,10 +112,12 @@ migrate: db-up
 
 .PHONY: api web worker-build worker-run worker-test
 api: db-up migrate
+	@mkdir -p $(LOGS_DIR)
 	@echo "→ FastAPI on http://localhost:8000"
-	@echo "  Magic-link tokens will appear here as 'MAGIC LINK for <email>: token=...'"
+	@echo "  Magic-link tokens print here AND tee to $(LOGS_DIR)/api.log"
+	@echo "  (so 'make demo-start' can grep them automatically)"
 	@echo
-	cd $(BACKEND) && uv run uvicorn claw_api.main:app --host 0.0.0.0 --port 8000 --reload
+	cd $(BACKEND) && uv run uvicorn claw_api.main:app --host 0.0.0.0 --port 8000 --reload 2>&1 | tee -a $(LOGS_DIR)/api.log
 
 web:
 	@echo "→ Next.js dev on http://localhost:3000"
@@ -227,7 +236,28 @@ test-web:
 # ---------------------------------------------------------------------------
 # Demo helpers
 
-.PHONY: magic seed-demo dev-bypass dev-bypass-off
+.PHONY: magic seed-demo dev-bypass dev-bypass-off demo-start demo-chat demo-cancel demo-show
+# Drive the worker end-to-end without touching the UI.
+#   make demo-start  EMAIL=you@example.com [MSG="hi"] [OFFERING_ID=...]
+#   make demo-chat   EMAIL=... BID=... MSG="another"
+#   make demo-cancel EMAIL=... BID=...
+#   make demo-show   EMAIL=... BID=...
+demo-start:
+	@if [ -z "$(EMAIL)" ]; then echo "usage: make demo-start EMAIL=you@example.com [MSG=...] [OFFERING_ID=...]"; exit 1; fi
+	@bash $(ROOT)/scripts/demo-flow.sh start "$(EMAIL)" "$(MSG)" "$(OFFERING_ID)"
+
+demo-chat:
+	@if [ -z "$(EMAIL)" ] || [ -z "$(BID)" ] || [ -z "$(MSG)" ]; then echo "usage: make demo-chat EMAIL=... BID=... MSG=\"...\""; exit 1; fi
+	@bash $(ROOT)/scripts/demo-flow.sh chat "$(EMAIL)" "$(BID)" "$(MSG)"
+
+demo-cancel:
+	@if [ -z "$(EMAIL)" ] || [ -z "$(BID)" ]; then echo "usage: make demo-cancel EMAIL=... BID=..."; exit 1; fi
+	@bash $(ROOT)/scripts/demo-flow.sh cancel "$(EMAIL)" "$(BID)"
+
+demo-show:
+	@if [ -z "$(EMAIL)" ] || [ -z "$(BID)" ]; then echo "usage: make demo-show EMAIL=... BID=..."; exit 1; fi
+	@bash $(ROOT)/scripts/demo-flow.sh show "$(EMAIL)" "$(BID)"
+
 magic:
 	@if [ -z "$(EMAIL)" ]; then echo "usage: make magic EMAIL=you@example.com"; exit 1; fi
 	@curl -fsS -X POST http://localhost:8000/v1/auth/magic-link -H 'Content-Type: application/json' -d '{"email":"$(EMAIL)"}' >/dev/null
