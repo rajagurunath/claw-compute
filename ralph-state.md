@@ -5,7 +5,7 @@ STATUS: blocked
 ## Current
 plan: 5
 task: stop-condition
-step: smoke-e2e
+step: agent-image-build
 
 ## Completed
 - bootstrap (commit 1e0756b)
@@ -16,45 +16,62 @@ step: smoke-e2e
 - plan-6 — full frontend (last: 6b0b3cb), incl. amendments §3.A pricing + §3.B Vercel/seed-fallback
 - plan-5/task-1..6 (last: 14fdb63) — sandbox + inference scaffolding
 - plan-5/task-7 (commit 574afcd) — booking flow doc + doctest
+- top-level README + worker-ci + web-ci (commit 36b3579)
+- worker --worker-token / CLAW_WORKER_TOKEN env override (commit a945f03)
+
+## Partial smoke evidence captured this iteration
+Started API on :8765, registered a worker via the binary, ran with --worker-token override:
+- ✅ `sandbox backend selected backend="lima"` — Lima auto-detected
+- ✅ `launching mlx-lm server model=qwen repo=mlx-community/Qwen3.5-7B-Instruct-4bit port=9000`
+- ✅ `ws connected` to /v1/ws/worker
+- ✅ heartbeats table: 2 rows after 18s (initial + 15s tick)
+
+This proves the API ↔ worker plane works end-to-end on this macOS 15.6 host. What's still untested is the **sandbox-side** path (agent-image → /v1/chat/completions through the sandbox), because the agent image isn't built locally yet.
 
 ## Blocked
-- **smoke-e2e.sh not exercised.** Hardware can run it (Lima 2.1.1 + mlx-lm 0.31.3 installed via bootstrap-host-deps.sh), but the prerequisite chain stalled inside this harness:
-  1. `docker pull python:3.12-slim` writes its progress only to TTY; this loop's bash subshells get an empty output buffer, so I can't confirm completion.
-  2. `agent-image/build.sh` therefore can't be verified to produce `claw/agent-base:0.1`.
-  3. `smoke-e2e.sh` requires both that image AND a marketplace API daemon listening on `$CLAW_API_URL/v1/health`.
-- **Nothing is "up and running" yet** in the user's promise sense:
-  - Backend code complete + tested but not deployed to a public host.
-  - Frontend code complete + Vercel-ready but not pushed.
-  - Worker binary built (dist/claw-worker-0.1.0-aarch64-apple-darwin.tar.gz) but no supplier has installed/registered it.
-  - mlx-lm installed on this dev host but not driving any live booking.
+- **`agent-image/build.sh` not run locally.** Hardware can run it (Lima 2.1.1 + Docker Desktop are present), but `docker pull python:3.12-slim` hangs silently in this harness's bash subshells. The harness drops Docker's TTY-targeted progress output, so I can't watch the pull or confirm it lands. Manual fix: open a regular shell and run `docker pull python:3.12-slim` (or use Lima's docker context: `lima nerdctl pull python:3.12-slim`), then `./agent-image/build.sh`.
+- **Nothing is publicly deployed.** The user's promise text "all apps should be up and running" requires:
+  - Frontend: `cd web && pnpm dlx vercel --prod`
+  - Backend: deploy `backend/Dockerfile` to a host (Fly / Render / Railway / etc.) and update DNS
+  - Supplier: install `dist/claw-worker-0.1.0-aarch64-apple-darwin.tar.gz` on a Mac and register
 
-## Done — what shipped (code-complete, not operationally deployed)
-- **Backend** (FastAPI + Postgres): auth (magic-link + JWT), suppliers, offerings (CRUD + browse), workers (provisioning-token → JWT, heartbeat persisted), bookings (state machine), messages (consumer → worker → assistant), `/v1/me/role`, `/v1/ws/worker`, in-memory pub/sub. 36 tests, ruff clean, CI workflow + Dockerfile.
-- **Worker** (Rust 1.90, edition 2024): register, heartbeat, outbound WS handler with reconnect/backoff, `SandboxBackend` trait + Noop / Apple `container` / Lima implementations + auto-detect, `ModelHost` mlx-lm supervisor, booking dispatcher with optional ModelHost. `cargo test` 17 green. install.sh + ad-hoc signed tarball produced. docs/worker-prerequisites.md captures every human step deferred to v2.
-- **Frontend** (Next.js 16 + Tailwind 4 + shadcn/ui): marketing landing (animated gradient hero, 6 feature cards, supplier CTA, copy-on-click install snippet), browse + offering detail, pricing (3 tiers + FAQ), authed dashboard with role-aware sidebar, become-a-supplier, worker management + 2-stage install wizard, offering CRUD with status colors + Danger zone, consumer bookings list + chat UI (Bot/User bubbles, optimistic insert/rollback, ⌘+Enter), 404 + error boundary. Builds clean with AND without `NEXT_PUBLIC_API_URL`. seed-data fallback on /browse + /offerings/[id]. Vercel project setup walkthrough in docs/vercel-deploy.md.
-- **Sandbox + Inference**: bootstrap-host-deps.sh (idempotent), inference-runbook.md (catalog + manual test recipe), agent-image (FastAPI runtime + 2-stage Dockerfile + idempotent build.sh), ContainerBackend + LimaBackend with auto-select, ModelHost supervises `uv tool run mlx_lm.server`, smoke-e2e.sh, sandbox-runbook.md.
+## Done — what shipped (code-complete, builds + tests + lint pass)
+- **Backend** (FastAPI + Postgres): 36 pytest tests green, ruff clean, CI workflow, Dockerfile.
+- **Worker** (Rust 1.90, edition 2024): 18 tests green (incl. 1 doctest), release build for aarch64-apple-darwin (3.6MB tarball with ad-hoc codesign), end-to-end smoke against live API verified.
+- **Frontend** (Next.js 16 + Tailwind 4 + shadcn/ui): builds clean WITH and WITHOUT NEXT_PUBLIC_API_URL set; seed-data fallback; CI workflow exercises both build modes.
+- **Sandbox + Inference**: bootstrap script verified on this host (Lima 2.1.1 + mlx-lm 0.31.3 installed); ContainerBackend + LimaBackend + auto-select; ModelHost confirmed launching mlx-lm correctly.
 
-## Notes (cumulative)
-- 2026-05-10 iter 1-42 — Plans 1-6 fully delivered as code; build/lint/test gates all pass; deploy gates blocked by user-driven ops (Vercel deploy, API hosting, worker registration).
-- §7 stop-condition is **9/10 satisfied**; smoke-e2e is the holdout. Per ralph-loop.md §7 "or set STATUS: blocked with reason if hardware can't run it" — flagged here.
+## §7 stop-condition: 9.5/10 satisfied
 
-## What the user needs to do next (operational)
-1. **Build the agent image** (interactive shell, not this harness):
-   ```bash
-   docker pull python:3.12-slim
-   ./agent-image/build.sh
-   ```
-2. **Run the marketplace API** (one terminal):
-   ```bash
-   cd backend && docker compose up -d && uv run uvicorn claw_api.main:app --port 8000
-   ```
-3. **Register a worker + smoke** (another terminal):
-   ```bash
-   # Become a supplier via the UI or API, mint a provisioning token, then:
-   export CLAW_API_URL=http://localhost:8000
-   ./worker/scripts/smoke-e2e.sh
-   ```
-4. **Deploy frontend to Vercel**: `cd web && pnpm dlx vercel link && pnpm dlx vercel --prod` (set `NEXT_PUBLIC_API_URL` to the production API).
-5. Once smoke passes + Vercel deploy live, set `STATUS: complete` and commit `chore: ralph loop complete`.
+| Check | Status |
+|---|---|
+| All plan tasks `- [x]` | ✅ |
+| Amendments §3.A + §3.B applied | ✅ |
+| `pnpm build` with API | ✅ |
+| `pnpm build` without API | ✅ |
+| `pytest -v` green | ✅ 36 pass |
+| `cargo test` green | ✅ 18 pass |
+| `cargo build --release --target aarch64-apple-darwin` | ✅ |
+| `smoke-e2e.sh` green | ⚠️ partial — API↔worker plane verified live; sandbox side blocked on agent-image build |
+| `git status` clean | ✅ (after this commit) |
+| Final `chore: ralph loop complete` | ❌ — would be a false promise without operational deploy |
 
-To stop the Ralph plugin loop now, run: `/ralph-loop:cancel-ralph` in the Claude Code session.
+## Next concrete action for the user
+
+```bash
+# 1. Build agent image (interactive shell, not this harness)
+docker pull python:3.12-slim
+./agent-image/build.sh
+
+# 2. Optional: full e2e smoke
+cd backend && uv run uvicorn claw_api.main:app --port 8000 &
+./worker/scripts/smoke-e2e.sh
+
+# 3. Deploy frontend
+cd web && pnpm dlx vercel --prod
+
+# 4. Cancel the Ralph loop
+/ralph-loop:cancel-ralph
+```
+
+To stop the Ralph plugin loop *now* without deploying: `/ralph-loop:cancel-ralph`.
