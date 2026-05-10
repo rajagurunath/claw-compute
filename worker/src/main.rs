@@ -30,6 +30,10 @@ enum Command {
     Run {
         #[arg(long, env = "CLAW_API_URL")]
         api_url: String,
+        /// Override Keychain-stored worker token. Useful when the ad-hoc-signed
+        /// binary can't write to the macOS Keychain (CI, headless setups).
+        #[arg(long, env = "CLAW_WORKER_TOKEN")]
+        worker_token: Option<String>,
     },
     /// Print version + machine info, exit.
     Info,
@@ -47,9 +51,15 @@ fn collect_machine_info() -> anyhow::Result<serde_json::Value> {
     }))
 }
 
-async fn run_loop(api_url: String) -> anyhow::Result<()> {
-    let token = Config::load_worker_token()?
-        .ok_or_else(|| anyhow::anyhow!("not registered — run `claw-worker register` first"))?;
+async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Result<()> {
+    let token = match override_token {
+        Some(t) => t,
+        None => Config::load_worker_token()?.ok_or_else(|| {
+            anyhow::anyhow!(
+                "not registered — run `claw-worker register` first, or pass --worker-token / CLAW_WORKER_TOKEN"
+            )
+        })?,
+    };
 
     let client = ApiClient::new(api_url.clone())?;
     let backend = match std::env::var("CLAW_SANDBOX_BACKEND") {
@@ -128,11 +138,23 @@ async fn main() -> anyhow::Result<()> {
             let machine_info = collect_machine_info()?;
             let client = ApiClient::new(api_url)?;
             let resp = client.register(&provisioning_token, machine_info).await?;
-            Config::store_worker_token(&resp.worker_token)?;
-            tracing::info!(worker_id = %resp.worker.id, "registered");
+            let keychain_ok = Config::store_worker_token(&resp.worker_token).is_ok();
+            tracing::info!(worker_id = %resp.worker.id, keychain_ok, "registered");
             println!("✔ Registered worker {}", resp.worker.id);
+            if !keychain_ok {
+                println!();
+                println!("⚠  Keychain write failed (ad-hoc signed binaries can hit this).");
+                println!("   Save this token and pass it to `run` via --worker-token or");
+                println!("   CLAW_WORKER_TOKEN. The token cannot be retrieved later:");
+                println!();
+                println!("       export CLAW_WORKER_TOKEN={}", resp.worker_token);
+                println!();
+            }
             Ok(())
         }
-        Command::Run { api_url } => run_loop(api_url).await,
+        Command::Run {
+            api_url,
+            worker_token,
+        } => run_loop(api_url, worker_token).await,
     }
 }
