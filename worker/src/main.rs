@@ -7,7 +7,7 @@ use claw_worker::booking::{BookingHandler, MODEL_HOST_PORT};
 use claw_worker::config::Config;
 use claw_worker::inference::ModelHost;
 use claw_worker::metrics::Sampler;
-use claw_worker::sandbox::registry::pick_backend;
+use claw_worker::sandbox::registry::{auto as auto_backend, pick_backend};
 use claw_worker::state::State;
 
 #[derive(Parser)]
@@ -52,8 +52,10 @@ async fn run_loop(api_url: String) -> anyhow::Result<()> {
         .ok_or_else(|| anyhow::anyhow!("not registered — run `claw-worker register` first"))?;
 
     let client = ApiClient::new(api_url.clone())?;
-    let backend_name = std::env::var("CLAW_SANDBOX_BACKEND").unwrap_or_else(|_| "noop".into());
-    let backend = pick_backend(&backend_name);
+    let backend = match std::env::var("CLAW_SANDBOX_BACKEND") {
+        Ok(name) => pick_backend(&name),
+        Err(_) => auto_backend(),
+    };
     tracing::info!(backend = backend.name(), "sandbox backend selected");
 
     let state = Arc::new(tokio::sync::Mutex::new(State::open(&Config::db_path()?)?));

@@ -1,4 +1,5 @@
 pub mod container;
+pub mod lima;
 pub mod noop;
 pub mod registry;
 
