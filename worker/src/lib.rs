@@ -1,7 +1,10 @@
 pub mod api;
+pub mod attestation;
 pub mod booking;
 pub mod config;
+pub mod hardening;
 pub mod inference;
 pub mod metrics;
+pub mod redaction;
 pub mod sandbox;
 pub mod state;

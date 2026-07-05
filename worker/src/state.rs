@@ -4,6 +4,23 @@ use anyhow::Result;
 use chrono::{DateTime, Utc};
 use rusqlite::{Connection, params};
 
+/// Lock a file to owner-read/write only (0600). No-op on non-unix.
+/// Best-effort — a failure just gets logged, we don't refuse to run.
+fn lock_perms(path: &Path) {
+    #[cfg(unix)]
+    {
+        use std::fs;
+        use std::os::unix::fs::PermissionsExt;
+        if let Err(e) = fs::set_permissions(path, fs::Permissions::from_mode(0o600)) {
+            tracing::warn!(?path, error = ?e, "failed to chmod 0600");
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = path;
+    }
+}
+
 pub struct State {
     conn: Connection,
 }
@@ -20,6 +37,20 @@ pub struct BookingRow {
 impl State {
     pub fn open(path: &Path) -> Result<Self> {
         let conn = Connection::open(path)?;
+        // Tighten perms before we write anything sensitive (booking metadata,
+        // sandbox ids). Doesn't stop the same-UID operator; does stop other
+        // users on the same Mac from reading it.
+        lock_perms(path);
+        // SQLite side-files inherit umask, so we lock them too if they've
+        // been created (best-effort — silently skip if not present yet).
+        for suffix in ["-wal", "-shm", "-journal"] {
+            let mut side = path.as_os_str().to_owned();
+            side.push(suffix);
+            let side = std::path::PathBuf::from(side);
+            if side.exists() {
+                lock_perms(&side);
+            }
+        }
         conn.execute_batch(
             r#"
             CREATE TABLE IF NOT EXISTS bookings (

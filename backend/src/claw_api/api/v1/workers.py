@@ -22,12 +22,13 @@ from claw_api.deps import current_user, current_worker
 from claw_api.models.heartbeats import Heartbeat
 from claw_api.models.suppliers import Supplier
 from claw_api.models.users import User
-from claw_api.models.workers import Worker, WorkerStatus
+from claw_api.models.workers import TrustLevel, Worker, WorkerStatus
 from claw_api.realtime import channel_for_worker, register, unregister
 from claw_api.schemas.workers import (
     HeartbeatRequest,
     ProvisioningTokenRequest,
     ProvisioningTokenResponse,
+    WorkerAttestation,
     WorkerList,
     WorkerOut,
     WorkerRegisterRequest,
@@ -98,11 +99,43 @@ async def register_worker(
     matched.machine_info = payload.machine_info
     matched.provisioning_token_hash = None
     matched.last_seen_at = datetime.now(UTC)
+    now = datetime.now(UTC)
+    if payload.pubkey_x25519:
+        matched.pubkey_x25519 = payload.pubkey_x25519
+        # Worker holds a persisted X25519 identity we can seal to — call
+        # that self_signed. Hardware tier requires Apple MDA (Phase 3).
+        matched.trust_level = TrustLevel.SELF_SIGNED.value
+        matched.attested_at = now
     await db.commit()
     await db.refresh(matched)
     return WorkerRegisterResponse(
         worker_token=encode_worker_token(matched.id),
         worker=WorkerOut.model_validate(matched),
+    )
+
+
+@router.get("/workers/{worker_id}/attestation", response_model=WorkerAttestation)
+async def worker_attestation(
+    worker_id: str, db: AsyncSession = Depends(get_db)
+) -> WorkerAttestation:
+    """Public: anyone can inspect a worker's attestation posture. Used by
+    consumers who want to verify what they're about to route inference through.
+    """
+    w = (
+        await db.execute(select(Worker).where(Worker.id == worker_id))
+    ).scalar_one_or_none()
+    if w is None:
+        raise HTTPException(404, "not found")
+    info = w.machine_info or {}
+    return WorkerAttestation(
+        id=w.id,
+        name=w.name,
+        trust_level=w.trust_level,
+        pubkey_x25519=w.pubkey_x25519,
+        chip=info.get("chip") or info.get("arch"),
+        os=info.get("os"),
+        attested_at=w.attested_at,
+        last_seen_at=w.last_seen_at,
     )
 
 

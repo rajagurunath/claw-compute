@@ -33,6 +33,9 @@ sysinfo = "0.32"
 dirs = "6"
 which = "7"
 tempfile = "3"
+crypto_box = { version = "0.9", features = ["std", "salsa20"] }
+base64 = "0.22"
+rand = "0.8"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 keyring = "3"

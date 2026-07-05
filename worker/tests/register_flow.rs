@@ -24,7 +24,7 @@ async fn register_exchanges_provisioning_token() {
 
     let client = ApiClient::new(server.uri()).unwrap();
     let resp: WorkerRegisterResponse = client
-        .register("provtoken", serde_json::json!({"chip": "Apple M3 Max"}))
+        .register("provtoken", serde_json::json!({"chip": "Apple M3 Max"}), None)
         .await
         .unwrap();
     assert_eq!(resp.worker_token, "wjwt.test");
@@ -41,6 +41,6 @@ async fn register_returns_error_on_401() {
         .await;
 
     let client = ApiClient::new(server.uri()).unwrap();
-    let result = client.register("bad", serde_json::Value::Null).await;
+    let result = client.register("bad", serde_json::Value::Null, None).await;
     assert!(result.is_err());
 }

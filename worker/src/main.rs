@@ -3,8 +3,10 @@ use std::sync::Arc;
 use clap::{Parser, Subcommand};
 use claw_worker::api::client::ApiClient;
 use claw_worker::api::types::HeartbeatRequest;
+use claw_worker::attestation::Identity;
 use claw_worker::booking::{BookingHandler, MODEL_HOST_PORT};
 use claw_worker::config::Config;
+use claw_worker::hardening;
 use claw_worker::inference::ModelHost;
 use claw_worker::metrics::Sampler;
 use claw_worker::sandbox::registry::{auto as auto_backend, pick_backend};
@@ -52,6 +54,15 @@ fn collect_machine_info() -> anyhow::Result<serde_json::Value> {
 }
 
 async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Result<()> {
+    // Lock the process BEFORE we touch any secret material. If PT_DENY_ATTACH
+    // fails we log and continue — the worker still runs, just with weaker
+    // guarantees for this session.
+    hardening::apply_all();
+
+    let identity = Identity::load_or_create()
+        .map_err(|e| anyhow::anyhow!("attestation identity setup failed: {e}"))?;
+    tracing::info!(pubkey = %identity.public().pubkey_x25519, "attestation identity ready");
+
     let token = match override_token {
         Some(t) => t,
         None => Config::load_worker_token()?.ok_or_else(|| {
@@ -110,7 +121,7 @@ async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Re
     });
 
     // WS loop runs forever (reconnects internally).
-    claw_worker::api::ws::run_ws(&api_url, &token, move |ev| {
+    claw_worker::api::ws::run_ws(&api_url, &token, identity, move |ev| {
         let handler = handler.clone();
         async move { handler.dispatch(ev).await }
     })
@@ -120,6 +131,7 @@ async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Re
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
+        .fmt_fields(claw_worker::redaction::RedactingFields)
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_from_default_env()
                 .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
@@ -138,8 +150,16 @@ async fn main() -> anyhow::Result<()> {
             provisioning_token,
         } => {
             let machine_info = collect_machine_info()?;
+            let identity = Identity::load_or_create()?;
+            let pub_ = identity.public();
             let client = ApiClient::new(api_url)?;
-            let resp = client.register(&provisioning_token, machine_info).await?;
+            let resp = client
+                .register(
+                    &provisioning_token,
+                    machine_info,
+                    Some(&pub_.pubkey_x25519),
+                )
+                .await?;
             let keychain_ok = Config::store_worker_token(&resp.worker_token).is_ok();
             tracing::info!(worker_id = %resp.worker.id, keychain_ok, "registered");
             println!("✔ Registered worker {}", resp.worker.id);

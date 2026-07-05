@@ -14,6 +14,10 @@ pub struct WorkerOut {
 pub struct WorkerRegisterRequest<'a> {
     pub provisioning_token: &'a str,
     pub machine_info: serde_json::Value,
+    /// Long-lived X25519 identity, base64-encoded. Backend seals per-request
+    /// payloads to this key so the operator can't read prompts even with root.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pubkey_x25519: Option<&'a str>,
 }
 
 #[derive(Debug, Deserialize)]

@@ -13,6 +13,8 @@ class WorkerOut(BaseModel):
     status: str
     last_seen_at: datetime | None
     machine_info: dict
+    trust_level: str = "none"
+    pubkey_x25519: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -25,6 +27,21 @@ class ProvisioningTokenResponse(BaseModel):
 class WorkerRegisterRequest(BaseModel):
     provisioning_token: str
     machine_info: dict = Field(default_factory=dict)
+    # base64(32) X25519 public key. Optional so older workers still register.
+    pubkey_x25519: str | None = Field(default=None, max_length=64)
+
+
+class WorkerAttestation(BaseModel):
+    """Public attestation record for a worker — safe to expose unauthenticated."""
+
+    id: str
+    name: str
+    trust_level: str
+    pubkey_x25519: str | None
+    chip: str | None
+    os: str | None
+    attested_at: datetime | None
+    last_seen_at: datetime | None
 
 
 class WorkerRegisterResponse(BaseModel):

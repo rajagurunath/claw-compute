@@ -1,9 +1,11 @@
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from claw_api.api.v1._trust import set_trust_headers
+from claw_api.crypto import SealError, seal_for_worker
 from claw_api.db import get_db
 from claw_api.deps import current_user
 from claw_api.models.bookings import VALID_TRANSITIONS, Booking, BookingStatus
@@ -68,10 +70,16 @@ async def my_bookings(
 @router.get("/bookings/{booking_id}", response_model=BookingOut)
 async def get_booking(
     booking_id: str,
+    response: Response,
     user: User = Depends(current_user),
     db: AsyncSession = Depends(get_db),
 ) -> Booking:
     booking = await _load_party(db, booking_id, user)
+    worker = (
+        await db.execute(select(Worker).where(Worker.id == booking.worker_id))
+    ).scalar_one_or_none()
+    if worker is not None:
+        set_trust_headers(response, worker)
     return booking
 
 
@@ -79,6 +87,7 @@ async def get_booking(
 async def transition_booking(
     booking_id: str,
     payload: BookingTransition,
+    response: Response,
     user: User = Depends(current_user),
     db: AsyncSession = Depends(get_db),
 ) -> Booking:
@@ -100,11 +109,24 @@ async def transition_booking(
     # Push to the worker's outbound WebSocket. Fire-and-forget: a missing
     # subscriber just drops the message, the worker reconciles on reconnect.
     channel = channel_for_worker(booking.worker_id)
+    worker = (
+        await db.execute(select(Worker).where(Worker.id == booking.worker_id))
+    ).scalar_one()
+    set_trust_headers(response, worker)
+
+    async def _seal_or_plain(inner_type: str, inner: dict) -> None:
+        """Seal to the worker's pubkey when it has one, else fall back to
+        plaintext (older workers on the pre-attestation build)."""
+        try:
+            envelope = seal_for_worker(worker.pubkey_x25519, inner_type, inner)
+            await publish(channel, envelope)
+        except SealError:
+            await publish(channel, {"type": inner_type, **inner})
+
     if payload.to == BookingStatus.ACTIVE.value:
-        await publish(
-            channel,
+        await _seal_or_plain(
+            "booking_activated",
             {
-                "type": "booking_activated",
                 "booking_id": booking.id,
                 "offering_id": booking.offering_id,
                 "agent_config": {},
@@ -114,10 +136,9 @@ async def transition_booking(
         BookingStatus.COMPLETED.value,
         BookingStatus.CANCELLED.value,
     ):
-        await publish(
-            channel,
-            {"type": "booking_cancelled", "booking_id": booking.id},
-        )
+        # Cancellation doesn't carry secret content — could ship plaintext,
+        # but sealing keeps the WS-log surface homogeneous.
+        await _seal_or_plain("booking_cancelled", {"booking_id": booking.id})
     return booking
 
 

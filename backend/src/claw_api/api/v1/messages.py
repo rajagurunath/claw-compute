@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from claw_api.api.v1._trust import set_trust_headers
+from claw_api.crypto import SealError, seal_for_worker
 from claw_api.db import get_db
 from claw_api.deps import current_user, current_worker
 from claw_api.models.bookings import Booking
@@ -35,6 +37,7 @@ async def _booking_for_consumer(
 async def send_message(
     booking_id: str,
     payload: MessageCreate,
+    response: Response,
     user: User = Depends(current_user),
     db: AsyncSession = Depends(get_db),
 ) -> Message:
@@ -45,14 +48,20 @@ async def send_message(
     db.add(msg)
     await db.commit()
     await db.refresh(msg)
-    await publish(
-        channel_for_worker(booking.worker_id),
-        {
-            "type": "message_user",
-            "booking_id": booking.id,
-            "content": payload.content,
-        },
-    )
+    worker = (
+        await db.execute(select(Worker).where(Worker.id == booking.worker_id))
+    ).scalar_one()
+    set_trust_headers(response, worker)
+    inner = {"booking_id": booking.id, "content": payload.content}
+    try:
+        envelope = seal_for_worker(worker.pubkey_x25519, "message_user", inner)
+        await publish(channel_for_worker(booking.worker_id), envelope)
+    except SealError:
+        # Older worker without a registered pubkey — fall back to plaintext.
+        await publish(
+            channel_for_worker(booking.worker_id),
+            {"type": "message_user", **inner},
+        )
     return msg
 
 

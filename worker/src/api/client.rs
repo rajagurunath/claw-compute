@@ -31,10 +31,12 @@ impl ApiClient {
         &self,
         provisioning_token: &str,
         machine_info: Value,
+        pubkey_x25519: Option<&str>,
     ) -> Result<WorkerRegisterResponse> {
         let body = WorkerRegisterRequest {
             provisioning_token,
             machine_info,
+            pubkey_x25519,
         };
         let resp = self
             .http

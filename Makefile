@@ -91,7 +91,11 @@ install:
 db-up:
 	cd $(BACKEND) && docker compose up -d
 	@until docker compose -f $(BACKEND)/docker-compose.yml ps --format json 2>/dev/null | grep -q '"Health":"healthy"'; do sleep 1; done
-	@echo "✔ db healthy on :5432"
+	@docker compose -f $(BACKEND)/docker-compose.yml exec -T db \
+	  psql -U claw -d claw_dev -tAc "SELECT 1 FROM pg_database WHERE datname='claw_test'" | grep -q 1 || \
+	  docker compose -f $(BACKEND)/docker-compose.yml exec -T db \
+	    psql -U claw -d claw_dev -c "CREATE DATABASE claw_test" >/dev/null
+	@echo "✔ db healthy on :5432 (claw_dev + claw_test)"
 
 db-down:
 	cd $(BACKEND) && docker compose down

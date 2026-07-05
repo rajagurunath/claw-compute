@@ -167,6 +167,12 @@ impl BookingHandler {
                 booking_id,
                 content,
             } => self.relay_message(&booking_id, &content).await,
+            // The WS layer opens Sealed envelopes before dispatch, so we
+            // should never see one here. Treat as a bug and drop silently.
+            WorkerEvent::Sealed(_) => {
+                tracing::warn!("dispatch: unexpected sealed event reached handler");
+                Ok(())
+            }
         }
     }
 

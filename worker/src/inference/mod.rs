@@ -9,6 +9,40 @@ use tokio::sync::Mutex;
 
 use models::{ModelEntry, lookup};
 
+/// Best-effort child-side hardening applied in the pre-exec window (after
+/// fork, before execv into `mlx_lm.server`). Returning an error from here
+/// aborts the exec.
+///
+/// * `PT_DENY_ATTACH` — the mach flag denies future ptrace attaches. It
+///   is preserved across exec on macOS, so setting it here protects the
+///   Python inference process from operator debuggers.
+/// * `RLIMIT_CORE = 0` — no core dump if mlx crashes. Rlimits are
+///   inherited across exec.
+///
+/// All failures are swallowed (best-effort defense-in-depth).
+#[cfg(target_os = "macos")]
+fn preexec_harden() -> std::io::Result<()> {
+    use std::os::raw::c_int;
+    const PT_DENY_ATTACH: c_int = 31;
+    const RLIMIT_CORE: c_int = 4;
+    #[repr(C)]
+    struct Rlimit {
+        cur: u64,
+        max: u64,
+    }
+    unsafe extern "C" {
+        fn ptrace(request: c_int, pid: c_int, addr: *mut u8, data: c_int) -> c_int;
+        fn setrlimit(resource: c_int, rlim: *const Rlimit) -> c_int;
+    }
+    // SAFETY: these two FFI calls only touch the current process. Any failure
+    // is intentionally ignored — we'd rather run a slightly-less-hardened
+    // subprocess than fail to spawn.
+    let _ = unsafe { ptrace(PT_DENY_ATTACH, 0, std::ptr::null_mut(), 0) };
+    let rl = Rlimit { cur: 0, max: 0 };
+    let _ = unsafe { setrlimit(RLIMIT_CORE, &rl) };
+    Ok(())
+}
+
 pub struct ModelHost {
     inner: Arc<Mutex<HostState>>,
 }
@@ -55,25 +89,35 @@ impl ModelHost {
         }
         tracing::info!(model = %entry.id, repo = %entry.hf_repo, port, "launching mlx-lm server");
         let uv = which::which("uv").context("`uv` not on PATH (run bootstrap-host-deps.sh)")?;
-        let child = Command::new(&uv)
-            .args([
-                "tool",
-                "run",
-                "--from",
-                "mlx-lm",
-                "mlx_lm.server",
-                "--model",
-                entry.hf_repo,
-                "--host",
-                "127.0.0.1",
-                "--port",
-                &port.to_string(),
-            ])
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .kill_on_drop(true)
-            .spawn()
-            .context("spawning mlx_lm.server")?;
+        let mut cmd = Command::new(&uv);
+        cmd.args([
+            "tool",
+            "run",
+            "--from",
+            "mlx-lm",
+            "mlx_lm.server",
+            "--model",
+            entry.hf_repo,
+            "--host",
+            "127.0.0.1",
+            "--port",
+            &port.to_string(),
+        ])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .kill_on_drop(true);
+
+        // SAFETY: preexec_harden only calls async-signal-safe FFI (ptrace,
+        // setrlimit) with no heap allocation. It never blocks, never spawns
+        // threads, and returns before execv runs — satisfying pre_exec's
+        // signal-safety contract. `tokio::process::Command::pre_exec` is a
+        // native method on unix (no trait import required).
+        #[cfg(target_os = "macos")]
+        unsafe {
+            cmd.pre_exec(preexec_harden);
+        }
+
+        let child = cmd.spawn().context("spawning mlx_lm.server")?;
         state.current = Some(Running {
             model: entry,
             child,
