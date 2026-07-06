@@ -33,7 +33,7 @@ function Hero() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 -top-32 -z-10 transform-gpu blur-3xl"
       >
-        <div className="relative left-1/2 aspect-square h-72 -translate-x-1/2 rounded-full bg-gradient-to-tr from-emerald-500/20 via-cyan-400/20 to-violet-500/20" />
+        <div className="relative left-1/2 aspect-square h-72 -translate-x-1/2 rounded-full bg-[rgb(var(--crimson))]/15" />
       </div>
       <div className="mx-auto max-w-3xl px-6 pt-20 pb-12 text-center md:pt-28">
         <p className="mb-3 text-sm font-medium uppercase tracking-wider text-muted-foreground">
@@ -44,9 +44,13 @@ function Hero() {
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-balance text-muted-foreground md:text-lg">
           Suppliers keep {100 - COMMISSION_PERCENT}% of every dollar. The
-          marketplace takes a flat {COMMISSION_PERCENT}% to cover Stripe fees,
-          attestation infra, and ops. No tiers, no upsells, no monthly
-          subscription.
+          marketplace takes a flat {COMMISSION_PERCENT}% to cover settlement,
+          attestation infra, and ops. Payouts land via Stripe or as USDC
+          on-chain — every settlement is public on{" "}
+          <Link href="/ledger" className="text-foreground underline underline-offset-2 hover:text-accent-crimson">
+            the ledger
+          </Link>
+          . No tiers, no upsells, no monthly subscription.
         </p>
       </div>
     </section>
@@ -72,15 +76,15 @@ function TierCard({ tier }: { tier: PricingTier }) {
     <div
       className={cn(
         "relative flex flex-col overflow-hidden rounded-2xl border bg-card p-6",
-        isHighlight && "border-foreground/30 shadow-lg",
-        !isHighlight && "border-border/60",
+        isHighlight && "border-[rgb(var(--crimson))]/35 shadow-lg",
+        !isHighlight && "border-white/10",
         isMuted && "opacity-95",
       )}
     >
       {isHighlight && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 -top-px h-1 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-400"
+          className="pointer-events-none absolute inset-x-0 -top-px h-1 bg-gradient-to-r from-[rgb(var(--crimson))]/0 via-[rgb(var(--crimson))] to-[rgb(var(--crimson))]/0"
         />
       )}
       {tier.badge && (
@@ -105,7 +109,7 @@ function TierCard({ tier }: { tier: PricingTier }) {
       <ul className="mt-6 flex-1 space-y-3 text-sm">
         {tier.features.map((feat) => (
           <li key={feat} className="flex items-start gap-2.5">
-            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
+            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-settle" />
             <span className={cn(isMuted && "text-muted-foreground")}>{feat}</span>
           </li>
         ))}

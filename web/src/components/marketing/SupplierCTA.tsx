@@ -33,7 +33,8 @@ export function SupplierCTA() {
 
         <p className="mx-auto mt-5 max-w-xl text-balance text-muted-foreground md:text-lg">
           Run one curl, set your hourly rate, get paid when consumers hire your
-          machine. Pause any time. Earnings settle weekly through Stripe.
+          machine. Pause any time. Earn USDC straight to your payout wallet —
+          85% of every hour, settled on-chain.
         </p>
 
         {/* command box */}
@@ -63,7 +64,7 @@ export function SupplierCTA() {
         <div className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-3 text-left md:grid-cols-3">
           <Stat icon={<Coins className="h-4 w-4" />} title="$1.80 / hr" sub="avg M3 Max billing" />
           <Stat icon={<TrendingUp className="h-4 w-4" />} title="$430 / mo" sub="@ 60% utilization" />
-          <Stat icon={<Power className="h-4 w-4" />} title="88% kept" sub="flat 12% to platform" />
+          <Stat icon={<Power className="h-4 w-4" />} title="85% kept" sub="flat 15% to platform" />
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -110,7 +111,7 @@ function Stat({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-background/40 p-4">
-      <div className="grid h-9 w-9 place-items-center rounded-md border border-[rgb(var(--gold))]/30 bg-[rgb(var(--gold))]/10 text-[rgb(var(--gold))]">
+      <div className="grid h-9 w-9 place-items-center rounded-md border border-[rgb(var(--settle))]/30 bg-[rgb(var(--settle))]/10 text-settle">
         {icon}
       </div>
       <div>

@@ -48,73 +48,76 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* === Premium Noir palette ===
-   A confident, investor-grade palette built around the openclaw red.
-   Warm off-black base, ivory text, signature crimson accent, with gold
-   reserved for value/money moments and slate as the only cool tone.
-   No rainbow gradients, no neon multi-color shimmer. */
+/* === Ledger Ink palette ===
+   Financial-grade graphite base built around the openclaw red. The money
+   states of the escrow contract ARE the color system:
+     crimson — brand + primary action (the claw itself)
+     amber   — funds locked in escrow (open bookings)
+     settle  — USDC paid out (settled bookings)
+   Everything else stays neutral hairline-on-ink. No rainbow gradients. */
 :root {
-  --background: oklch(0.14 0.012 30);            /* warm off-black */
-  --foreground: oklch(0.96 0.012 80);            /* ivory */
-  --card: oklch(0.18 0.014 30);
-  --card-foreground: oklch(0.96 0.012 80);
-  --popover: oklch(0.16 0.014 30);
-  --popover-foreground: oklch(0.96 0.012 80);
+  --background: oklch(0.135 0.008 255);          /* graphite ink */
+  --foreground: oklch(0.955 0.004 100);          /* porcelain */
+  --card: oklch(0.17 0.009 255);
+  --card-foreground: oklch(0.955 0.004 100);
+  --popover: oklch(0.155 0.009 255);
+  --popover-foreground: oklch(0.955 0.004 100);
   --primary: oklch(0.62 0.21 25);                /* signature crimson */
   --primary-foreground: oklch(0.98 0.005 80);
-  --secondary: oklch(0.24 0.014 30);
-  --secondary-foreground: oklch(0.96 0.012 80);
-  --muted: oklch(0.21 0.012 30);
-  --muted-foreground: oklch(0.68 0.014 40);
-  --accent: oklch(0.78 0.13 75);                 /* warm gold */
-  --accent-foreground: oklch(0.18 0.014 30);
+  --secondary: oklch(0.22 0.01 255);
+  --secondary-foreground: oklch(0.955 0.004 100);
+  --muted: oklch(0.20 0.01 255);
+  --muted-foreground: oklch(0.67 0.012 255);
+  --accent: oklch(0.78 0.13 75);                 /* escrow amber */
+  --accent-foreground: oklch(0.17 0.009 255);
   --destructive: oklch(0.62 0.21 25);
-  --border: oklch(0.96 0.012 80 / 8%);
-  --input: oklch(0.96 0.012 80 / 12%);
+  --border: oklch(0.955 0.004 100 / 8%);
+  --input: oklch(0.955 0.004 100 / 12%);
   --ring: oklch(0.62 0.21 25 / 60%);
   --chart-1: oklch(0.62 0.21 25);                /* crimson */
-  --chart-2: oklch(0.78 0.13 75);                /* gold */
-  --chart-3: oklch(0.55 0.04 30);                /* warm slate */
-  --chart-4: oklch(0.72 0.10 50);                /* copper */
+  --chart-2: oklch(0.72 0.14 165);               /* settle green */
+  --chart-3: oklch(0.78 0.13 75);                /* escrow amber */
+  --chart-4: oklch(0.55 0.02 255);               /* slate */
   --chart-5: oklch(0.40 0.10 25);                /* deep crimson */
   --radius: 0.65rem;
-  --sidebar: oklch(0.16 0.014 30);
-  --sidebar-foreground: oklch(0.96 0.012 80);
+  --sidebar: oklch(0.155 0.009 255);
+  --sidebar-foreground: oklch(0.955 0.004 100);
   --sidebar-primary: oklch(0.62 0.21 25);
   --sidebar-primary-foreground: oklch(0.98 0.005 80);
-  --sidebar-accent: oklch(0.21 0.012 30);
-  --sidebar-accent-foreground: oklch(0.96 0.012 80);
-  --sidebar-border: oklch(0.96 0.012 80 / 8%);
+  --sidebar-accent: oklch(0.20 0.01 255);
+  --sidebar-accent-foreground: oklch(0.955 0.004 100);
+  --sidebar-border: oklch(0.955 0.004 100 / 8%);
   --sidebar-ring: oklch(0.62 0.21 25 / 50%);
 
   /* Brand tokens — used by inline rgb() expressions */
   --crimson: 218 41 56;        /* #DA2938 — refined claw red */
   --crimson-deep: 153 21 32;   /* #991520 */
   --crimson-glow: 255 80 95;   /* warmer for shadows */
-  --gold: 212 168 90;          /* #D4A85A — premium amber */
+  --gold: 212 168 90;          /* #D4A85A — funds locked in escrow */
   --gold-soft: 232 200 140;
-  --ivory: 245 240 230;        /* #F5F0E6 */
-  --slate: 132 128 124;
+  --settle: 61 214 155;        /* #3DD69B — USDC settled/paid */
+  --ivory: 242 243 245;        /* porcelain (name kept for compat) */
+  --slate: 126 130 138;
 }
 
 .dark {
-  --background: oklch(0.14 0.012 30);
-  --foreground: oklch(0.96 0.012 80);
-  --card: oklch(0.18 0.014 30);
-  --card-foreground: oklch(0.96 0.012 80);
-  --popover: oklch(0.16 0.014 30);
-  --popover-foreground: oklch(0.96 0.012 80);
+  --background: oklch(0.135 0.008 255);
+  --foreground: oklch(0.955 0.004 100);
+  --card: oklch(0.17 0.009 255);
+  --card-foreground: oklch(0.955 0.004 100);
+  --popover: oklch(0.155 0.009 255);
+  --popover-foreground: oklch(0.955 0.004 100);
   --primary: oklch(0.62 0.21 25);
   --primary-foreground: oklch(0.98 0.005 80);
-  --secondary: oklch(0.24 0.014 30);
-  --secondary-foreground: oklch(0.96 0.012 80);
-  --muted: oklch(0.21 0.012 30);
-  --muted-foreground: oklch(0.68 0.014 40);
+  --secondary: oklch(0.22 0.01 255);
+  --secondary-foreground: oklch(0.955 0.004 100);
+  --muted: oklch(0.20 0.01 255);
+  --muted-foreground: oklch(0.67 0.012 255);
   --accent: oklch(0.78 0.13 75);
-  --accent-foreground: oklch(0.18 0.014 30);
+  --accent-foreground: oklch(0.17 0.009 255);
   --destructive: oklch(0.62 0.21 25);
-  --border: oklch(0.96 0.012 80 / 8%);
-  --input: oklch(0.96 0.012 80 / 12%);
+  --border: oklch(0.955 0.004 100 / 8%);
+  --input: oklch(0.955 0.004 100 / 12%);
   --ring: oklch(0.62 0.21 25 / 60%);
 }
 
@@ -128,10 +131,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Single, restrained warm vignette — no rainbow blobs. */
+    /* Single, restrained vignette. */
     background-image:
-      radial-gradient(1400px 900px at 8% -10%, rgb(var(--crimson) / 0.10), transparent 65%),
-      radial-gradient(1100px 800px at 100% 110%, rgb(var(--gold) / 0.06), transparent 65%);
+      radial-gradient(1400px 900px at 8% -10%, rgb(var(--crimson) / 0.07), transparent 65%);
     background-attachment: fixed;
   }
   h1, h2, h3, h4 {
@@ -161,11 +163,9 @@
 @theme {
   --animate-claw-bob: claw-bob 3.6s ease-in-out infinite;
   --animate-claw-grip: claw-grip 4s ease-in-out infinite;
-  --animate-claw-stroll: claw-stroll var(--stroll-dur, 30s) linear infinite;
-  --animate-claw-stride: claw-stride 0.9s ease-in-out infinite;
-  --animate-claw-stride-rev: claw-stride-rev 0.9s ease-in-out infinite;
   --animate-glow-soft: glow-soft 3.6s ease-in-out infinite;
   --animate-marquee: marquee 36s linear infinite;
+  --animate-tape: marquee 48s linear infinite;
   --animate-shimmer: shimmer 8s ease-in-out infinite;
   --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -178,30 +178,6 @@
   0%, 100% { transform: scaleY(1)    scaleX(1); }
   48%      { transform: scaleY(0.92) scaleX(1.05); }
   52%      { transform: scaleY(0.92) scaleX(1.05); }
-}
-@keyframes claw-stroll {
-  /* Slow ambient walk across an arbitrary container width, left → right */
-  0%   { transform: translateX(-10vw); }
-  100% { transform: translateX(110vw); }
-}
-@keyframes claw-stroll-rev {
-  /* Slow ambient walk across an arbitrary container width, right → left */
-  0%   { transform: translateX(110vw) scaleX(-1); }
-  100% { transform: translateX(-15vw) scaleX(-1); }
-}
-@keyframes claw-stride {
-  /* Tiny vertical hop + sway used inside the strolling wrapper.
-     Combined with claw-stroll, the claw gets a believable walking gait. */
-  0%, 100% { transform: translateY(0)    rotate(-3deg); }
-  25%      { transform: translateY(-3px) rotate(3deg); }
-  50%      { transform: translateY(0)    rotate(-3deg); }
-  75%      { transform: translateY(-3px) rotate(3deg); }
-}
-@keyframes claw-stride-rev {
-  0%, 100% { transform: translateY(0)    rotate(3deg); }
-  25%      { transform: translateY(-3px) rotate(-3deg); }
-  50%      { transform: translateY(0)    rotate(3deg); }
-  75%      { transform: translateY(-3px) rotate(-3deg); }
 }
 @keyframes glow-soft {
   0%, 100% { filter: drop-shadow(0 0 8px rgb(var(--crimson-glow) / 0.35)); }
@@ -220,21 +196,13 @@
   100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* Fade footprint behind a walking claw */
-@keyframes footprint-fade {
-  0%   { opacity: 0.55; transform: translateY(0) scale(1); }
-  100% { opacity: 0;    transform: translateY(2px) scale(0.6); }
-}
-
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .motion-safe\:animate-claw-bob,
   .motion-safe\:animate-claw-grip,
-  .motion-safe\:animate-claw-stroll,
-  .motion-safe\:animate-claw-stride,
-  .motion-safe\:animate-claw-stride-rev,
   .motion-safe\:animate-glow-soft,
   .motion-safe\:animate-marquee,
+  .motion-safe\:animate-tape,
   .motion-safe\:animate-shimmer {
     animation: none !important;
   }
@@ -246,6 +214,14 @@
 }
 .text-accent-gold {
   color: rgb(var(--gold));
+}
+.text-settle {
+  color: rgb(var(--settle));
+}
+
+/* Money and metrics: aligned digits, always */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Premium hairline divider with a centered crimson dot */

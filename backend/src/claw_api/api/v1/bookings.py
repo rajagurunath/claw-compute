@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from claw_api.api.v1._trust import set_trust_headers
+from claw_api.chain import ChainSettlementError, settle_on_activate, settle_on_close
 from claw_api.crypto import SealError, seal_for_worker
 from claw_api.db import get_db
 from claw_api.deps import current_user
@@ -98,6 +99,27 @@ async def transition_booking(
             status.HTTP_400_BAD_REQUEST,
             f"cannot transition from {booking.status} to {payload.to}",
         )
+    offering = (
+        await db.execute(select(Offering).where(Offering.id == booking.offering_id))
+    ).scalar_one()
+    consumer = (
+        await db.execute(select(User).where(User.id == booking.consumer_user_id))
+    ).scalar_one()
+    supplier_row = (
+        await db.execute(select(Supplier).where(Supplier.id == offering.supplier_id))
+    ).scalar_one()
+
+    # Escrow lock BEFORE the booking goes active: if the consumer can't cover
+    # the on-chain lock, the machine never spins up.
+    if payload.to == BookingStatus.ACTIVE.value:
+        try:
+            await settle_on_activate(db, booking, offering, consumer, supplier_row)
+        except ChainSettlementError as exc:
+            raise HTTPException(
+                status.HTTP_402_PAYMENT_REQUIRED,
+                f"on-chain escrow lock failed: {exc}",
+            ) from exc
+
     booking.status = payload.to
     now = datetime.now(UTC)
     if payload.to == BookingStatus.ACTIVE.value:
@@ -106,6 +128,21 @@ async def transition_booking(
         booking.ended_at = now
     await db.commit()
     await db.refresh(booking)
+
+    # Charge actual usage once the booking closes. Best-effort: a chain
+    # failure is recorded on the public ledger, the transition stands.
+    if prev_status == BookingStatus.ACTIVE.value and payload.to in (
+        BookingStatus.COMPLETED.value,
+        BookingStatus.CANCELLED.value,
+    ):
+        await settle_on_close(
+            db,
+            booking,
+            offering,
+            consumer,
+            supplier_row,
+            cancelled=payload.to == BookingStatus.CANCELLED.value,
+        )
     # Push to the worker's outbound WebSocket. Fire-and-forget: a missing
     # subscriber just drops the message, the worker reconciles on reconnect.
     channel = channel_for_worker(booking.worker_id)

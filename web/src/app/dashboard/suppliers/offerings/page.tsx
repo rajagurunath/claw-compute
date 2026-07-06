@@ -17,9 +17,9 @@ import type { OfferingList } from "@/lib/api-types";
 export const dynamic = "force-dynamic";
 
 const STATUS_COLOR: Record<string, string> = {
-  draft: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
-  active: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-  archived: "bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/30",
+  draft: "bg-[rgb(var(--gold))]/10 text-accent-gold border-[rgb(var(--gold))]/35",
+  active: "bg-[rgb(var(--settle))]/10 text-settle border-[rgb(var(--settle))]/35",
+  archived: "bg-[rgb(var(--slate))]/10 text-[rgb(var(--slate))] border-[rgb(var(--slate))]/30",
 };
 
 export default async function OfferingsPage() {

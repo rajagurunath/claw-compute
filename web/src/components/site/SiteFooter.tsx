@@ -24,6 +24,7 @@ export function SiteFooter() {
         <FooterCol title="Marketplace">
           <FooterLink href="/browse">Browse hosts</FooterLink>
           <FooterLink href="/pricing">Pricing</FooterLink>
+          <FooterLink href="/ledger">Ledger</FooterLink>
           <FooterLink href="/#offerings">Offerings</FooterLink>
           <FooterLink href="/#how">How it works</FooterLink>
         </FooterCol>

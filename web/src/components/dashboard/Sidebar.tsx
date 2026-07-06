@@ -8,6 +8,7 @@ import {
   LogOut,
   Server,
   ShoppingBag,
+  Wallet,
 } from "lucide-react";
 
 import type { RoleResponse } from "@/lib/api-types";
@@ -33,6 +34,7 @@ export function Sidebar({
       </p>
       <nav className="relative space-y-0.5 text-sm">
         <Item href="/dashboard" icon={Home} label="Home" />
+        <Item href="/dashboard/wallet" icon={Wallet} label="Wallet" />
         {role.is_consumer && (
           <Item href="/dashboard/bookings" icon={Calendar} label="My bookings" />
         )}
@@ -65,7 +67,7 @@ export function Sidebar({
 
       <div className="relative mt-6 rounded-lg border border-white/8 bg-background/50 p-3">
         <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgb(74_222_128/0.7)]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--settle))] shadow-[0_0_8px_rgb(var(--settle)/0.7)]" />
           status · online
         </div>
         <p className="mt-2 text-xs text-muted-foreground">

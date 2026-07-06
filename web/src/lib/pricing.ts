@@ -13,7 +13,7 @@ export type PricingTier = {
   variant: "default" | "highlight" | "muted";
 };
 
-export const COMMISSION_PERCENT = 12;
+export const COMMISSION_PERCENT = 15;
 export const SUPPLIER_KEEP_PERCENT = 100 - COMMISSION_PERCENT;
 
 export const PRICING_TIERS: PricingTier[] = [
@@ -43,8 +43,8 @@ export const PRICING_TIERS: PricingTier[] = [
       "One-curl install, open-source worker binary",
       "Set your hourly rate — change it whenever",
       `${SUPPLIER_KEEP_PERCENT}% of consumer payment to you`,
-      `Marketplace keeps ${COMMISSION_PERCENT}% (covers Stripe + ops)`,
-      "Stripe Connect payouts on a schedule that suits you",
+      `Marketplace keeps ${COMMISSION_PERCENT}% (covers settlement + ops)`,
+      "Payouts via Stripe or USDC straight to your wallet, on-chain",
     ],
     cta: { label: "Start earning", href: "/auth/login?next=/dashboard/become-supplier" },
     badge: "Most popular",
@@ -71,7 +71,7 @@ export const PRICING_TIERS: PricingTier[] = [
 export const PRICING_FAQ: { q: string; a: string }[] = [
   {
     q: "How does payment actually flow?",
-    a: "Consumer pays the marketplace via Stripe. The marketplace withholds the 12% commission and pays the supplier the remainder via Stripe Connect on a schedule the supplier chooses (daily / weekly / monthly).",
+    a: "When a booking starts, the consumer's USDC is locked in on-chain escrow (card payments via Stripe are also supported). When the booking ends, escrow settles for actual usage: the marketplace withholds the 15% commission and the supplier receives the remaining 85% — as USDC to their payout wallet, or via Stripe Connect. Every on-chain settlement is visible on the public ledger.",
   },
   {
     q: "Can I run the worker on a MacBook that I'm also using?",

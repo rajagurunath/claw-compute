@@ -3,21 +3,23 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { ChatThread } from "@/components/dashboard/ChatThread";
+import { KindChip } from "@/components/ledger/KindChip";
 import { Badge } from "@/components/ui/badge";
 import { ApiError, api } from "@/lib/api";
-import type { BookingOut, BookingStatus, MessageOut } from "@/lib/api-types";
+import type { BookingOut, BookingStatus, LedgerOut, MessageOut } from "@/lib/api-types";
+import { safeGet } from "@/lib/safe-api";
+import { EMPTY_LEDGER, formatDuration, formatUsdc, shortHash, txUrl } from "@/lib/usdc";
 
 export const dynamic = "force-dynamic";
 
 const STATUS_STYLES: Record<BookingStatus, string> = {
   pending:
-    "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
+    "bg-[rgb(var(--gold))]/10 text-accent-gold border-[rgb(var(--gold))]/35",
   active:
-    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-  completed:
-    "bg-slate-500/15 text-slate-600 dark:text-slate-400 border-slate-500/30",
+    "bg-[rgb(var(--settle))]/10 text-settle border-[rgb(var(--settle))]/35",
+  completed: "bg-white/5 text-foreground border-white/15",
   cancelled:
-    "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30",
+    "bg-[rgb(var(--slate))]/10 text-[rgb(var(--slate))] border-[rgb(var(--slate))]/30",
 };
 
 export default async function BookingDetailPage({
@@ -37,6 +39,11 @@ export default async function BookingDetailPage({
     if (e instanceof ApiError && e.status === 404) notFound();
     throw e;
   }
+  const ledger = await safeGet<LedgerOut>(
+    `/v1/ledger?booking_id=${id}`,
+    EMPTY_LEDGER,
+    { fallbackOn4xx: true, label: "booking ledger" },
+  );
   return (
     <div className="mx-auto flex h-[calc(100svh-5rem)] max-w-3xl flex-col">
       <header className="mb-6">
@@ -82,6 +89,53 @@ export default async function BookingDetailPage({
           </p>
         </div>
       )}
+      <section className="mt-6 shrink-0">
+        <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          settlement
+        </p>
+        {ledger.items.length > 0 ? (
+          <div className="surface-card max-h-64 overflow-y-auto rounded-2xl border border-white/8">
+            <ul className="divide-y divide-white/5">
+              {ledger.items.map((entry) => (
+                <li
+                  key={entry.id}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 py-3 text-sm"
+                >
+                  <KindChip kind={entry.kind} status={entry.status} />
+                  <span
+                    className={`tabular font-mono ${
+                      entry.kind === "settle"
+                        ? "text-settle"
+                        : entry.kind === "open"
+                          ? "text-accent-gold"
+                          : "text-muted-foreground"
+                    }`}
+                  >
+                    {formatUsdc(entry.amount_usdc)}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {formatDuration(entry.usage_seconds)}
+                  </span>
+                  {entry.tx_hash && (
+                    <a
+                      href={txUrl(ledger.chain.explorer_url, entry.tx_hash)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ml-auto font-mono text-xs text-muted-foreground underline decoration-white/15 underline-offset-4 transition hover:text-foreground"
+                    >
+                      {shortHash(entry.tx_hash)}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            No on-chain settlement for this booking (off-chain rail).
+          </p>
+        )}
+      </section>
     </div>
   );
 }

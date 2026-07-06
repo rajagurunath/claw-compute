@@ -12,7 +12,7 @@ const steps = [
     n: "02",
     icon: <ArrowDown className="h-5 w-5" />,
     title: "A consumer hires it",
-    body: "Pick an offering on /browse, set duration, confirm. The marketplace activates a booking and notifies the worker over an outbound WebSocket.",
+    body: "Pick an offering on /browse, set duration, confirm. USDC for the session locks in on-chain escrow and the worker is notified over an outbound WebSocket.",
   },
   {
     n: "03",
@@ -24,7 +24,7 @@ const steps = [
     n: "04",
     icon: <MessageSquare className="h-5 w-5" />,
     title: "Chat or call the API",
-    body: "Stream tokens through the relay or POST to /v1/chat/completions. When you cancel, the sandbox tears down and the next renter gets a clean machine.",
+    body: "Stream tokens through the relay or POST to /v1/chat/completions. When the booking ends, escrow settles on-chain for actual usage and the sandbox tears down clean.",
   },
 ];
 
@@ -59,10 +59,10 @@ export function HowItWorks() {
           "0 inbound ports",
           "open-source worker",
           "documented threat model",
-          "weekly Stripe payouts",
+          "USDC settlement on-chain",
         ].map((t) => (
           <span key={t} className="inline-flex items-center gap-2">
-            <span className="h-1 w-1 rotate-45 bg-[rgb(var(--gold))]" />
+            <span className="h-1 w-1 rotate-45 bg-[rgb(var(--crimson))]" />
             {t}
           </span>
         ))}

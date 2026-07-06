@@ -33,12 +33,12 @@ export function WorkerStatusBadge({ status }: { status: WorkerStatus }) {
 function dotColor(status: WorkerStatus): string {
   switch (status) {
     case "active":
-      return "bg-emerald-500 motion-safe:animate-pulse";
+      return "bg-[rgb(var(--settle))] motion-safe:animate-pulse";
     case "pending":
-      return "bg-amber-500";
+      return "bg-[rgb(var(--gold))]";
     case "offline":
-      return "bg-slate-400";
+      return "bg-[rgb(var(--slate))]";
     case "disabled":
-      return "bg-rose-500";
+      return "bg-[rgb(var(--crimson))]";
   }
 }

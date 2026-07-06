@@ -21,7 +21,7 @@ export function InstallSnippet({ snippet }: { snippet: string }) {
         className="absolute right-2 top-2 rounded-md border border-border/60 bg-background p-2 text-muted-foreground transition hover:border-foreground/30 hover:text-foreground"
       >
         {copied ? (
-          <Check className="h-4 w-4 text-emerald-500" />
+          <Check className="h-4 w-4 text-settle" />
         ) : (
           <Copy className="h-4 w-4" />
         )}

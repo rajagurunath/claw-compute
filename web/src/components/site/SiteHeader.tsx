@@ -26,9 +26,14 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">
           <NavLink href="/browse">Browse</NavLink>
-          <NavLink href="/#offerings">Offerings</NavLink>
           <NavLink href="/#how">How</NavLink>
           <NavLink href="/pricing">Pricing</NavLink>
+          <NavLink href="/ledger">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-[rgb(var(--settle))]" />
+              Ledger
+            </span>
+          </NavLink>
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" variant="ghost">

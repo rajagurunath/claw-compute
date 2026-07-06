@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { ApiError, api } from "@/lib/api";
 import type { RoleResponse, UserOut } from "@/lib/api-types";
-import { clearToken, getToken } from "@/lib/session";
+import { getToken } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -26,8 +26,8 @@ export default async function DashboardLayout({
     ]);
   } catch (e) {
     if (e instanceof ApiError && e.status === 401) {
-      await clearToken();
-      redirect("/auth/login");
+      // Layouts render — they can't clear cookies. /auth/expired does.
+      redirect("/auth/expired");
     }
     throw e;
   }

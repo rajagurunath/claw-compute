@@ -10,7 +10,7 @@ export default function NotFound() {
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center opacity-30"
       >
-        <div className="aspect-square h-72 rounded-full bg-gradient-to-tr from-violet-500/20 via-fuchsia-500/10 to-cyan-400/20 blur-3xl" />
+        <div className="aspect-square h-72 rounded-full bg-[rgb(var(--crimson))]/15 blur-3xl" />
       </div>
       <p className="mb-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
         404

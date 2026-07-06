@@ -1,5 +1,11 @@
 # Claw Marketplace — On-Chain Settlement (`ClawEscrow`)
 
+> **Status: implemented.** Contract in [`contracts/`](../contracts) (Foundry,
+> 17 tests incl. exploit replays + a fuzz solvency invariant), backend
+> integration in `backend/src/claw_api/chain/`, public ledger at
+> `GET /v1/ledger` and `web /ledger`. See [Runbook](#runbook) and
+> [What changed from the plan](#what-changed-from-the-plan) below.
+
 ## What this is
 
 An optional **USDC settlement rail** for completed bookings, as an alternative
@@ -156,12 +162,14 @@ settlements. This is consistent with the repo's stated *"Trust-but-verify"*
 posture ([`docs/security-analysis.md`](./security-analysis.md)): the backend is
 already trusted to transition bookings and measure usage.
 
-**Hardening path (Phase 2)** uses data the repo already models. Each `Worker`
-holds an `pubkey_x25519` identity and a `trust_level`
-(`none` / `self_signed` / `hardware`). A worker can co-**sign a usage receipt**
-(`bookingId`, `usageSeconds`) that `settleBooking` verifies with `ecrecover`,
-so the backend alone cannot overbill. This ties on-chain settlement to the
-attestation chain the worker model is already built for.
+**Hardening path (Phase 2).** Note: the worker's existing `pubkey_x25519` is a
+key-agreement key — it **cannot sign**, and `ecrecover` only verifies
+secp256k1. Worker-co-signed usage receipts therefore need a **separate
+secp256k1 signing identity** per worker (generated beside the X25519 key,
+registered at attestation). With that in place, `settleBooking` can require a
+worker signature over `(bookingId, usageSeconds)` so the backend alone cannot
+overbill. Until then, the contract's own bounds (per-booking lock, wall-clock
+cap) limit the damage a compromised settler can do.
 
 ## Open decisions
 
@@ -190,3 +198,72 @@ attestation chain the worker model is already built for.
 Foundry (`forge` / `cast`), Solidity, OpenZeppelin (`AccessControl`,
 `ReentrancyGuard`, `Pausable`). Arc testnet RPC `https://rpc.testnet.arc.network`,
 faucet `https://faucet.circle.com`.
+
+## What changed from the plan
+
+The review found three critical holes in the sketch above; the shipped
+contract closes them:
+
+| Hole | Fix in `ClawEscrow.sol` |
+|---|---|
+| No per-booking reservation — a consumer could `withdrawUnused` mid-booking and leave the supplier unpaid (settle would revert forever) | `openBooking(..., maxDurationSecs)` locks `ceil(rate × maxDuration)` into `lockedOf[consumer]`; `withdrawUnused` can only touch `escrow − locked` |
+| Unbounded `usageSeconds` — a buggy/compromised settler could drain escrow | usage must be ≤ `maxDurationSecs` **and** ≤ wall-clock since `openedAt` (+5 min grace); cost is additionally capped by the lock |
+| `cancelBooking` charged nothing (free compute), and admin `commissionBps` changes repriced in-flight bookings | `cancelBooking(id, usageSeconds)` settles partial usage; `commissionBps` is snapshotted per booking at open and hard-capped at 20% |
+
+Also: `Status.Unset = 0` guards against acting on nonexistent bookings, and
+`claim()` / `withdrawUnused()` are exempt from `pause()` — pause stops money
+coming in, never money going out.
+
+### Backend integration (implemented)
+
+* `bookingId (bytes32) = keccak256(utf8(Booking.id))` — canonical derivation.
+* `openBooking` runs **before** the booking flips to `active` in Postgres; a
+  failed lock aborts activation with HTTP 402. `settle`/`cancel` run after the
+  transition, best-effort, with failures recorded (never hidden).
+* Every attempt lands in the `settlement_txs` table → `GET /v1/ledger`
+  (public, no auth) → the `/ledger` page. Amounts come from decoding the
+  `BookingOpened` / `BookingSettled` events, not from re-computing off-chain.
+* Wallets: `users.wallet_address` (consumer escrow) via `PUT /v1/me/wallet`,
+  `suppliers.payout_wallet` via `PATCH /v1/suppliers/me`. Bookings between
+  parties without wallets settle off-chain exactly as before (second rail).
+
+## Runbook
+
+### Local demo (anvil)
+
+```bash
+# 1. chain + contract
+anvil --port 8545 &
+cd contracts && forge install --no-git OpenZeppelin/openzeppelin-contracts  # first time
+forge test                                    # 17 tests
+forge script script/Deploy.s.sol --rpc-url http://localhost:8545 \
+  --private-key <anvil key 0> --broadcast     # deploys MockUSDC + ClawEscrow
+
+# 2. fund the consumer wallet (mint/approve/deposit via cast) — see contracts/script
+
+# 3. backend with the rail enabled
+CHAIN_ENABLED=true CHAIN_RPC_URL=http://localhost:8545 CHAIN_ID=31337 \
+CHAIN_ESCROW_ADDRESS=<escrow> CHAIN_USDC_ADDRESS=<usdc> \
+CHAIN_SETTLER_KEY=<anvil key 0> uv run uvicorn claw_api.main:app --port 8001
+
+# 4. web
+cd web && NEXT_PUBLIC_API_URL=http://localhost:8001 pnpm dev
+```
+
+Set wallets (consumer + supplier payout) in the dashboard → Wallet page, book,
+activate, complete — every leg appears on `/ledger`.
+
+### Arc testnet
+
+1. Fund the settler wallet with testnet USDC at https://faucet.circle.com
+   (USDC is also the gas token on Arc — one balance covers both).
+2. Import the deployer key into an encrypted keystore —
+   `cast wallet import claw-deployer --interactive`. **Never** pass
+   `--private-key` on Arc, even testnet.
+3. `USDC_ADDRESS=0x3600000000000000000000000000000000000000 \
+   TREASURY=<multisig> SETTLER=<settler addr> forge script \
+   script/Deploy.s.sol --rpc-url arc_testnet --account claw-deployer --broadcast`
+4. Backend env: `CHAIN_ENABLED=true`, `CHAIN_RPC_URL=https://rpc.testnet.arc.network`,
+   `CHAIN_ID=5042002`, `CHAIN_ESCROW_ADDRESS=<deployed>`,
+   `CHAIN_USDC_ADDRESS=0x36…00`, `CHAIN_SETTLER_KEY` from a secrets manager.
+5. Arc is **testnet only** — never target Arc mainnet.

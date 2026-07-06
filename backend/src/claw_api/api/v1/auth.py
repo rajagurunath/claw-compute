@@ -9,7 +9,13 @@ from claw_api.db import get_db
 from claw_api.deps import current_user
 from claw_api.models.suppliers import Supplier
 from claw_api.models.users import User
-from claw_api.schemas.auth import MagicLinkRequest, MagicLinkVerify, TokenResponse, UserOut
+from claw_api.schemas.auth import (
+    MagicLinkRequest,
+    MagicLinkVerify,
+    TokenResponse,
+    UserOut,
+    WalletUpdate,
+)
 
 router = APIRouter(tags=["auth"])
 
@@ -40,6 +46,19 @@ async def verify_magic_link(
 
 @router.get("/me", response_model=UserOut)
 async def me(user: User = Depends(current_user)) -> User:
+    return user
+
+
+@router.put("/me/wallet", response_model=UserOut)
+async def set_wallet(
+    payload: WalletUpdate,
+    user: User = Depends(current_user),
+    db: AsyncSession = Depends(get_db),
+) -> User:
+    """Set the EVM address used for USDC escrow deposits."""
+    user.wallet_address = payload.wallet_address
+    await db.commit()
+    await db.refresh(user)
     return user
 
 

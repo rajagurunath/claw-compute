@@ -50,6 +50,8 @@ export const api = {
   get: <T>(path: string, opts?: { auth?: boolean }) => request<T>(path, { method: "GET" }, opts),
   post: <T>(path: string, body: unknown, opts?: { auth?: boolean }) =>
     request<T>(path, { method: "POST", body: JSON.stringify(body) }, opts),
+  put: <T>(path: string, body: unknown, opts?: { auth?: boolean }) =>
+    request<T>(path, { method: "PUT", body: JSON.stringify(body) }, opts),
   patch: <T>(path: string, body: unknown, opts?: { auth?: boolean }) =>
     request<T>(path, { method: "PATCH", body: JSON.stringify(body) }, opts),
   del: <T>(path: string, opts?: { auth?: boolean }) =>

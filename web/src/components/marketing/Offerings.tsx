@@ -129,7 +129,7 @@ function InferenceCard() {
 function HermesCard() {
   return (
     <Card muted>
-      <div className="absolute right-5 top-5 rounded-full border border-[rgb(var(--gold))]/40 bg-[rgb(var(--gold))]/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--gold))]">
+      <div className="absolute right-5 top-5 rounded-full border border-[rgb(var(--crimson))]/40 bg-[rgb(var(--crimson))]/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-accent-crimson">
         Q3 · 2026
       </div>
 
@@ -159,8 +159,8 @@ function HermesCard() {
         </Bullet>
       </ul>
 
-      <div className="mt-6 rounded-xl border border-[rgb(var(--gold))]/20 bg-[rgb(var(--gold))]/5 p-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[rgb(var(--gold))]">
+      <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-crimson">
           Design partner waitlist
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
@@ -226,7 +226,7 @@ function Header({
 function Bullet({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2.5 text-muted-foreground">
-      <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border border-white/10 bg-background/60 text-[rgb(var(--gold))]">
+      <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border border-white/10 bg-background/60 text-accent-crimson">
         {icon}
       </span>
       <span>{children}</span>
@@ -258,7 +258,7 @@ function Footer({ price, href }: { price: string; href: string }) {
   return (
     <div className="mt-auto flex items-center justify-between pt-7 font-mono text-xs">
       <span className="text-muted-foreground">
-        from <span className="text-[rgb(var(--gold))]">{price}</span>
+        from <span className="tabular text-foreground">{price}</span>
       </span>
       <a href={href} className="inline-flex items-center gap-1 text-foreground hover:text-accent-crimson">
         Browse hosts <ArrowUpRight className="h-3.5 w-3.5" />

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class MagicLinkRequest(BaseModel):
@@ -17,5 +17,10 @@ class TokenResponse(BaseModel):
 class UserOut(BaseModel):
     id: str
     email: str
+    wallet_address: str | None = None
 
     model_config = {"from_attributes": True}
+
+
+class WalletUpdate(BaseModel):
+    wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")

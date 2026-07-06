@@ -224,9 +224,9 @@ status:
 # ---------------------------------------------------------------------------
 # Tests
 
-.PHONY: test test-backend test-worker test-web
-test: test-backend test-worker
-	@echo "✔ backend + worker green"
+.PHONY: test test-backend test-worker test-web test-contracts
+test: test-backend test-worker test-contracts
+	@echo "✔ backend + worker + contracts green"
 
 test-backend: db-up migrate
 	cd $(BACKEND) && uv run pytest -v
@@ -236,6 +236,13 @@ test-worker:
 
 test-web:
 	cd $(WEB) && pnpm build
+
+test-contracts:
+	cd contracts && forge test
+
+# One-time: vendor OpenZeppelin + forge-std (lib/ is gitignored)
+contracts-setup:
+	cd contracts && forge install --no-git foundry-rs/forge-std OpenZeppelin/openzeppelin-contracts
 
 # ---------------------------------------------------------------------------
 # Demo helpers

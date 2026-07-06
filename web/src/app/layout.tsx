@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono, Inter } from "next/font/google";
 
-import { AmbientClaws } from "@/components/claw/AmbientClaws";
-import { ClawMascot } from "@/components/claw/ClawMascot";
-
 import "./globals.css";
 
 const bodySans = Inter({
@@ -24,9 +21,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Claw — Hire idle Macs by the hour",
+  title: "Claw — Hire idle Macs by the hour, settled in USDC",
   description:
-    "Hire sandboxed AI agents on idle Apple Silicon Macs. Suppliers earn from compute that would otherwise sit idle. Trust-but-verify, MLX-native, open-source worker.",
+    "Hire sandboxed AI agents on idle Apple Silicon Macs. Every booking settles in USDC on a public escrow contract — usage, payouts and commission visible to everyone. MLX-native, open-source worker.",
   metadataBase: new URL("https://claw.dev"),
   openGraph: {
     title: "Claw Marketplace",
@@ -48,10 +45,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground min-h-svh flex flex-col relative overflow-x-hidden">
         {/* Single restrained texture layer — fine grid masked to the edges */}
         <div aria-hidden className="pointer-events-none fixed inset-0 -z-20 bg-grid-fine opacity-100" />
-        {/* Ambient claw army strolling through the page margins */}
-        <AmbientClaws count={9} />
         {children}
-        <ClawMascot />
       </body>
     </html>
   );

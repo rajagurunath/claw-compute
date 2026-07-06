@@ -113,7 +113,7 @@ claw-worker run --api-url ${apiUrl}`;
             <p className="font-medium">Register and run</p>
           </header>
           <InstallSnippet snippet={register} />
-          <p className="mt-3 rounded-lg bg-amber-500/10 px-4 py-3 text-xs text-amber-700 dark:text-amber-300">
+          <p className="mt-3 rounded-lg border border-[rgb(var(--gold))]/25 bg-[rgb(var(--gold))]/10 px-4 py-3 text-xs text-accent-gold">
             <strong>Save the token now.</strong> It&apos;s shown once and discarded
             server-side after register succeeds. If you lose it, just create a
             new worker.

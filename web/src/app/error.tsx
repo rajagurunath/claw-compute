@@ -20,7 +20,7 @@ export default function ErrorBoundary({
 
   return (
     <main className="relative mx-auto flex min-h-svh max-w-lg flex-col items-center justify-center px-6 text-center">
-      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/15 text-rose-500">
+      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(var(--crimson))]/15 text-accent-crimson">
         <AlertTriangle className="h-6 w-6" />
       </div>
       <h1 className="mb-3 text-3xl font-semibold tracking-tight">
