@@ -1,4 +1,5 @@
 import { SettlementTape } from "@/components/ledger/SettlementTape";
+import { AnnouncementBar } from "@/components/marketing/AnnouncementBar";
 import { Hero } from "@/components/marketing/Hero";
 import { HowItWorks } from "@/components/marketing/HowItWorks";
 import { Offerings } from "@/components/marketing/Offerings";
@@ -18,6 +19,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
         <Hero ledger={ledger} />

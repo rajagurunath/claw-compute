@@ -52,6 +52,7 @@ help:
 	@echo "  Worker:"
 	@echo "    make worker-build   cargo build --release --target aarch64-apple-darwin"
 	@echo "    make worker-test    cargo test --all-targets"
+	@echo "    make worker-dist    Package the built worker into worker/dist/ (served at /releases)"
 	@echo ""
 	@echo "  Tests:"
 	@echo "    make test           Run backend pytest + worker cargo test"
@@ -114,7 +115,7 @@ migrate: db-up
 # ---------------------------------------------------------------------------
 # Foreground services (recommended — logs stay in your terminal)
 
-.PHONY: api web worker-build worker-run worker-test
+.PHONY: api web worker-build worker-run worker-test worker-dist
 api: db-up migrate
 	@mkdir -p $(LOGS_DIR)
 	@echo "→ FastAPI on http://localhost:8000"
@@ -132,6 +133,12 @@ worker-build:
 
 worker-test:
 	cd $(WORKER) && cargo test --all-targets
+
+# Package the built worker into worker/dist/ so the API can serve it at
+# /releases/... and /download can offer a real binary. Pass PROFILE=release
+# to force a release build first.
+worker-dist:
+	@bash $(ROOT)/scripts/package-worker.sh $(PROFILE)
 
 worker-run: worker-build
 	@if [ -z "$$CLAW_API_URL" ]; then \
