@@ -46,7 +46,7 @@ function SandboxCard() {
   return (
     <Card>
       <Header
-        kicker="01 / Sandbox"
+        kicker="01 / Claw Sandbox"
         title="Sandbox"
         tagline="Disposable Linux microVMs for agentic coding"
         icon={<Box className="h-5 w-5" />}
@@ -89,7 +89,7 @@ function InferenceCard() {
   return (
     <Card>
       <Header
-        kicker="02 / Inference"
+        kicker="02 / Claw Inference"
         title="Inference"
         tagline="Local LLM serving on Apple Silicon, no provider markup"
         icon={<CircuitBoard className="h-5 w-5" />}
@@ -134,7 +134,7 @@ function HermesCard() {
       </div>
 
       <Header
-        kicker="03 / Claw · Hermes"
+        kicker="03 / Claw Hermes"
         title="Hermes"
         tagline="Persistent agents with memory across bookings"
         icon={<Rocket className="h-5 w-5" />}

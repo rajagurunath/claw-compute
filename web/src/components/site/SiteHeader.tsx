@@ -21,7 +21,7 @@ export function SiteHeader() {
           />
           <span className="text-foreground">Claw</span>
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground sm:inline">
-            · marketplace
+            · compute
           </span>
         </Link>
         <nav className="hidden items-center gap-1 text-sm font-medium md:flex">

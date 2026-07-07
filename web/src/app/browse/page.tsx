@@ -35,7 +35,7 @@ export default async function BrowsePage({
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
         <header className="mb-8">
           <p className="mb-2 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-            Marketplace
+            Claw Compute
           </p>
           <h1 className="text-balance text-4xl font-semibold tracking-tight md:text-5xl">
             Browse offerings

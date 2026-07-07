@@ -10,7 +10,7 @@ export function SiteFooter() {
             <Image src="/openclaw.svg" alt="" aria-hidden width={28} height={28} className="h-7 w-7" />
             Claw
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-              · marketplace
+              · compute
             </span>
           </Link>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
@@ -21,7 +21,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} · v0.1 · open core
           </p>
         </div>
-        <FooterCol title="Marketplace">
+        <FooterCol title="Platform">
           <FooterLink href="/browse">Browse hosts</FooterLink>
           <FooterLink href="/pricing">Pricing</FooterLink>
           <FooterLink href="/ledger">Ledger</FooterLink>

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { COMMISSION_PERCENT, PRICING_FAQ, PRICING_TIERS, type PricingTier } from "@/lib/pricing";
 
 export const metadata = {
-  title: "Pricing — Claw Marketplace",
+  title: "Pricing — Claw Compute",
   description: `Pay-per-hour for consumers. ${100 - COMMISSION_PERCENT}% to suppliers. Marketplace takes ${COMMISSION_PERCENT}%.`,
 };
 
