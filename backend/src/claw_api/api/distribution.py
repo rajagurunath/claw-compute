@@ -22,7 +22,7 @@ _RELEASE_RE = re.compile(r"^claw-worker-[\w.\-]+-aarch64-apple-darwin\.tar\.gz$"
 
 
 @router.get("/install.sh")
-async def install_script() -> PlainTextResponse:
+def install_script() -> PlainTextResponse:
     settings = get_settings()
     path = Path(settings.worker_install_script)
     if not path.is_file():
@@ -31,7 +31,7 @@ async def install_script() -> PlainTextResponse:
 
 
 @router.get("/releases/{filename}")
-async def release(filename: str) -> FileResponse:
+def release(filename: str) -> FileResponse:
     if not _RELEASE_RE.match(filename):
         raise HTTPException(status_code=400, detail="invalid release name")
 
