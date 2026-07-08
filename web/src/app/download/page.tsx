@@ -10,8 +10,12 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { Button } from "@/components/ui/button";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-const TARBALL = `${API_BASE}/releases/claw-worker-latest-aarch64-apple-darwin.tar.gz`;
-const INSTALL = `curl -fsSL ${API_BASE}/install.sh | bash`;
+// Binaries ship as GitHub Release assets — a stable "latest" URL that never
+// depends on the API host being up.
+const REPO = "rajagurunath/claw-compute";
+const RELEASES_PAGE = `https://github.com/${REPO}/releases/latest`;
+const TARBALL = `https://github.com/${REPO}/releases/latest/download/claw-worker-latest-aarch64-apple-darwin.tar.gz`;
+const INSTALL = `curl -fsSL https://raw.githubusercontent.com/${REPO}/main/worker/install.sh | bash`;
 const REGISTER = `claw-worker register --api-url ${API_BASE} --provisioning-token <TOKEN>
 claw-worker run --api-url ${API_BASE}`;
 
@@ -83,7 +87,15 @@ export default function DownloadPage() {
               </a>
             </Button>
             <span className="font-mono text-[11px] text-muted-foreground">
-              claw-worker · aarch64-apple-darwin · .tar.gz
+              claw-worker · aarch64-apple-darwin · .tar.gz ·{" "}
+              <a
+                href={RELEASES_PAGE}
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                all releases
+              </a>
             </span>
           </div>
 

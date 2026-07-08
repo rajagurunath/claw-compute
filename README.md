@@ -1,8 +1,8 @@
-# Claw Marketplace
+# Claw Compute
 
-Hire idle Apple Silicon Macs by the hour. Suppliers install one binary; consumers get a sandboxed agent backed by local MLX inference.
+Hire idle Apple Silicon Macs by the hour. Suppliers install one binary; consumers get a sandboxed agent backed by local MLX inference. Three workloads — **Claw Sandbox**, **Claw Inference**, and **Claw Hermes** — run on the same worker.
 
-This is the v1 implementation of the marketplace described in [`plan.md`](./plan.md). It ships under a documented "Trust-but-verify" threat model — see [`docs/security-analysis.md`](./docs/security-analysis.md).
+It ships under a documented "Trust-but-verify" threat model — see [`docs/security-analysis.md`](./docs/security-analysis.md).
 
 ## Repo layout
 
@@ -12,8 +12,7 @@ This is the v1 implementation of the marketplace described in [`plan.md`](./plan
 | [`worker/`](./worker) | Rust worker binary (macOS / Apple Silicon) |
 | [`agent-image/`](./agent-image) | OCI image (Python + FastAPI) that runs inside each booking's sandbox |
 | [`web/`](./web) | Next.js 16 frontend (deployable to Vercel with or without backend) |
-| [`docs/`](./docs) | Plans, runbooks, security analysis, vercel-deploy guide |
-| [`docs/superpowers/plans/`](./docs/superpowers/plans) | The four implementation plans the build follows |
+| [`docs/`](./docs) | Runbooks, architecture, security analysis, on-chain settlement, vercel-deploy guide |
 
 ## Quick start (developer)
 
@@ -93,7 +92,3 @@ docker pull python:3.12-slim    # one-time, base for the agent image
 # Backend running on :8000, worker registered, mlx-lm tooling installed:
 ./worker/scripts/smoke-e2e.sh   # API health → mlx-lm boot → sandbox → /v1/chat/completions
 ```
-
-## Build / orchestration history
-
-`/Users/.../ralph-loop.md` and `ralph-state.md` track the autonomous build that produced this repo. Each iteration commits a single task from the plans; check `git log` for the trail.

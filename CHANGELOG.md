@@ -2,8 +2,8 @@
 
 ## Unreleased — v0.1.0 (Trust-but-verify MVP, code-complete 2026-05-10)
 
-The first end-to-end implementation of the Claw marketplace, built incrementally
-across 4 plans (43+ ralph-loop iterations). Code-complete and tested; operational
+The first end-to-end implementation of Claw Compute, built incrementally.
+Code-complete and tested; operational
 deploy (Vercel + backend hosting + supplier registration) is the user's next
 step.
 
@@ -90,8 +90,6 @@ step.
   (Apple Developer enrollment, MDM, ACME, notarization, Hardened Runtime
   switchover, auto-update channel).
 - `docs/vercel-deploy.md` — Vercel project setup with rootDirectory=web/.
-- `docs/superpowers/plans/2026-05-10-*.md` — the four implementation plans
-  the build follows; every step checked.
 
 ### Notable design decisions
 - **Trust-but-verify v1** — defer Apple Hardened Runtime + Secure Enclave
