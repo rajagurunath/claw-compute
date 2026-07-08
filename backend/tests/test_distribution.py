@@ -4,7 +4,6 @@ These endpoints don't touch the DB, so we drive the ASGI app directly rather
 than using the db-backed `client` fixture.
 """
 
-import gzip
 import io
 import tarfile
 
