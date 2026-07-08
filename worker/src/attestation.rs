@@ -63,7 +63,9 @@ fn read_keychain() -> Result<Option<SecretKey>> {
     let entry = keyring::Entry::new(KEYRING_SERVICE, KEYRING_USER)?;
     match entry.get_password() {
         Ok(b64) => {
-            let raw = B64.decode(b64.as_bytes()).context("keychain sk not base64")?;
+            let raw = B64
+                .decode(b64.as_bytes())
+                .context("keychain sk not base64")?;
             if raw.len() != 32 {
                 anyhow::bail!("keychain sk wrong length: {}", raw.len());
             }

@@ -10,7 +10,6 @@ import pytest
 from claw_api.chain import escrow_client as ec_module
 from claw_api.chain.escrow_client import TxResult
 from claw_api.config import get_settings
-
 from tests.test_bookings import _login, _supplier_with_offering_and_worker
 
 CONSUMER_WALLET = "0x" + "a1" * 20

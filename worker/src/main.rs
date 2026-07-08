@@ -154,11 +154,7 @@ async fn main() -> anyhow::Result<()> {
             let pub_ = identity.public();
             let client = ApiClient::new(api_url)?;
             let resp = client
-                .register(
-                    &provisioning_token,
-                    machine_info,
-                    Some(&pub_.pubkey_x25519),
-                )
+                .register(&provisioning_token, machine_info, Some(&pub_.pubkey_x25519))
                 .await?;
             let keychain_ok = Config::store_worker_token(&resp.worker_token).is_ok();
             tracing::info!(worker_id = %resp.worker.id, keychain_ok, "registered");
