@@ -8,7 +8,9 @@ set -euo pipefail
 API_URL="${CLAW_API_URL:-https://api.claw.dev}"
 INSTALL_DIR="${CLAW_INSTALL_DIR:-$HOME/.claw}"
 BIN_DIR="$INSTALL_DIR/bin"
-RELEASES_BASE="${CLAW_RELEASES_BASE:-$API_URL/releases}"
+# Binaries are published as GitHub Release assets, decoupled from the API host.
+# Override with CLAW_RELEASES_BASE to pull from a self-hosted backend instead.
+RELEASES_BASE="${CLAW_RELEASES_BASE:-https://github.com/rajagurunath/claw-compute/releases/latest/download}"
 
 mkdir -p "$BIN_DIR"
 

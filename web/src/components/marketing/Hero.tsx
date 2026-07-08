@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Cpu, Shield, Zap } from "lucide-react";
+import { ArrowRight, Cpu, Download, Shield, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { LedgerOut } from "@/lib/api-types";
@@ -35,10 +35,10 @@ export function Hero({ ledger }: { ledger: LedgerOut }) {
           </h1>
 
           <p className="mt-7 max-w-xl text-balance text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Run sandboxed AI agents on real Macs with local MLX inference.
-            Every booking locks USDC in escrow when it starts and settles
-            on-chain for the hours actually used — supplier payout,
-            commission, and transaction hash on a public ledger.
+            Macs just got expensive. Run sandboxed AI agents on rented Apple
+            Silicon for cents an hour — or host your own Mac and earn USDC.
+            Every booking locks escrow at the start and settles on-chain for the
+            hours actually used, on a public ledger.
           </p>
 
           <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row">
@@ -56,10 +56,11 @@ export function Hero({ ledger }: { ledger: LedgerOut }) {
               asChild
               size="lg"
               variant="outline"
-              className="min-w-48 border-white/15 hover:border-white/30 hover:bg-white/5"
+              className="group min-w-48 border-white/15 hover:border-white/30 hover:bg-white/5"
             >
-              <Link href="/auth/login?next=/dashboard/become-supplier">
-                List your Mac
+              <Link href="/download">
+                Download worker
+                <Download className="ml-1 h-4 w-4 transition group-hover:translate-y-0.5" />
               </Link>
             </Button>
           </div>

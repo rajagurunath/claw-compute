@@ -1,7 +1,11 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Repo root: backend/src/claw_api/config.py -> parents[3] == repo root.
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
@@ -30,6 +34,12 @@ class Settings(BaseSettings):
     chain_commission_bps: int = 1500
     # Worst-case booking window locked in escrow at activation.
     chain_max_booking_hours: int = 8
+
+    # --- worker distribution (install.sh + release tarballs) ------------
+    # Served at the app root so `curl ${API}/install.sh | bash` works and the
+    # installer can pull `${API}/releases/claw-worker-...tar.gz`.
+    worker_install_script: str = str(_REPO_ROOT / "worker" / "install.sh")
+    releases_dir: str = str(_REPO_ROOT / "worker" / "dist")
 
 
 @lru_cache

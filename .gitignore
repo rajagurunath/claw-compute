@@ -49,3 +49,6 @@ dist/
 .pids/
 .logs/
 .gstack/
+
+# Internal working notes (plans, reviews, agent state) — kept locally, never published
+.internal/

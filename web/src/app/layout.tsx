@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "Hire sandboxed AI agents on idle Apple Silicon Macs. Every booking settles in USDC on a public escrow contract — usage, payouts and commission visible to everyone. MLX-native, open-source worker.",
   metadataBase: new URL("https://claw.dev"),
   openGraph: {
-    title: "Claw Marketplace",
+    title: "Claw Compute",
     description: "Idle Macs, hired by the hour.",
     type: "website",
   },
