@@ -1,0 +1,68 @@
+name: worker-release
+
+# Build the macOS / Apple Silicon worker binary and attach it to a GitHub
+# Release as `claw-worker-latest-aarch64-apple-darwin.tar.gz` — the exact asset
+# name that `worker/install.sh` and the /download page fetch from
+# `…/releases/latest/download/`.
+#
+# Two ways to run it:
+#   1. Publish a Release in the GitHub UI  → this builds + attaches automatically.
+#   2. Actions ▸ worker-release ▸ Run workflow, with an existing tag → attaches
+#      to that release (use this to backfill a release published before this
+#      workflow existed).
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to build and attach the binary to"
+        required: true
+
+permissions:
+  contents: write # needed to upload the release asset via GITHUB_TOKEN
+
+jobs:
+  build:
+    # Apple Silicon runner: builds aarch64-apple-darwin natively and matches the
+    # macOS-only deps the worker links against (keyring, Security framework).
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add aarch64-apple-darwin target
+        run: rustup target add aarch64-apple-darwin
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            worker/target
+          key: worker-release-${{ hashFiles('worker/Cargo.lock') }}
+          restore-keys: worker-release-
+
+      - name: Build worker (release, aarch64-apple-darwin)
+        working-directory: worker
+        run: cargo build --release --target aarch64-apple-darwin
+
+      - name: Package tarball
+        # Reuses the same script as `make worker-dist`; CLAW_WORKER_VERSION=latest
+        # pins the stable asset name the installer expects.
+        run: CLAW_WORKER_VERSION=latest bash scripts/package-worker.sh
+
+      - name: Checksum
+        run: |
+          cd worker/dist
+          shasum -a 256 claw-worker-latest-aarch64-apple-darwin.tar.gz \
+            > claw-worker-latest-aarch64-apple-darwin.tar.gz.sha256
+          cat claw-worker-latest-aarch64-apple-darwin.tar.gz.sha256
+
+      - name: Attach binary to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name || inputs.tag }}
+          files: |
+            worker/dist/claw-worker-latest-aarch64-apple-darwin.tar.gz
+            worker/dist/claw-worker-latest-aarch64-apple-darwin.tar.gz.sha256
