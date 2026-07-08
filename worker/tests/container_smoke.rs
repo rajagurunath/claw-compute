@@ -31,8 +31,5 @@ async fn start_and_stop_real_container() {
         .await
         .expect("is_running failed");
     assert!(running, "expected sandbox to be running");
-    backend
-        .stop(&handle.sandbox_id)
-        .await
-        .expect("stop failed");
+    backend.stop(&handle.sandbox_id).await.expect("stop failed");
 }

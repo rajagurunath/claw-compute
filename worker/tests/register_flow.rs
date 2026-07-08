@@ -24,7 +24,11 @@ async fn register_exchanges_provisioning_token() {
 
     let client = ApiClient::new(server.uri()).unwrap();
     let resp: WorkerRegisterResponse = client
-        .register("provtoken", serde_json::json!({"chip": "Apple M3 Max"}), None)
+        .register(
+            "provtoken",
+            serde_json::json!({"chip": "Apple M3 Max"}),
+            None,
+        )
         .await
         .unwrap();
     assert_eq!(resp.worker_token, "wjwt.test");

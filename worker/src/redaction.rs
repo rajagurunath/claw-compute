@@ -36,11 +36,7 @@ const DENY: &[&str] = &[
 pub struct RedactingFields;
 
 impl<'writer> FormatFields<'writer> for RedactingFields {
-    fn format_fields<R: RecordFields>(
-        &self,
-        writer: Writer<'writer>,
-        fields: R,
-    ) -> fmt::Result {
+    fn format_fields<R: RecordFields>(&self, writer: Writer<'writer>, fields: R) -> fmt::Result {
         let mut v = RedactingVisitor {
             writer,
             first: true,
@@ -116,8 +112,14 @@ mod tests {
             out.contains("content=<redacted:"),
             "expected redaction, got: {out}"
         );
-        assert!(!out.contains("top-secret-prompt"), "leaked plaintext: {out}");
-        assert!(out.contains("other=visible"), "non-secret field lost: {out}");
+        assert!(
+            !out.contains("top-secret-prompt"),
+            "leaked plaintext: {out}"
+        );
+        assert!(
+            out.contains("other=visible"),
+            "non-secret field lost: {out}"
+        );
     }
 
     #[test]

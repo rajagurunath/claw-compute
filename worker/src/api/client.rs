@@ -87,21 +87,14 @@ impl ApiClient {
         if resp.status().is_success() {
             Ok(())
         } else {
-            Err(anyhow!(
-                "post_assistant_message failed: {}",
-                resp.status()
-            ))
+            Err(anyhow!("post_assistant_message failed: {}", resp.status()))
         }
     }
 
     /// Sandbox-side call: POST a chat completion to the agent runtime
     /// listening on `127.0.0.1:<port>` (set by the SandboxBackend at start).
     /// The agent runtime in turn calls `host.containers.internal:9000` (mlx-lm).
-    pub async fn sandbox_chat(
-        &self,
-        port: u16,
-        content: &str,
-    ) -> Result<String> {
+    pub async fn sandbox_chat(&self, port: u16, content: &str) -> Result<String> {
         let url = format!("http://127.0.0.1:{port}/v1/chat/completions");
         let body = serde_json::json!({
             "messages": [{"role": "user", "content": content}]

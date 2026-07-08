@@ -57,7 +57,7 @@ export async function updateOffering(
   redirect("/dashboard/suppliers/offerings");
 }
 
-export async function archiveOffering(id: string, _fd?: FormData): Promise<void> {
+export async function archiveOffering(id: string): Promise<void> {
   try {
     await api.del(`/v1/offerings/${id}`);
   } catch (e) {
