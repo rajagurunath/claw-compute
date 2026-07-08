@@ -1,8 +1,6 @@
 use std::sync::Arc;
 
-use super::{
-    SandboxBackend, container::ContainerBackend, lima::LimaBackend, noop::NoopBackend,
-};
+use super::{SandboxBackend, container::ContainerBackend, lima::LimaBackend, noop::NoopBackend};
 
 pub fn pick_backend(name: &str) -> Arc<dyn SandboxBackend> {
     match name {

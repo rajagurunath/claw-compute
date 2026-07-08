@@ -29,9 +29,13 @@ fn can_run() -> bool {
 
 fn open_with(env: &SealedEnvelope, sk: &SecretKey) -> Result<WorkerEvent, String> {
     let nonce = B64.decode(&env.nonce).map_err(|e| e.to_string())?;
-    let eph = B64.decode(&env.ephemeral_pubkey).map_err(|e| e.to_string())?;
+    let eph = B64
+        .decode(&env.ephemeral_pubkey)
+        .map_err(|e| e.to_string())?;
     let ct = B64.decode(&env.ciphertext).map_err(|e| e.to_string())?;
-    let eph_arr: [u8; 32] = eph.try_into().map_err(|_| "eph pubkey wrong len".to_string())?;
+    let eph_arr: [u8; 32] = eph
+        .try_into()
+        .map_err(|_| "eph pubkey wrong len".to_string())?;
     let sender = PublicKey::from(eph_arr);
     let boxx = SalsaBox::new(&sender, sk);
     let pt = boxx
@@ -87,5 +91,8 @@ print(json.dumps(env))
 
     // Negative path: a different key must fail.
     let bogus = SecretKey::generate(&mut rand::thread_rng());
-    assert!(open_with(&env, &bogus).is_err(), "bogus key should not decrypt");
+    assert!(
+        open_with(&env, &bogus).is_err(),
+        "bogus key should not decrypt"
+    );
 }

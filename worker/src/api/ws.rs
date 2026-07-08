@@ -152,7 +152,10 @@ where
             }
             Err(e) => tracing::warn!(error = ?e, "ws connect failed"),
         }
-        tracing::info!(backoff_secs = backoff.as_secs(), "reconnecting after backoff");
+        tracing::info!(
+            backoff_secs = backoff.as_secs(),
+            "reconnecting after backoff"
+        );
         sleep(backoff).await;
         backoff = (backoff * 2).min(Duration::from_secs(60));
     }

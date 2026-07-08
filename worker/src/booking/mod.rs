@@ -69,10 +69,7 @@ pub struct BookingHandler {
 }
 
 impl BookingHandler {
-    pub fn new(
-        backend: Arc<dyn SandboxBackend>,
-        state: Arc<tokio::sync::Mutex<State>>,
-    ) -> Self {
+    pub fn new(backend: Arc<dyn SandboxBackend>, state: Arc<tokio::sync::Mutex<State>>) -> Self {
         Self {
             backend,
             state,
@@ -201,11 +198,7 @@ impl BookingHandler {
             Err(e) => {
                 tracing::warn!(error = ?e, %booking_id, "sandbox chat call failed");
                 let _ = api
-                    .post_assistant_message(
-                        token,
-                        booking_id,
-                        &format!("(agent error: {e})"),
-                    )
+                    .post_assistant_message(token, booking_id, &format!("(agent error: {e})"))
                     .await;
             }
         }

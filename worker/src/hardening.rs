@@ -39,7 +39,10 @@ mod imp {
 
     pub fn disable_core_dumps() -> Result<(), std::io::Error> {
         // SAFETY: setrlimit is thread-safe and only touches this process.
-        let rl = libc_rlimit { rlim_cur: 0, rlim_max: 0 };
+        let rl = libc_rlimit {
+            rlim_cur: 0,
+            rlim_max: 0,
+        };
         let rc = unsafe { setrlimit(RLIMIT_CORE, &rl) };
         if rc == 0 {
             Ok(())

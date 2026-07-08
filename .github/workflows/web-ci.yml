@@ -24,7 +24,7 @@ jobs:
           cache-dependency-path: web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - name: Lint
-        run: pnpm exec next lint --max-warnings 0
+        run: pnpm exec eslint . --max-warnings 0
       - name: Build (with API URL set)
         env:
           NEXT_PUBLIC_API_URL: https://api.example.test

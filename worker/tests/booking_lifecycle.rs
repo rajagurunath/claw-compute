@@ -57,10 +57,7 @@ async fn activated_then_cancelled() {
         .await
         .unwrap();
 
-    assert_eq!(
-        backend.started.lock().await.as_slice(),
-        &["b1".to_string()]
-    );
+    assert_eq!(backend.started.lock().await.as_slice(), &["b1".to_string()]);
     assert_eq!(
         backend.stopped.lock().await.as_slice(),
         &["sb-b1".to_string()]

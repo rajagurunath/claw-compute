@@ -68,11 +68,7 @@ impl ModelHost {
     /// requested model is already running on the requested port, returns
     /// without restarting. Otherwise stops the previous process (if any) and
     /// spawns a fresh `uv tool run mlx_lm.server`.
-    pub async fn ensure_loaded(
-        &self,
-        model_id: &str,
-        port: u16,
-    ) -> Result<&'static ModelEntry> {
+    pub async fn ensure_loaded(&self, model_id: &str, port: u16) -> Result<&'static ModelEntry> {
         let entry = lookup(model_id).ok_or_else(|| anyhow!("unknown model id: {model_id}"))?;
         let mut state = self.inner.lock().await;
         if let Some(r) = &state.current

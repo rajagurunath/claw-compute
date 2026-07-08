@@ -90,8 +90,7 @@ async fn relay_round_trip() {
     let backend: Arc<dyn SandboxBackend> = Arc::new(PortBackend { port: sandbox_port });
     let dir = tempfile::tempdir().unwrap();
     let state = Arc::new(Mutex::new(State::open(&dir.path().join("s.db")).unwrap()));
-    let handler = BookingHandler::new(backend, state)
-        .with_api_client(api, "wjwt.test".into());
+    let handler = BookingHandler::new(backend, state).with_api_client(api, "wjwt.test".into());
 
     // 3. Activate a booking — installs the sandbox port mapping.
     handler
