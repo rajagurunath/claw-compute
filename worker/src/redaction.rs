@@ -61,7 +61,7 @@ impl<'a> RedactingVisitor<'a> {
         let name = field.name();
         let sep = if self.first { "" } else { " " };
         self.first = false;
-        let display = if DENY.iter().any(|d| *d == name) {
+        let display = if DENY.contains(&name) {
             format!("<redacted:{} bytes>", value.len())
         } else {
             value.to_string()
