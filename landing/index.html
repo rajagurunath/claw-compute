@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Claw Compute — idle Apple Silicon, hired by the hour</title>
+<meta name="description" content="A peer-to-peer marketplace for idle Apple Silicon Macs. Suppliers run one binary; consumers get a sandboxed agent backed by local MLX inference. Every booking locks USDC in a public escrow contract and settles for the time actually used." />
+<meta name="theme-color" content="#16181c" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Claw Compute" />
+<meta property="og:description" content="Idle Apple Silicon, hired by the hour. Escrow locks up front, settles on-chain for the hours you actually used." />
+<meta property="og:image" content="https://rajagurunath.github.io/claw-compute/assets/openclaw.svg" />
+<meta name="twitter:card" content="summary" />
+
+<link rel="icon" href="assets/openclaw.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<script>document.documentElement.classList.add("has-js");</script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="shell">
+    <a class="wordmark" href="#top">
+      <img src="assets/openclaw.svg" alt="" aria-hidden="true" width="26" height="26" />
+      Claw <em>· compute</em>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#workloads">Workloads</a>
+      <a href="#lifecycle">Lifecycle</a>
+      <a href="#host">Host a Mac</a>
+      <a href="https://github.com/rajagurunath/claw-compute">Source</a>
+    </nav>
+    <a class="btn btn--primary" href="#host">Host a Mac</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===================================================================
+       Hero — the thesis is the escrow meter on the right: one booking,
+       played end to end, with the arithmetic the contract performs.
+       =================================================================== -->
+  <section class="band hero">
+    <div class="shell">
+      <div>
+        <p class="status"><span class="dot" aria-hidden="true"></span> Private beta · Arc testnet</p>
+
+        <h1>
+          <span class="fade">Idle Apple Silicon,</span><br />
+          <span class="marked">hired by the hour</span>.
+        </h1>
+
+        <p class="lede">
+          Rent a sandboxed agent on a real M-series Mac, or host your own and
+          earn USDC from the hours it would have spent asleep. Every booking
+          locks escrow before the machine starts and settles on-chain for the
+          time actually used — the whole ledger is public.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn--primary" href="#host">Host a Mac <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" href="#lifecycle">See how a booking settles</a>
+        </div>
+
+        <ul class="hero-specs">
+          <li><span class="tick" aria-hidden="true"></span> MLX-native inference</li>
+          <li><span class="tick" aria-hidden="true"></span> 0.8s sandbox cold start</li>
+          <li><span class="tick" aria-hidden="true"></span> 0 inbound ports</li>
+        </ul>
+      </div>
+
+      <!-- SIGNATURE -->
+      <div class="surface meter" id="meter" data-reveal>
+        <div class="meter-chrome">
+          <span>claw // escrow</span>
+          <span class="live">simulated booking</span>
+        </div>
+
+        <div class="meter-head">
+          <div>
+            <div class="meter-machine" data-meter="machine">M3 Max · 64 GB</div>
+            <div class="meter-sub"><span data-meter="workload">inference</span> · <span data-meter="rate">$4.80/hr</span> · reserved <span data-meter="reserved">60m</span></div>
+          </div>
+          <div class="meter-locked">
+            <div class="amt" data-meter="locked">0.0000</div>
+            <div class="lbl">USDC in escrow</div>
+          </div>
+        </div>
+
+        <div class="bar" role="img" aria-label="Escrow balance splitting into supplier payout, platform fee and refund">
+          <span class="seg-supplier" data-meter="seg-supplier"></span>
+          <span class="seg-fee" data-meter="seg-fee"></span>
+          <span class="seg-held" data-meter="seg-held"></span>
+          <span class="seg-refund" data-meter="seg-refund"></span>
+          <span class="bar-clock" data-meter="clock">idle</span>
+        </div>
+
+        <div class="legend">
+          <div class="supplier">
+            <div class="v" data-meter="supplier">0.0000</div>
+            <div class="k">to supplier</div>
+          </div>
+          <div class="fee">
+            <div class="v" data-meter="fee">0.0000</div>
+            <div class="k">platform 15%</div>
+          </div>
+          <div class="refund">
+            <div class="v" data-meter="refund">0.0000</div>
+            <div class="k">refunded</div>
+          </div>
+        </div>
+
+        <div class="receipt" data-meter="receipt" data-state="idle">
+          <span class="phase" data-meter="phase">awaiting escrow</span>
+          <span class="hash" data-meter="hash">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Verifiable facts, not volume metrics. -->
+  <section class="facts" aria-label="Deployment facts">
+    <div class="shell">
+      <dl>
+        <dt>Settlement</dt>
+        <dd>USDC on Arc testnet</dd>
+      </dl>
+      <dl>
+        <dt>Escrow contract</dt>
+        <dd><a href="https://testnet.arcscan.app/address/0x98e62BEe68ce896efa58E41d33a5100d5fFa5428">0x98e6…5428</a></dd>
+      </dl>
+      <dl>
+        <dt>Revenue split</dt>
+        <dd>85 / 15</dd>
+      </dl>
+      <dl>
+        <dt>Worker target</dt>
+        <dd>aarch64-apple-darwin</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Workloads
+       =================================================================== -->
+  <section class="band" id="workloads">
+    <div class="shell">
+      <header class="sect-head">
+        <span>Workloads</span><i aria-hidden="true"></i><span>what a Mac can be hired for</span>
+      </header>
+      <div data-reveal>
+        <h2 style="font-size: clamp(2rem, 4.2vw, 3.1rem)">Three workloads, one binary.</h2>
+        <p class="lede">
+          Suppliers switch on the workloads they want to host. Each one runs in
+          the same Apple-signed sandbox, torn down completely between renters.
+        </p>
+
+        <div class="workloads">
+          <article class="workload" data-state="active">
+            <p class="kicker" style="margin: 0">Claw Sandbox</p>
+            <div class="workload-name">
+              <h3>Sandbox</h3>
+              <span class="workload-tag" data-tag="live">shipping</span>
+            </div>
+            <p>Disposable Linux microVMs for agentic coding. Drop an agent into a fresh VM, let it run, throw the VM away.</p>
+            <ul>
+              <li><span>Full POSIX toolchain — <b>bash, git, Node, Python, uv, Cargo</b></span></li>
+              <li><span>Apple <code>container</code> microVM, Lima fallback on macOS 14 and 15</span></li>
+              <li><span>Hardened-Runtime signed; no path to the host filesystem</span></li>
+              <li><span>Clone a repo, run the agent, push the diff — nothing touches your laptop</span></li>
+            </ul>
+            <p class="workload-rate">from <strong>$0.40</strong> / hr</p>
+          </article>
+
+          <article class="workload" data-state="active">
+            <p class="kicker" style="margin: 0">Claw Inference</p>
+            <div class="workload-name">
+              <h3>Inference</h3>
+              <span class="workload-tag" data-tag="live">shipping</span>
+            </div>
+            <p>An OpenAI-compatible endpoint running on a real M-series chip. MLX-tuned models stream at <b>130 tok/s</b> on an M3 Max.</p>
+            <ul>
+              <li><span>Drop-in <code>/v1/chat/completions</code> — point your existing client at it</span></li>
+              <li><span>Prompts and outputs never reach the marketplace</span></li>
+              <li><span>MLX 4-bit quants for <b>Qwen, Gemma, Llama</b></span></li>
+              <li><span>No token spread, no cold-boot fee — you pay for wall-clock</span></li>
+            </ul>
+            <p class="workload-rate">from <strong>$0.90</strong> / hr</p>
+          </article>
+
+          <article class="workload" data-state="pending">
+            <p class="kicker" style="margin: 0">Claw Hermes</p>
+            <div class="workload-name">
+              <h3>Hermes</h3>
+              <span class="workload-tag" data-tag="pending">Q3 2026</span>
+            </div>
+            <p>An agent that survives the booking. Hire a Mac on Tuesday, come back Friday, pick up where the agent stopped.</p>
+            <ul>
+              <li><span>Pinned model and tool config travel with the agent identity</span></li>
+              <li><span>Vector store and scratch filesystem persisted on a named volume</span></li>
+              <li><span>Secure Enclave attestation per booking — trust-but-verify v2</span></li>
+              <li><span>Lands after Sandbox and Inference reach GA</span></li>
+            </ul>
+            <p class="workload-rate">design partners — <strong>open</strong></p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Lifecycle — the booking as it appears in the public ledger
+       =================================================================== -->
+  <section class="band" id="lifecycle">
+    <div class="shell">
+      <header class="sect-head">
+        <span>Lifecycle</span><i aria-hidden="true"></i><span>one booking, confirm to settlement</span>
+      </header>
+      <div data-reveal>
+        <h2 style="font-size: clamp(2rem, 4.2vw, 3.1rem)">Four entries, two of them on-chain.</h2>
+        <p class="lede">
+          This is a real booking, in the order the ledger records it. The
+          money is locked before the Mac is told anything, and released only
+          against measured usage.
+        </p>
+
+        <div class="tape">
+          <div class="tape-row">
+            <span class="tape-t">t+0.00s</span>
+            <span class="tape-kind" data-kind="open">open</span>
+            <div class="tape-body">
+              <h3>Escrow locks</h3>
+              <p>The consumer confirms a duration and the full reserved amount moves into <code>ClawEscrow</code>. The supplier's Mac has not heard about the booking yet — the funds go first.</p>
+            </div>
+          </div>
+
+          <div class="tape-row">
+            <span class="tape-t">t+0.11s</span>
+            <span class="tape-kind">dispatch</span>
+            <div class="tape-body">
+              <h3>The Mac gets the job</h3>
+              <p>The marketplace pushes the booking down the worker's own outbound WebSocket. Nothing listens on the supplier's machine, so nothing has to be opened to the internet.</p>
+            </div>
+          </div>
+
+          <div class="tape-row">
+            <span class="tape-t">t+0.94s</span>
+            <span class="tape-kind" data-kind="ready">ready</span>
+            <div class="tape-body">
+              <h3>Sandbox is up</h3>
+              <p>A fresh microVM boots and MLX preloads the model. Nothing from the previous renter survives the teardown — no filesystem, no cache, no model state.</p>
+            </div>
+          </div>
+
+          <div class="tape-row">
+            <span class="tape-t">t+50m</span>
+            <span class="tape-kind" data-kind="settle">settle</span>
+            <div class="tape-body">
+              <h3>Settlement for time used</h3>
+              <p>The session ends ten minutes early. The contract pays the supplier 85% of the fifty minutes consumed, keeps 15%, and returns the unused remainder to the consumer in the same transaction.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="lede" style="margin-top: 22px; font-size: 0.9rem">
+          Only <code>open</code> and <code>settle</code> touch the chain. Everything
+          between them is the worker talking to the marketplace over a socket it
+          opened itself.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Two doors
+       =================================================================== -->
+  <section class="band" id="host">
+    <div class="shell">
+      <header class="sect-head">
+        <span>Get in</span><i aria-hidden="true"></i><span>supply or demand</span>
+      </header>
+      <div data-reveal>
+        <h2 style="font-size: clamp(2rem, 4.2vw, 3.1rem)">Bring a Mac, or bring a workload.</h2>
+
+        <div class="doors">
+          <article class="surface door">
+            <p class="kicker" style="margin: 0">For Mac owners</p>
+            <h3>Host a Mac</h3>
+            <p>
+              One command installs the worker, fingerprints the chip and
+              registers it. Set your hourly rate, pause whenever you want,
+              and get paid in USDC to your own wallet.
+            </p>
+
+            <div class="command">
+              <span class="prompt" aria-hidden="true">$</span>
+              <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/rajagurunath/claw-compute/main/worker/install.sh | bash</code>
+              <button class="copy" type="button" data-copy="#install-cmd" aria-label="Copy the install command">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="split">
+              <div><div class="v">85%</div><div class="k">you keep</div></div>
+              <div><div class="v">15%</div><div class="k">platform fee</div></div>
+              <div><div class="v">0</div><div class="k">inbound ports</div></div>
+            </div>
+
+            <div class="door-foot">
+              <a class="btn btn--primary" href="https://github.com/rajagurunath/claw-compute/releases/latest">
+                Worker releases <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="surface door">
+            <p class="kicker" style="margin: 0">For builders</p>
+            <h3>Run the stack</h3>
+            <p>
+              The marketplace is open core. Clone it, bring up Postgres and the
+              API, and point the Next.js frontend at your own worker.
+            </p>
+
+            <div class="door-links">
+              <a href="https://github.com/rajagurunath/claw-compute#quick-start-developer">
+                <span>Quick start</span><span class="meta">readme</span>
+              </a>
+              <a href="https://github.com/rajagurunath/claw-compute/blob/main/docs/onchain-settlement.md">
+                <span>On-chain settlement</span><span class="meta">docs</span>
+              </a>
+              <a href="https://github.com/rajagurunath/claw-compute/blob/main/docs/security-analysis.md">
+                <span>Threat model</span><span class="meta">docs</span>
+              </a>
+              <a href="https://github.com/rajagurunath/claw-compute">
+                <span>Source on GitHub</span><span class="meta">repo</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="colophon">
+  <div class="shell">
+    <div>
+      <a class="wordmark" href="#top">
+        <img src="assets/openclaw.svg" alt="" aria-hidden="true" width="26" height="26" />
+        Claw <em>· compute</em>
+      </a>
+      <p>
+        A peer-to-peer marketplace for idle Apple Silicon. Suppliers earn from
+        compute that would otherwise sit asleep.
+      </p>
+      <p class="stamp">Arc testnet only · not financial advice · open core</p>
+    </div>
+
+    <div>
+      <h4>Build</h4>
+      <ul>
+        <li><a href="https://github.com/rajagurunath/claw-compute">Repository</a></li>
+        <li><a href="https://github.com/rajagurunath/claw-compute/releases/latest">Worker releases</a></li>
+        <li><a href="https://github.com/rajagurunath/claw-compute/tree/main/docs">Documentation</a></li>
+        <li><a href="https://github.com/rajagurunath/claw-compute/blob/main/CHANGELOG.md">Changelog</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Chain</h4>
+      <ul>
+        <li><a href="https://testnet.arcscan.app/address/0x98e62BEe68ce896efa58E41d33a5100d5fFa5428">ClawEscrow contract</a></li>
+        <li><a href="https://github.com/rajagurunath/claw-compute/blob/main/docs/onchain-settlement.md">Settlement design</a></li>
+        <li><a href="https://testnet.arcscan.app">Arc testnet explorer</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/meter.js" defer></script>
+</body>
+</html>
