@@ -166,7 +166,7 @@ async def transition_booking(
             {
                 "booking_id": booking.id,
                 "offering_id": booking.offering_id,
-                "agent_config": {},
+                "agent_config": _agent_config(booking, offering),
             },
         )
     elif prev_status == BookingStatus.ACTIVE.value and payload.to in (
@@ -177,6 +177,25 @@ async def transition_booking(
         # but sealing keeps the WS-log surface homogeneous.
         await _seal_or_plain("booking_cancelled", {"booking_id": booking.id})
     return booking
+
+
+def _agent_config(booking: Booking, offering: Offering) -> dict:
+    """What the worker needs to spin up the right agent runtime. `hermes`
+    carries a stable identity so its scratch/memory volume survives across
+    bookings between the same consumer and offering."""
+    import hashlib
+
+    cfg: dict = {
+        "workload": offering.workload,
+        "model_id": next(
+            (t.split(":", 1)[1] for t in offering.capability_tags if t.startswith("model:")),
+            "qwen",
+        ),
+    }
+    if offering.workload == "hermes":
+        seed = f"{booking.consumer_user_id}:{offering.id}".encode()
+        cfg["hermes_agent_id"] = hashlib.sha256(seed).hexdigest()[:16]
+    return cfg
 
 
 async def _load_party(db: AsyncSession, booking_id: str, user: User) -> Booking:

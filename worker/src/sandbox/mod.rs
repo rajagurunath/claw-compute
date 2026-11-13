@@ -1,4 +1,5 @@
 pub mod container;
+pub mod docker;
 pub mod lima;
 pub mod noop;
 pub mod registry;
@@ -18,6 +19,10 @@ pub struct SandboxSpec {
     pub memory_limit_mb: Option<u32>,
     /// Free-form configuration the sandboxed agent reads from /etc/claw.json.
     pub agent_config: serde_json::Value,
+    /// Named volume mounted at /claw/state so an agent's scratch/memory
+    /// survives teardown (Hermes). `None` = ephemeral (Sandbox/OpenClaw).
+    #[serde(default)]
+    pub persist_volume: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

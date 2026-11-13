@@ -3,6 +3,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 OfferingStatus = Literal["draft", "active", "archived"]
+Workload = Literal["openclaw", "sandbox", "inference", "hermes"]
 
 
 class OfferingCreate(BaseModel):
@@ -10,6 +11,7 @@ class OfferingCreate(BaseModel):
     description: str = ""
     price_per_hour_cents: int = Field(ge=0)
     capability_tags: list[str] = Field(default_factory=list)
+    workload: Workload = "sandbox"
     status: OfferingStatus = "active"
 
 
@@ -18,6 +20,7 @@ class OfferingUpdate(BaseModel):
     description: str | None = None
     price_per_hour_cents: int | None = Field(default=None, ge=0)
     capability_tags: list[str] | None = None
+    workload: Workload | None = None
     status: OfferingStatus | None = None
 
 
@@ -28,6 +31,7 @@ class OfferingOut(BaseModel):
     description: str
     price_per_hour_cents: int
     capability_tags: list[str]
+    workload: Workload
     status: OfferingStatus
 
     model_config = {"from_attributes": True}

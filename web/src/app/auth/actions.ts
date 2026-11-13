@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 
 const RequestSchema = z.object({ email: z.string().email() });
 
-export type AuthState = { ok?: true; error?: string };
+export type AuthState = { ok?: true; error?: string; devLoginUrl?: string };
 
 export async function requestMagicLink(
   _prev: AuthState | null,
@@ -15,7 +15,16 @@ export async function requestMagicLink(
   const parsed = RequestSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) return { error: "Enter a valid email." };
   try {
-    await api.post("/v1/auth/magic-link", parsed.data, { auth: false });
+    const res = await api.post<{ status: string; dev_login_token?: string }>(
+      "/v1/auth/magic-link",
+      parsed.data,
+      { auth: false },
+    );
+    // Dev mode (console delivery): the backend hands the token straight back so
+    // we can show a one-click sign-in link instead of waiting on an email.
+    if (res?.dev_login_token) {
+      return { ok: true, devLoginUrl: `/auth/verify?token=${res.dev_login_token}` };
+    }
     return { ok: true };
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Could not send link." };

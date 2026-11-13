@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
+import { BookingControls } from "@/components/dashboard/BookingControls";
 import { ChatThread } from "@/components/dashboard/ChatThread";
-import { KindChip } from "@/components/ledger/KindChip";
+import { KindChip, WorkloadChip } from "@/components/ledger/KindChip";
 import { Badge } from "@/components/ui/badge";
 import { ApiError, api } from "@/lib/api";
 import type { BookingOut, BookingStatus, LedgerOut, MessageOut } from "@/lib/api-types";
@@ -75,6 +76,9 @@ export default async function BookingDetailPage({
             {booking.status}
           </Badge>
         </div>
+        <div className="mt-5">
+          <BookingControls bookingId={booking.id} status={booking.status} />
+        </div>
       </header>
       {booking.status === "active" ? (
         <div className="flex-1 min-h-0">
@@ -102,13 +106,16 @@ export default async function BookingDetailPage({
                   className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 py-3 text-sm"
                 >
                   <KindChip kind={entry.kind} status={entry.status} />
+                  <WorkloadChip workload={entry.workload} />
                   <span
                     className={`tabular font-mono ${
                       entry.kind === "settle"
                         ? "text-settle"
                         : entry.kind === "open"
                           ? "text-accent-gold"
-                          : "text-muted-foreground"
+                          : entry.kind === "deposit"
+                            ? "text-accent-crimson"
+                            : "text-muted-foreground"
                     }`}
                   >
                     {formatUsdc(entry.amount_usdc)}

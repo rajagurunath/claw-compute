@@ -66,6 +66,8 @@ CI runs the same gates on every PR — see `.github/workflows/`.
 
 ## Architecture references
 
+- [`docs/hermes-agent.md`](./docs/hermes-agent.md) — the working end-to-end Hermes flow: sign in → pay on Arc → supplier boots the agent → chat (GLM-5.2) → memory across bookings → settle on Arc
+- [`docs/onchain-settlement.md`](./docs/onchain-settlement.md) — ClawEscrow USDC rail on Arc (deposit/open/settle), public ledger, custodial Circle wallet
 - [`docs/security-analysis.md`](./docs/security-analysis.md) — what we DO and DO NOT claim under v1, why we copied Darkbloom's reachability pattern but not their TEE/MDM stack
 - [`docs/network-and-orchestration.md`](./docs/network-and-orchestration.md) — outbound-only worker pattern + the Temporal decision (skip for v1 worker, use for v1.5 scoring)
 - [`docs/inference-runbook.md`](./docs/inference-runbook.md) — MLX rationale + supported model catalog + manual test recipe
@@ -79,10 +81,16 @@ v1 ships **trust-but-verify**:
 - ✓ Open-source worker, ad-hoc code-signed binary
 - ✓ Outbound-only WebSocket — no inbound port on supplier hardware
 - ✓ Magic-link auth, JWT sessions, single-use provisioning tokens
+- ✓ On-chain USDC settlement on **Arc testnet** — client pays + escrow lock +
+  usage deduction, all real transactions, public at `/ledger`
+  (see [`docs/onchain-settlement.md`](./docs/onchain-settlement.md))
+- ✓ Workload types per offering (`openclaw`/`sandbox`/`inference`/`hermes`);
+  Hermes agents persist scratch/memory across bookings via a named volume
 - ✗ Hardened Runtime + Secure Enclave attestation (v2 — see worker-prerequisites)
 - ✗ E2E encryption between consumer and sandbox (v2)
-- ✗ Stripe payouts (v1.5)
-- ✗ OpenClaw / Hermes integration (v2 — agent image variants)
+- ✗ Stripe payouts (v1.5) — USDC on Arc is the working payout rail
+- ✗ Per-user non-custodial wallets (testnet uses one custodial Circle wallet)
+- ✗ Hermes vector store / encrypted memory (v2 — thin JSON memory today)
 
 ## End-to-end smoke
 

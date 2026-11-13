@@ -116,6 +116,7 @@ mod tests {
             cpu_limit: Some(2),
             memory_limit_mb: Some(4096),
             agent_config: serde_json::Value::Null,
+            persist_volume: None,
         };
         let args = ContainerBackend::build_run_args(&spec, "/tmp/c.json");
         assert!(args.contains(&"claw/agent-base:0.1".to_string()));
@@ -133,6 +134,7 @@ mod tests {
             cpu_limit: None,
             memory_limit_mb: None,
             agent_config: serde_json::Value::Null,
+            persist_volume: None,
         };
         let args = ContainerBackend::build_run_args(&spec, "/tmp/c.json");
         assert!(!args.iter().any(|a| a == "--cpus"));

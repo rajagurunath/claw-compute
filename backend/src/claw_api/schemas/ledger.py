@@ -3,8 +3,9 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-SettlementKind = Literal["open", "settle", "cancel"]
+SettlementKind = Literal["deposit", "open", "settle", "cancel"]
 SettlementStatus = Literal["confirmed", "failed"]
+Workload = Literal["openclaw", "sandbox", "inference", "hermes"]
 
 
 class LedgerEntry(BaseModel):
@@ -12,6 +13,7 @@ class LedgerEntry(BaseModel):
     booking_id: str
     kind: SettlementKind
     status: SettlementStatus
+    workload: Workload | None
     tx_hash: str | None
     block_number: int | None
     consumer_wallet: str | None

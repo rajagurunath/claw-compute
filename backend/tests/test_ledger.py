@@ -16,10 +16,25 @@ CONSUMER_WALLET = "0x" + "a1" * 20
 SUPPLIER_WALLET = "0x" + "b2" * 20
 
 
+PLATFORM_WALLET = "0x" + "c0" * 20
+
+
 class FakeEscrowClient:
-    def __init__(self, fail: bool = False):
+    def __init__(self, fail: bool = False, free: int = 10**12):
         self.fail = fail
+        self.free = free  # free escrow the custodial wallet reports
         self.calls: list[tuple] = []
+
+    def consumer_address(self):
+        return PLATFORM_WALLET
+
+    def free_escrow_of(self, consumer):
+        return self.free
+
+    def deposit(self, amount):
+        self.calls.append(("deposit", amount))
+        self.free += amount
+        return TxResult(tx_hash="0x" + "44" * 32, block_number=0, event={"amount": amount})
 
     def open_booking(self, booking_id, consumer, supplier, rate, max_secs):
         self.calls.append(("open", booking_id))
@@ -154,6 +169,105 @@ async def test_failed_lock_blocks_activation(client, monkeypatch, chain):
     assert body["items"][0]["kind"] == "open"
     assert body["items"][0]["status"] == "failed"
     assert "insufficient" in body["items"][0]["error"]
+
+
+async def _custodial_booking(client, monkeypatch, tag: str, workload: str = "hermes"):
+    """Supplier has a payout wallet; consumer has NONE (custodial escrow)."""
+    sup_email = f"sup-{tag}@example.com"
+    user_token = await _login(client, monkeypatch, sup_email)
+    auth = {"Authorization": f"Bearer {user_token}"}
+    await client.post(
+        "/v1/suppliers",
+        json={"display_name": sup_email, "payout_email": sup_email},
+        headers=auth,
+    )
+    off = await client.post(
+        "/v1/offerings",
+        json={
+            "title": "Agent",
+            "price_per_hour_cents": 100,
+            "capability_tags": [],
+            "workload": workload,
+        },
+        headers=auth,
+    )
+    assert off.json()["workload"] == workload
+    prov = await client.post(
+        "/v1/workers/provisioning-tokens", json={"name": "w"}, headers=auth
+    )
+    reg = await client.post(
+        "/v1/workers/register",
+        json={"provisioning_token": prov.json()["provisioning_token"], "machine_info": {}},
+    )
+    await client.patch(
+        "/v1/suppliers/me", json={"payout_wallet": SUPPLIER_WALLET}, headers=auth
+    )
+    consumer_token = await _login(client, monkeypatch, f"buyer-{tag}@example.com")
+    cauth = {"Authorization": f"Bearer {consumer_token}"}
+    r = await client.post(
+        "/v1/bookings",
+        json={"offering_id": off.json()["id"], "worker_id": reg.json()["worker"]["id"]},
+        headers=cauth,
+    )
+    return r.json()["id"], cauth
+
+
+@pytest.mark.asyncio
+async def test_custodial_deposit_precedes_lock(client, monkeypatch, chain):
+    """No consumer wallet + empty escrow → a real deposit funds the lock, and
+    every leg (deposit/open/settle) carries the workload onto the ledger."""
+    chain.free = 0  # custodial wallet has nothing in escrow yet
+    booking_id, auth = await _custodial_booking(client, monkeypatch, "c1", "hermes")
+
+    r = await client.post(
+        f"/v1/bookings/{booking_id}/transition", json={"to": "active"}, headers=auth
+    )
+    assert r.status_code == 200
+    assert chain.calls[0][0] == "deposit"  # client paid before the lock
+    assert [c[0] for c in chain.calls[:2]] == ["deposit", "open"]
+
+    await client.post(
+        f"/v1/bookings/{booking_id}/transition", json={"to": "completed"}, headers=auth
+    )
+    body = (await client.get("/v1/ledger")).json()
+    kinds = {e["kind"] for e in body["items"]}
+    assert {"deposit", "open", "settle"} <= kinds
+    assert all(e["workload"] == "hermes" for e in body["items"])
+    deposit = next(e for e in body["items"] if e["kind"] == "deposit")
+    assert deposit["consumer_wallet"] == PLATFORM_WALLET
+    assert deposit["amount_usdc"] > 0
+
+
+@pytest.mark.asyncio
+async def test_custodial_skips_deposit_when_escrow_covers(client, monkeypatch, chain):
+    chain.free = 10**12  # already funded
+    booking_id, auth = await _custodial_booking(client, monkeypatch, "c2", "openclaw")
+    r = await client.post(
+        f"/v1/bookings/{booking_id}/transition", json={"to": "active"}, headers=auth
+    )
+    assert r.status_code == 200
+    assert [c[0] for c in chain.calls] == ["open"]  # no deposit needed
+
+
+@pytest.mark.asyncio
+async def test_offering_workload_defaults_and_filters(client, monkeypatch):
+    token = await _login(client, monkeypatch, "sup-w@example.com")
+    auth = {"Authorization": f"Bearer {token}"}
+    await client.post(
+        "/v1/suppliers", json={"display_name": "S", "payout_email": "s@s.com"}, headers=auth
+    )
+    default = await client.post(
+        "/v1/offerings", json={"title": "A", "price_per_hour_cents": 40}, headers=auth
+    )
+    assert default.json()["workload"] == "sandbox"  # sensible default
+    await client.post(
+        "/v1/offerings",
+        json={"title": "H", "price_per_hour_cents": 90, "workload": "hermes"},
+        headers=auth,
+    )
+    r = await client.get("/v1/offerings?workload=hermes")
+    titles = {o["title"] for o in r.json()["items"]}
+    assert "H" in titles and "A" not in titles
 
 
 @pytest.mark.asyncio

@@ -64,11 +64,26 @@ export default function LoginPage() {
               />
             </div>
             <Submit />
-            {state?.ok && (
+            {state?.ok && state.devLoginUrl && (
+              <Alert>
+                <AlertDescription className="space-y-2">
+                  <p className="text-sm">
+                    No email provider is wired in this environment, so here&apos;s
+                    your sign-in link directly:
+                  </p>
+                  <a
+                    href={state.devLoginUrl}
+                    className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+                  >
+                    Sign in now
+                  </a>
+                </AlertDescription>
+              </Alert>
+            )}
+            {state?.ok && !state.devLoginUrl && (
               <Alert>
                 <AlertDescription>
-                  Check your inbox for a sign-in link. (In dev, it&apos;s logged to the
-                  API console.)
+                  Check your inbox for a sign-in link.
                 </AlertDescription>
               </Alert>
             )}

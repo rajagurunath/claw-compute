@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from claw_api.auth import magic_link as ml
 from claw_api.auth.jwt import encode_user_token
+from claw_api.config import get_settings
 from claw_api.db import get_db
 from claw_api.deps import current_user
 from claw_api.models.suppliers import Supplier
@@ -31,7 +32,13 @@ async def request_magic_link(
 ) -> dict[str, str]:
     raw = await ml.issue_magic_link(db, payload.email)
     await ml.deliver_magic_link(payload.email, raw)
-    return {"status": "sent"}
+    resp = {"status": "sent"}
+    # Dev convenience: with no email provider wired (console delivery), hand the
+    # sign-in link straight back so the UI can show a "sign in" button. Never
+    # enabled in prod (where delivery is a real mailer).
+    if get_settings().magic_link_delivery == "console":
+        resp["dev_login_token"] = raw
+    return resp
 
 
 @router.post("/auth/verify", response_model=TokenResponse)

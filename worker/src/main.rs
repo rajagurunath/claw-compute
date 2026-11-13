@@ -81,22 +81,34 @@ async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Re
 
     let state = Arc::new(tokio::sync::Mutex::new(State::open(&Config::db_path()?)?));
 
-    let model_host = Arc::new(ModelHost::new());
-    // Pre-warm default model in the background so the first booking doesn't
-    // wait for the cold-start. Ignore errors — subsequent ensure_loaded calls
-    // will surface them.
-    let mh_warm = model_host.clone();
+    let mut handler = BookingHandler::new(backend.clone(), state.clone())
+        .with_api_client(Arc::new(client.clone()), token.clone());
+    if std::env::var("CLAW_SKIP_MODEL_HOST").as_deref() != Ok("1") {
+        let model_host = Arc::new(ModelHost::new());
+        // Pre-warm default model in the background so the first booking doesn't
+        // wait for the cold-start. Ignore errors — booking activation retries it.
+        let mh_warm = model_host.clone();
+        tokio::spawn(async move {
+            if let Err(e) = mh_warm.ensure_loaded("qwen", MODEL_HOST_PORT).await {
+                tracing::warn!(error = ?e, "failed to pre-warm default model");
+            }
+        });
+        handler = handler.with_model_host(model_host);
+    } else {
+        tracing::info!("external inference configured; local model host disabled");
+    }
+    let handler = Arc::new(handler);
+
+    // Keep slow model and sandbox operations out of the WebSocket read loop.
+    // The single consumer preserves activation/message/cancellation ordering.
+    let (event_tx, mut event_rx) = tokio::sync::mpsc::channel(64);
     tokio::spawn(async move {
-        if let Err(e) = mh_warm.ensure_loaded("qwen", MODEL_HOST_PORT).await {
-            tracing::warn!(error = ?e, "failed to pre-warm default model");
+        while let Some(event) = event_rx.recv().await {
+            if let Err(error) = handler.dispatch(event).await {
+                tracing::warn!(?error, "worker event handler failed");
+            }
         }
     });
-
-    let handler = Arc::new(
-        BookingHandler::new(backend.clone(), state.clone())
-            .with_model_host(model_host.clone())
-            .with_api_client(Arc::new(client.clone()), token.clone()),
-    );
 
     // Heartbeat loop in a separate task.
     let token_for_hb = token.clone();
@@ -122,8 +134,13 @@ async fn run_loop(api_url: String, override_token: Option<String>) -> anyhow::Re
 
     // WS loop runs forever (reconnects internally).
     claw_worker::api::ws::run_ws(&api_url, &token, identity, move |ev| {
-        let handler = handler.clone();
-        async move { handler.dispatch(ev).await }
+        let event_tx = event_tx.clone();
+        async move {
+            event_tx
+                .send(ev)
+                .await
+                .map_err(|_| anyhow::anyhow!("worker event queue closed"))
+        }
     })
     .await
 }

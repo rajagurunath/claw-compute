@@ -5,6 +5,7 @@ from claw_api.models.base import Base, IdMixin, TimestampMixin
 
 
 class SettlementTxKind:
+    DEPOSIT = "deposit"  # consumer funds escrow ("client pays")
     OPEN = "open"
     SETTLE = "settle"
     CANCEL = "cancel"
@@ -27,8 +28,11 @@ class SettlementTx(Base, IdMixin, TimestampMixin):
     booking_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("bookings.id"), index=True, nullable=False
     )
-    kind: Mapped[str] = mapped_column(String(12), nullable=False)  # open|settle|cancel
+    kind: Mapped[str] = mapped_column(String(12), nullable=False)  # deposit|open|settle|cancel
     status: Mapped[str] = mapped_column(String(12), nullable=False)  # confirmed|failed
+    # Which agent runtime this booking runs (openclaw|sandbox|inference|hermes),
+    # snapshotted so the public ledger can show it per settlement.
+    workload: Mapped[str | None] = mapped_column(String(16), nullable=True)
     tx_hash: Mapped[str | None] = mapped_column(String(66), nullable=True)
     block_number: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     consumer_wallet: Mapped[str | None] = mapped_column(String(42), nullable=True)

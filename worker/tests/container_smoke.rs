@@ -22,6 +22,7 @@ async fn start_and_stop_real_container() {
         cpu_limit: Some(1),
         memory_limit_mb: Some(2048),
         agent_config: serde_json::Value::Null,
+        persist_volume: None,
     };
     let handle = backend.start(spec).await.expect("start failed");
     assert!(!handle.sandbox_id.is_empty());

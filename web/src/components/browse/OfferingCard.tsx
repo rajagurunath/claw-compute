@@ -2,7 +2,14 @@ import Link from "next/link";
 import { ArrowUpRight, Cpu } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import type { OfferingOut } from "@/lib/api-types";
+import type { OfferingOut, Workload } from "@/lib/api-types";
+
+const WORKLOAD_LABEL: Record<Workload, string> = {
+  openclaw: "OpenClaw",
+  sandbox: "Sandbox",
+  inference: "Inference",
+  hermes: "Hermes",
+};
 
 export function OfferingCard({ offering }: { offering: OfferingOut }) {
   const usdHr = (offering.price_per_hour_cents / 100).toFixed(2);
@@ -16,7 +23,12 @@ export function OfferingCard({ offering }: { offering: OfferingOut }) {
           <Cpu className="h-3.5 w-3.5" />
           Apple Silicon
         </span>
-        <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
+        <span className="inline-flex items-center gap-2">
+          <span className="rounded-full border border-foreground/15 bg-foreground/[0.04] px-2 py-0.5 font-mono text-[10px] tracking-[0.12em] text-foreground/70">
+            {WORKLOAD_LABEL[offering.workload]}
+          </span>
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
+        </span>
       </div>
       <h3 className="line-clamp-2 text-lg font-semibold tracking-tight">
         {offering.title}

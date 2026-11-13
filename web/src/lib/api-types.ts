@@ -9,6 +9,8 @@ export type SupplierOut = {
 
 export type OfferingStatus = "draft" | "active" | "archived";
 
+export type Workload = "openclaw" | "sandbox" | "inference" | "hermes";
+
 export type OfferingOut = {
   id: string;
   supplier_id: string;
@@ -16,6 +18,7 @@ export type OfferingOut = {
   description: string;
   price_per_hour_cents: number;
   capability_tags: string[];
+  workload: Workload;
   status: OfferingStatus;
 };
 
@@ -62,7 +65,7 @@ export type MessageOut = {
 
 /* --- public settlement ledger ------------------------------------- */
 
-export type SettlementKind = "open" | "settle" | "cancel";
+export type SettlementKind = "deposit" | "open" | "settle" | "cancel";
 export type SettlementStatus = "confirmed" | "failed";
 
 export type LedgerEntry = {
@@ -70,6 +73,7 @@ export type LedgerEntry = {
   booking_id: string;
   kind: SettlementKind;
   status: SettlementStatus;
+  workload: Workload | null;
   tx_hash: string | null;
   block_number: number | null;
   consumer_wallet: string | null;

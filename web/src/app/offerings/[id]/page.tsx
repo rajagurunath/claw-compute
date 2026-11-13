@@ -7,8 +7,15 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ApiError, api } from "@/lib/api";
-import type { OfferingOut } from "@/lib/api-types";
+import type { OfferingOut, Workload } from "@/lib/api-types";
 import { findSeedOffering } from "@/lib/seed";
+
+const WORKLOAD_LABEL: Record<Workload, string> = {
+  openclaw: "OpenClaw",
+  sandbox: "Sandbox",
+  inference: "Inference",
+  hermes: "Hermes",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -47,9 +54,14 @@ export default async function OfferingDetail({
           <ArrowLeft className="h-4 w-4" />
           Back to browse
         </Link>
-        <div className="mb-2 inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-muted-foreground">
-          <Cpu className="h-3.5 w-3.5" />
-          Apple Silicon
+        <div className="mb-2 flex items-center gap-3 text-xs uppercase tracking-wider text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <Cpu className="h-3.5 w-3.5" />
+            Apple Silicon
+          </span>
+          <span className="rounded-full border border-foreground/15 bg-foreground/[0.04] px-2 py-0.5 font-mono tracking-[0.12em] text-foreground/70">
+            {WORKLOAD_LABEL[offering.workload]} agent
+          </span>
         </div>
         <h1 className="mb-4 text-balance text-4xl font-semibold tracking-tight md:text-5xl">
           {offering.title}
@@ -74,10 +86,20 @@ export default async function OfferingDetail({
             {offering.description || "No description provided."}
           </p>
         </div>
+        <div className="mb-6 rounded-xl border border-border/60 bg-muted/30 p-4 text-sm text-muted-foreground">
+          Starting this agent opens a booking and locks the first hour of USDC
+          in escrow on <span className="text-foreground">Arc</span>. You&rsquo;re
+          only charged for the seconds you actually use — the rest is released
+          when you end the session, and every settlement is public on the{" "}
+          <Link href="/ledger" className="text-foreground underline underline-offset-2">
+            ledger
+          </Link>
+          .
+        </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
             <Link href={`/auth/login?next=/offerings/${offering.id}`}>
-              Sign in to book
+              Sign in to start agent
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline">

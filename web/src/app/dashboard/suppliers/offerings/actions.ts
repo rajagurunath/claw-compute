@@ -7,6 +7,7 @@ import { z } from "zod";
 import { api } from "@/lib/api";
 
 const Status = z.enum(["draft", "active", "archived"]);
+const WorkloadEnum = z.enum(["openclaw", "sandbox", "inference", "hermes"]);
 
 const Body = z.object({
   title: z.string().min(1).max(200),
@@ -15,6 +16,7 @@ const Body = z.object({
   capability_tags: z
     .string()
     .transform((s) => s.split(",").map((t) => t.trim()).filter(Boolean)),
+  workload: WorkloadEnum.default("sandbox"),
   status: Status,
 });
 

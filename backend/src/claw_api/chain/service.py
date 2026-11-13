@@ -2,14 +2,19 @@
 
 Policy layer between the bookings router and the raw web3 client:
 
-* Settlement applies only when the chain is configured (`CHAIN_ENABLED`) AND
-  both parties have wallets. Otherwise bookings flow off-chain exactly as
-  before — USDC is a second rail, not a replacement.
+* Settlement applies when the chain is configured (`CHAIN_ENABLED`) AND the
+  supplier has a `payout_wallet` to be paid into. Otherwise bookings flow
+  off-chain exactly as before — USDC is a second rail, not a replacement.
+* The consumer's escrow address is either their own `wallet_address` (they
+  fund their escrow themselves) or, when they have none, the platform's
+  custodial signer wallet. In the custodial case `openBooking` is preceded by
+  a real **deposit** ("the client pays") whenever free escrow can't cover the
+  lock — this is the on-chain payment that gates agent creation.
 * `openBooking` (escrow lock) runs BEFORE the booking flips to active in
-  Postgres: if the consumer can't cover the lock, activation fails with 402.
+  Postgres: if the deposit or lock fails, activation fails with 402 and the
+  machine never spins up.
 * `settleBooking`/`cancelBooking` run after the off-chain transition and are
-  best-effort: a failure is recorded on the public ledger, never hidden, and
-  the funds stay locked on-chain until an operator retries.
+  best-effort: a failure is recorded on the public ledger, never hidden.
 
 Every attempt — confirmed or failed — is written to `settlement_txs`, which
 is what `/v1/ledger` serves to everyone.
@@ -34,20 +39,44 @@ from claw_api.models.users import User
 
 log = logging.getLogger(__name__)
 
+# 1 cent = 10_000 base units of 6-decimal USDC (matches ClawEscrow.CENT).
+_CENT = 10_000
+
 
 class ChainSettlementError(Exception):
-    """openBooking failed — activation must not proceed."""
+    """Deposit or openBooking failed — activation must not proceed."""
 
 
-def _applicable(consumer: User, supplier: Supplier) -> bool:
+def _signer_configured(s) -> bool:
+    return bool(
+        s.chain_settler_key
+        or (
+            s.chain_signer_mode == "circle"
+            and s.circle_api_key
+            and s.circle_entity_secret
+            and s.circle_wallet_id
+        )
+    )
+
+
+def _applicable(supplier: Supplier) -> bool:
+    """Chain settlement is on when the rail is configured and the supplier has
+    a payout wallet. The consumer never needs to manage a wallet — the platform
+    custodies escrow for them."""
     s = get_settings()
     return bool(
         s.chain_enabled
         and s.chain_escrow_address
-        and s.chain_settler_key
-        and consumer.wallet_address
+        and _signer_configured(s)
         and supplier.payout_wallet
     )
+
+
+def _lock_amount(rate_per_hour_cents: int, max_secs: int) -> int:
+    """Worst-case USDC (base units) a booking can cost, rounded up — matches
+    ClawEscrow's ceil(rate × CENT × maxDuration / 3600)."""
+    num = rate_per_hour_cents * _CENT * max_secs
+    return 0 if num == 0 else (num - 1) // 3600 + 1
 
 
 def _usage_seconds(booking: Booking) -> int:
@@ -63,25 +92,50 @@ async def settle_on_activate(
     consumer: User,
     supplier: Supplier,
 ) -> None:
-    """Lock rate × max-duration in escrow. Raises ChainSettlementError if the
-    lock cannot be placed — the caller must abort the activation."""
-    if not _applicable(consumer, supplier):
+    """Ensure escrow is funded (deposit if custodial + short), then lock
+    rate × max-duration. Raises ChainSettlementError if either fails — the
+    caller must abort the activation."""
+    if not _applicable(supplier):
         return
     s = get_settings()
     max_secs = s.chain_max_booking_hours * 3600
+    client = escrow_client.get_escrow_client()
+
+    # Where the consumer's escrow lives: their own wallet if they set one, else
+    # the platform's custodial signer wallet.
+    custodial = consumer.wallet_address is None
+    consumer_addr = consumer.wallet_address or await asyncio.to_thread(
+        client.consumer_address
+    )
+
+    # "The client pays": top up custodial escrow to cover the lock.
+    if custodial:
+        lock = _lock_amount(offering.price_per_hour_cents, max_secs)
+        try:
+            free = await asyncio.to_thread(client.free_escrow_of, consumer_addr)
+            if free < lock:
+                await _deposit(db, booking, offering, consumer_addr, lock - free)
+        except ChainSettlementError:
+            raise
+        except Exception as exc:  # noqa: BLE001 — a funding failure blocks activation
+            msg = _short_error(exc)
+            log.warning("escrow funding failed for booking %s: %s", booking.id, msg)
+            raise ChainSettlementError(msg) from exc
+
     tx = SettlementTx(
         booking_id=booking.id,
         kind=SettlementTxKind.OPEN,
-        consumer_wallet=consumer.wallet_address,
+        workload=offering.workload,
+        consumer_wallet=consumer_addr,
         supplier_wallet=supplier.payout_wallet,
         rate_per_hour_cents=offering.price_per_hour_cents,
         status=SettlementTxStatus.FAILED,  # flipped on success
     )
     try:
         result = await asyncio.to_thread(
-            escrow_client.get_escrow_client().open_booking,
+            client.open_booking,
             booking.id,
-            consumer.wallet_address,
+            consumer_addr,
             supplier.payout_wallet,
             offering.price_per_hour_cents,
             max_secs,
@@ -102,6 +156,39 @@ async def settle_on_activate(
     await db.commit()
 
 
+async def _deposit(
+    db: AsyncSession,
+    booking: Booking,
+    offering: Offering,
+    consumer_addr: str,
+    amount: int,
+) -> None:
+    """Fund custodial escrow with a real on-chain deposit, recorded on the
+    ledger. Raises ChainSettlementError on failure."""
+    tx = SettlementTx(
+        booking_id=booking.id,
+        kind=SettlementTxKind.DEPOSIT,
+        workload=offering.workload,
+        consumer_wallet=consumer_addr,
+        amount_usdc=amount,
+        status=SettlementTxStatus.FAILED,
+    )
+    try:
+        result = await asyncio.to_thread(
+            escrow_client.get_escrow_client().deposit, amount
+        )
+    except Exception as exc:  # noqa: BLE001
+        tx.error = _short_error(exc)
+        db.add(tx)
+        await db.commit()
+        raise ChainSettlementError(tx.error) from exc
+    tx.status = SettlementTxStatus.CONFIRMED
+    tx.tx_hash = result.tx_hash
+    tx.block_number = result.block_number
+    db.add(tx)
+    await db.commit()
+
+
 async def settle_on_close(
     db: AsyncSession,
     booking: Booking,
@@ -112,21 +199,25 @@ async def settle_on_close(
 ) -> None:
     """Charge actual usage (settle) or partial usage (cancel). Best-effort:
     failures land on the ledger, the off-chain transition stands."""
-    if not _applicable(consumer, supplier):
+    if not _applicable(supplier):
         return
+    client = escrow_client.get_escrow_client()
+    consumer_addr = consumer.wallet_address or await asyncio.to_thread(
+        client.consumer_address
+    )
     usage = _usage_seconds(booking)
     kind = SettlementTxKind.CANCEL if cancelled else SettlementTxKind.SETTLE
     tx = SettlementTx(
         booking_id=booking.id,
         kind=kind,
-        consumer_wallet=consumer.wallet_address,
+        workload=offering.workload,
+        consumer_wallet=consumer_addr,
         supplier_wallet=supplier.payout_wallet,
         rate_per_hour_cents=offering.price_per_hour_cents,
         usage_seconds=usage,
         status=SettlementTxStatus.FAILED,
     )
     try:
-        client = escrow_client.get_escrow_client()
         call = client.cancel_booking if cancelled else client.settle_booking
         result = await asyncio.to_thread(call, booking.id, usage)
     except Exception as exc:  # noqa: BLE001 — recorded, not raised

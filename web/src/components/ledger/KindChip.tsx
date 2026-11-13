@@ -1,10 +1,28 @@
-import type { SettlementKind, SettlementStatus } from "@/lib/api-types";
+import type { SettlementKind, SettlementStatus, Workload } from "@/lib/api-types";
 
 const KIND_LABEL: Record<SettlementKind, string> = {
+  deposit: "deposit",
   open: "escrow lock",
   settle: "settled",
   cancel: "cancelled",
 };
+
+const WORKLOAD_LABEL: Record<Workload, string> = {
+  openclaw: "OpenClaw",
+  sandbox: "Sandbox",
+  inference: "Inference",
+  hermes: "Hermes",
+};
+
+/** Which agent runtime a settlement belongs to. Neutral, informational. */
+export function WorkloadChip({ workload }: { workload: Workload | null }) {
+  if (!workload) return null;
+  return (
+    <span className="inline-flex items-center rounded-full border border-white/12 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70">
+      {WORKLOAD_LABEL[workload]}
+    </span>
+  );
+}
 
 /** Money-state chip: amber = funds locked, green = paid out, slate = released. */
 export function KindChip({
@@ -19,6 +37,14 @@ export function KindChip({
       <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgb(var(--crimson))]/40 bg-[rgb(var(--crimson))]/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-crimson">
         <Dot className="bg-[rgb(var(--crimson))]" />
         {KIND_LABEL[kind]} failed
+      </span>
+    );
+  }
+  if (kind === "deposit") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgb(var(--crimson))]/35 bg-[rgb(var(--crimson))]/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent-crimson">
+        <Dot className="bg-[rgb(var(--crimson))]" />
+        client paid
       </span>
     );
   }

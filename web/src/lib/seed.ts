@@ -14,6 +14,7 @@ export const SEED_OFFERINGS: OfferingOut[] = [
       "Dedicated Mac Studio M3 Max with 64 GB unified memory. mlx-lm pre-warmed with Qwen3.5-7B-Instruct-4bit. Sub-second sandbox boot via Apple `container`. 1 Gbps fibre.",
     price_per_hour_cents: 180,
     capability_tags: ["macos", "mlx", "m3-max", "qwen3.5", "64gb"],
+    workload: "inference",
     status: "active",
   },
   {
@@ -24,6 +25,7 @@ export const SEED_OFFERINGS: OfferingOut[] = [
       "MacBook Pro M3 Pro 14\". 36 GB unified memory. Plugged in 24/7, fibre uplink, located in EU-West for low transatlantic latency.",
     price_per_hour_cents: 120,
     capability_tags: ["macos", "mlx", "m3-pro", "eu-west"],
+    workload: "inference",
     status: "active",
   },
   {
@@ -34,6 +36,7 @@ export const SEED_OFFERINGS: OfferingOut[] = [
       "Bargain entry tier. Mac mini M4 with 24 GB. Great for Gemma 3 12B and small Qwen models. Always-on home lab, residential fibre.",
     price_per_hour_cents: 50,
     capability_tags: ["macos", "mlx", "m4", "gemma", "budget"],
+    workload: "hermes",
     status: "active",
   },
   {
@@ -44,6 +47,7 @@ export const SEED_OFFERINGS: OfferingOut[] = [
       "Top-of-line M4 Max with 128 GB. Comfortably runs Qwen3.5-30B-A3B (MoE) at >100 tok/s. Symmetric 2.5 Gbps fibre. Dedicated machine.",
     price_per_hour_cents: 350,
     capability_tags: ["macos", "mlx", "m4-max", "qwen-30b", "moe", "128gb"],
+    workload: "inference",
     status: "active",
   },
   {
@@ -54,6 +58,7 @@ export const SEED_OFFERINGS: OfferingOut[] = [
       "MacBook Pro M3 Max 16\" with 48 GB. Pre-warmed with Trinity Mini for agentic workloads. AU-East region. Plugged in business hours only — pause-aware bookings.",
     price_per_hour_cents: 200,
     capability_tags: ["macos", "mlx", "m3-max", "trinity-mini", "ap-southeast"],
+    workload: "openclaw",
     status: "active",
   },
   {
@@ -64,6 +69,7 @@ export const SEED_OFFERINGS: OfferingOut[] = [
       "Cheapest active offering. iMac M3 24 GB. Limited to llama.cpp models <8B but rock-solid uptime. US-Central, residential gigabit.",
     price_per_hour_cents: 30,
     capability_tags: ["macos", "llama-cpp", "m3", "us-central", "budget"],
+    workload: "sandbox",
     status: "active",
   },
 ];

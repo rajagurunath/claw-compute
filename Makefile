@@ -152,7 +152,7 @@ worker-run: worker-build
 	  echo "  2. Or use 'make worker-token EMAIL=you@example.com' to mint one end-to-end"; \
 	  exit 1; \
 	fi; \
-	$(WORKER)/target/aarch64-apple-darwin/release/claw-worker run --api-url $$CLAW_API_URL --worker-token $$CLAW_WORKER_TOKEN
+	$(WORKER)/target/aarch64-apple-darwin/release/claw-worker run --api-url $$CLAW_API_URL
 
 # Mint a worker token end-to-end (api must be running). Sets up a supplier
 # if needed, then prints CLAW_WORKER_TOKEN for shell export.

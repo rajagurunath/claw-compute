@@ -106,6 +106,7 @@ async def public_ledger(
                 booking_id=tx.booking_id,
                 kind=tx.kind,  # type: ignore[arg-type]
                 status=tx.status,  # type: ignore[arg-type]
+                workload=tx.workload,  # type: ignore[arg-type]
                 tx_hash=tx.tx_hash,
                 block_number=tx.block_number,
                 consumer_wallet=tx.consumer_wallet,

@@ -99,6 +99,24 @@ export function OfferingForm({
         </div>
       </div>
       <div className="space-y-2">
+        <Label htmlFor="workload">Agent runtime</Label>
+        <Select name="workload" defaultValue={initial?.workload ?? "sandbox"}>
+          <SelectTrigger id="workload">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="sandbox">Sandbox — disposable Linux microVM</SelectItem>
+            <SelectItem value="openclaw">OpenClaw — agentic coding runtime</SelectItem>
+            <SelectItem value="inference">Inference — local MLX chat endpoint</SelectItem>
+            <SelectItem value="hermes">Hermes — persistent agent (memory across bookings)</SelectItem>
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground">
+          What a booking on this offering spins up on your Mac. Every workload
+          settles on Arc through the same escrow.
+        </p>
+      </div>
+      <div className="space-y-2">
         <Label htmlFor="capability_tags">Capability tags</Label>
         <Input
           id="capability_tags"

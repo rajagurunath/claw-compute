@@ -63,6 +63,7 @@ mod tests {
             cpu_limit: None,
             memory_limit_mb: None,
             agent_config: serde_json::Value::Null,
+            persist_volume: None,
         };
         let a = b.start(spec.clone()).await.unwrap();
         let c = b.start(spec).await.unwrap();

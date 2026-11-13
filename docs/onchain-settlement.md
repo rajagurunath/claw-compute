@@ -217,15 +217,45 @@ coming in, never money going out.
 ### Backend integration (implemented)
 
 * `bookingId (bytes32) = keccak256(utf8(Booking.id))` — canonical derivation.
+* **Client pays** — when a consumer has no `wallet_address` (custodial mode),
+  `settle_on_activate` first checks `freeEscrowOf(consumer)` and, if it can't
+  cover the lock, submits a real `deposit` (`approve` + `deposit`) before
+  `openBooking`. Recorded as `settlement_txs.kind = deposit`.
 * `openBooking` runs **before** the booking flips to `active` in Postgres; a
-  failed lock aborts activation with HTTP 402. `settle`/`cancel` run after the
-  transition, best-effort, with failures recorded (never hidden).
+  failed deposit/lock aborts activation with HTTP 402. `settle`/`cancel` run
+  after the transition, best-effort, with failures recorded (never hidden).
+* **Workload** — `offerings.workload` (`openclaw|sandbox|inference|hermes`) is
+  snapshotted onto each `settlement_txs` row and shown per-transaction on the
+  ledger. The activation event's `agent_config` carries
+  `{workload, model_id, hermes_agent_id}` so the worker spins up the right
+  agent (Hermes gets a persistent named volume keyed by `hermes_agent_id`).
 * Every attempt lands in the `settlement_txs` table → `GET /v1/ledger`
   (public, no auth) → the `/ledger` page. Amounts come from decoding the
-  `BookingOpened` / `BookingSettled` events, not from re-computing off-chain.
+  `Deposited` / `BookingOpened` / `BookingSettled` events, not from
+  re-computing off-chain.
 * Wallets: `users.wallet_address` (consumer escrow) via `PUT /v1/me/wallet`,
-  `suppliers.payout_wallet` via `PATCH /v1/suppliers/me`. Bookings between
-  parties without wallets settle off-chain exactly as before (second rail).
+  `suppliers.payout_wallet` via `PATCH /v1/suppliers/me`. Bookings whose
+  supplier has no payout wallet settle off-chain exactly as before (second
+  rail). In custodial mode the platform's Circle wallet is the consumer's
+  escrow holder — see below.
+
+### Verified on Arc testnet (2026-07-12)
+
+Deployed `ClawEscrow` at `0x98e62BEe68ce896efa58E41d33a5100d5fFa5428`, signed
+by a Circle developer-controlled wallet (`CHAIN_SIGNER_MODE=circle`). The full
+product path — **start agent → pay on Arc → deduct on Arc** — was driven end to
+end through the HTTP API for a Hermes booking at $0.40/hr, 25s usage:
+
+| Leg | Tx | Amount |
+|---|---|---|
+| `deposit` (client pays) | `0xee0b83bb…c5942638` | shortfall to cover lock |
+| `openBooking` (escrow lock) | `0xa5dac963…03dc9eef2` | $0.40 locked |
+| `settleBooking` (deduct + pay supplier) | `0x837d8bee…89a0bb398` | $0.002777 charged, 85/15 split |
+
+Because only one funded Circle wallet exists on testnet, it plays settler +
+treasury + custodial consumer; the supplier is a distinct `payout_wallet`.
+Per-user non-custodial wallets are a later extension (the code already prefers
+`consumer.wallet_address` when set).
 
 ## Runbook
 
@@ -267,3 +297,26 @@ activate, complete — every leg appears on `/ledger`.
    `CHAIN_ID=5042002`, `CHAIN_ESCROW_ADDRESS=<deployed>`,
    `CHAIN_USDC_ADDRESS=0x36…00`, `CHAIN_SETTLER_KEY` from a secrets manager.
 5. Arc is **testnet only** — never target Arc mainnet.
+
+### Circle developer-controlled settler
+
+The backend can submit escrow calls through a Circle developer-controlled
+wallet instead of holding a raw `CHAIN_SETTLER_KEY`. The wallet must have
+`SETTLER_ROLE` on the deployed escrow contract.
+
+```env
+CHAIN_ENABLED=true
+CHAIN_SIGNER_MODE=circle
+CHAIN_RPC_URL=https://rpc.testnet.arc.network
+CHAIN_ID=5042002
+CHAIN_ESCROW_ADDRESS=<deployed ClawEscrow>
+CHAIN_USDC_ADDRESS=0x3600000000000000000000000000000000000000
+CIRCLE_API_BASE=https://api.circle.com/v1/w3s
+CIRCLE_API_KEY=<Circle sandbox API key>
+CIRCLE_ENTITY_SECRET=<registered entity secret>
+CIRCLE_WALLET_ID=<ARC-TESTNET developer-controlled wallet UUID>
+```
+
+`CIRCLE_API_KEY` and `CIRCLE_ENTITY_SECRET` are secrets. Keep them in the local
+environment or a secrets manager; never expose them through `NEXT_PUBLIC_*`,
+worker configuration, logs, or client responses.

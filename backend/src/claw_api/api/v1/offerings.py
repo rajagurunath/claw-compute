@@ -34,6 +34,7 @@ async def create_offering(
         description=payload.description,
         price_per_hour_cents=payload.price_per_hour_cents,
         capability_tags=payload.capability_tags,
+        workload=payload.workload,
         status=payload.status,
     )
     db.add(offering)
@@ -46,12 +47,15 @@ async def create_offering(
 async def browse_offerings(
     db: AsyncSession = Depends(get_db),
     capability: str | None = Query(default=None),
+    workload: str | None = Query(default=None),
     limit: int = Query(default=50, le=200),
     offset: int = Query(default=0, ge=0),
 ) -> OfferingList:
     stmt = select(Offering).where(Offering.status == OfferingStatus.ACTIVE.value)
     if capability:
         stmt = stmt.where(Offering.capability_tags.any(capability))
+    if workload:
+        stmt = stmt.where(Offering.workload == workload)
     total = (
         await db.execute(select(func.count()).select_from(stmt.subquery()))
     ).scalar_one()

@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
-import { KindChip } from "@/components/ledger/KindChip";
+import { KindChip, WorkloadChip } from "@/components/ledger/KindChip";
 import type { ChainInfo, LedgerEntry } from "@/lib/api-types";
 import { formatDuration, formatUsdc, shortHash, txUrl } from "@/lib/usdc";
 
@@ -60,7 +60,10 @@ function Row({ entry: e, explorer }: { entry: LedgerEntry; explorer: string }) {
         </time>
       </td>
       <td className="py-3.5 pr-3 align-top">
-        <KindChip kind={e.kind} status={e.status} />
+        <div className="flex flex-wrap items-center gap-1.5">
+          <KindChip kind={e.kind} status={e.status} />
+          <WorkloadChip workload={e.workload} />
+        </div>
         {failed && e.error && (
           <p className="mt-1.5 max-w-56 truncate font-mono text-[10px] text-muted-foreground" title={e.error}>
             {e.error}
@@ -77,7 +80,7 @@ function Row({ entry: e, explorer }: { entry: LedgerEntry; explorer: string }) {
         </div>
       </td>
       <td className="tabular py-3.5 pr-3 text-right align-top font-mono text-xs text-muted-foreground">
-        {e.kind === "open" ? "—" : formatDuration(e.usage_seconds)}
+        {e.kind === "open" || e.kind === "deposit" ? "—" : formatDuration(e.usage_seconds)}
       </td>
       <td className="py-3.5 pr-3 text-right align-top">
         <span
@@ -86,13 +89,18 @@ function Row({ entry: e, explorer }: { entry: LedgerEntry; explorer: string }) {
               ? "text-muted-foreground line-through"
               : e.kind === "open"
                 ? "text-accent-gold"
-                : "text-settle"
+                : e.kind === "deposit"
+                  ? "text-accent-crimson"
+                  : "text-settle"
           }`}
         >
           {formatUsdc(e.amount_usdc)}
         </span>
         {e.kind === "open" && !failed && (
           <div className="font-mono text-[10px] text-muted-foreground">locked</div>
+        )}
+        {e.kind === "deposit" && !failed && (
+          <div className="font-mono text-[10px] text-muted-foreground">funded</div>
         )}
       </td>
       <td className="py-3.5 pr-3 align-top">
@@ -121,6 +129,7 @@ function Row({ entry: e, explorer }: { entry: LedgerEntry; explorer: string }) {
 function SplitBar({ entry: e }: { entry: LedgerEntry }) {
   if (
     e.kind === "open" ||
+    e.kind === "deposit" ||
     e.status === "failed" ||
     e.amount_usdc == null ||
     e.amount_usdc === 0 ||

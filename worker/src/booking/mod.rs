@@ -116,13 +116,30 @@ impl BookingHandler {
                         );
                     }
                 }
+                // Hermes agents get a persistent named volume keyed by a stable
+                // identity, so their /claw/state survives across bookings.
+                let workload = agent_config
+                    .get("workload")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("sandbox");
+                let persist_volume = if workload == "hermes" {
+                    agent_config
+                        .get("hermes_agent_id")
+                        .and_then(|v| v.as_str())
+                        .map(|id| format!("claw-hermes-{id}"))
+                } else {
+                    None
+                };
+                tracing::info!(%booking_id, workload, ?persist_volume, "creating agent");
                 let spec = SandboxSpec {
                     booking_id: booking_id.clone(),
                     offering_id: offering_id.clone(),
-                    image: "claw/agent-base:0.1".into(),
+                    image: std::env::var("CLAW_AGENT_IMAGE")
+                        .unwrap_or_else(|_| "claw/agent-base:0.1.0".into()),
                     cpu_limit: None,
                     memory_limit_mb: None,
                     agent_config,
+                    persist_volume,
                 };
                 let handle = self.backend.start(spec).await?;
                 if let Some(port) = handle.forwarded_port {

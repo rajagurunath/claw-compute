@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     chain_usdc_address: str = "0x3600000000000000000000000000000000000000"
     # Settler service key — env only (CHAIN_SETTLER_KEY), never logged.
     chain_settler_key: str = ""
+    # Circle developer-controlled wallet alternative to a raw settler key.
+    chain_signer_mode: str = "private_key"
+    circle_api_base: str = "https://api.circle.com/v1/w3s"
+    circle_api_key: str = ""
+    circle_entity_secret: str = ""
+    circle_wallet_id: str = ""
     chain_commission_bps: int = 1500
     # Worst-case booking window locked in escrow at activation.
     chain_max_booking_hours: int = 8
